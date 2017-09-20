@@ -12,7 +12,7 @@ cp -arf ${workspace}/STBCGI_YW/BCM7251SRelease/STBCGI_YW 				${workspace}/Releas
 cp -arf ${workspace}/STBTransfer/BCM7251SRelease/STBTransfer 			${workspace}/Release/Program/
 cp -arf ${workspace}/Resource/Resource_STBTransfer/Skin_chs.IMG			${workspace}/Release/Program/Images/
 
-cp -arf ${workspace}/ToolChain/HeadLib/Lib/*									${workspace}/Release/Program/Lib/BCMLib/
+cp -arf ${workspace}/ToolChain/BCMLib/Lib/*									${workspace}/Release/Program/Lib/BCMLib/
 
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/bcmdriver.ko				${workspace}/Release/Program/Lib/nexus/
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libBasicUsageEnvironment.*	${workspace}/Release/Program/Lib/nexus/
@@ -41,13 +41,14 @@ cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libts*						${workspace}/Re
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libz.*						${workspace}/Release/Program/Lib/common/
 
 #U盘无法接受符号连接,如果希望从u盘启动,则放开下面注释
-if [ "$arg" == "udisk" -a -n "$1" ]; then
+echo arg1=$1
+if [ "$1" == "udisk" ]; then
 	echo "release is for usb disk boot!" 
 	cd ${workspace}/Release/Program/Lib/nexus/
 	sh ${workspace}/link2copy.sh
 	cd ${workspace}/Release/Program/Lib/common/
 	sh ${workspace}/link2copy.sh
-elif [ "$arg" == "factory" -a -n "$1" ]; then
+elif [ "$1" == "factory" ]; then
 	echo "release is for factory preburn!" 
 else
 	rm ${workspace}/Release/STBCfg.xml

@@ -1,0 +1,546 @@
+/*
+ * IHALInterface.h
+ *
+ *  Created on: 2013-1-16
+ *      Author: kyo
+ */
+#pragma once
+
+#include "types.h"
+#include "SimpleString.h"
+
+#define PLAYER_STATE_STOP		0
+#define PLAYER_STATE_PLAYING	1
+#define PLAYER_STATE_PAUSE		2
+
+// driver中支持的enum类型个数
+#define MAIN_VOLUME_MAX	15
+#define PCM_VOLUME_MAX	15
+#define MIC_VOLUME_MAX	15
+
+#define ENOUGH_FILE_PATH	2048
+
+typedef enum ePLAYERINDEX
+{
+	PLAYERINDEX_MAIN=0,
+	PLAYERINDEX_PIP,
+	PLAYERINDEX_PCM,
+	PLAYERINDEX_CVBS,
+} PLAYERINDEX;
+
+typedef enum ePLAYCOMPLETE_REASONTYPE
+{
+	PlayComplete_ReasonType_Over=0,
+	PlayComplete_ReasonType_StartError,
+	PlayComplete_ReasonType_StreamError
+} PLAYCOMPLETE_REASONTYPE;
+
+typedef enum eHTTPSTREAMCALLBACKTYPE
+{
+	HTTPSTREAMCALLBACKTYPE_DISABLE=0, // 不回报
+	HTTPSTREAMCALLBACKTYPE_CACHING, // 仅在缓存的时候回报
+	HTTPSTREAMCALLBACKTYPE_ALWAYS, // 下载每个block后回报
+} HTTPSTREAMCALLBACKTYPE;
+
+class IAVPlayEventListener
+{
+public:
+	virtual ~IAVPlayEventListener(void) {}
+
+	virtual void OnPlayCompleteEvent(
+		PLAYERINDEX ePlayerIndex,
+		PLAYCOMPLETE_REASONTYPE eReasonType)=0;
+
+	virtual void OnFirstAudioPtsEvent(
+		PLAYERINDEX ePlayerIndex)=0;
+	virtual void OnFirstVideoPtsEvent(
+		PLAYERINDEX ePlayerIndex)=0;
+
+	virtual void OnHttpStreamCaching(
+		PLAYERINDEX ePlayerIndex,
+		BOOL bCaching,
+		float fReadSpeedKBPS)=0;
+};
+
+class IAVPlayerInterface
+{
+public:
+	virtual ~IAVPlayerInterface(void) {}
+
+public:
+	virtual void SetAVPlayEventListener(
+		IAVPlayEventListener* pListener)=0;
+
+	virtual void SetHttpStreamCallbackType(
+		HTTPSTREAMCALLBACKTYPE eType)=0;
+
+	virtual void SetForceUseSTBStream(
+		BOOL bForceUseSTBStream)=0;
+
+	virtual void SetOEMID(
+		const char* cOEMID)=0;
+
+	virtual void SetDataSource(
+		BOOL bNetworkEdition,
+		PLAYERINDEX ePlayerIndex,
+		BOOL bLoopPlay,
+		BOOL bPassThrough,
+		const char* cSongID,
+		const char* cFileName)=0;
+	virtual void Start()=0;
+	virtual void Stop()=0;
+	virtual void Pause()=0;
+	virtual void Resume()=0;
+	virtual void Replay()=0;
+	virtual void SeekTo(
+		int nPositionMS)=0;
+
+	virtual int GetPositionMS()=0;
+	virtual int GetDurationMS()=0;
+	virtual int GetPlayerState()=0;
+	virtual HTTPSTREAMCALLBACKTYPE GetHttpStreamCallbackType()=0;
+	virtual BOOL IsForceStop()=0;
+	virtual BOOL IsNetworkEdition()=0;
+	virtual PLAYERINDEX GetPlayerIndex()=0;
+
+	virtual BOOL IsLoopPlay()=0;
+	virtual BOOL IsPassThrough()=0;
+	virtual const char* GetSongID()=0;
+	virtual const char* GetFileName()=0;
+	virtual BOOL IsNeedShow()=0;
+	virtual BOOL IsTopOfUI()=0;
+	virtual RECT GetDisplayRect()=0;
+	virtual void SetDisplayRect(
+		BOOL bShow,
+		BOOL bTopOfUI,
+		int x,
+		int y,
+		int w,
+		int h)=0;
+
+	virtual void GetVideoBuffer(
+		BYTE* pBuffer,
+		int nWidth,
+		int nHeight,
+		int nBytesPerPixel)=0;
+
+	virtual void SaveVideoFrame(
+		const char* cSaveToFileName)=0;
+};
+
+IAVPlayerInterface* CreateAVPlayerInterface();
+void DeleteAVPlayerInterface(
+	IAVPlayerInterface* pAVPlayerInterface);
+
+
+typedef enum ePLTFORMAT
+{
+	PLTFORMAT_1080P_E=0,
+	PLTFORMAT_1080i_E,
+	PLTFORMAT_720P_E,
+	PLTFORMAT_NTSC_E,
+	PLTFORMAT_4K_P30_E,
+	PLTFORMAT_4K_P60_E,
+	PLTFORMAT_COUNT
+}PLTFORMAT;
+
+class IPlayCtrlEventListener
+{
+public:
+	virtual ~IPlayCtrlEventListener(void) {}
+
+	virtual void OnHdmiOutConnect()=0;
+	virtual void OnHdmiOutDisconnect()=0;
+
+	virtual void OnHdmiInConnect()=0;
+	virtual void OnHdmiInDisconnect()=0;
+};
+
+class IPlayerCtrlInterface
+{
+public:
+	virtual ~IPlayerCtrlInterface(void) {}
+
+	virtual void SetAVPlayEventListener(
+		IAVPlayEventListener* pListener)=0;
+
+	virtual void SetPlayCtrlEventListener(
+		IPlayCtrlEventListener* pListener)=0;
+
+	virtual void OnInit(
+		int nDisplayWidth,
+		int nDisplayHeight,
+		int nExtraParamter)=0;
+	virtual void OnDeInit()=0;
+
+	// setting control
+public:
+	virtual void SetMainVolume(
+		int nVolume)=0;
+	virtual void SetPcmVolume(
+		int nVolume)=0;
+	virtual void SetMicVolume(
+		int nVolume)=0;
+	virtual void SetMute(
+		BOOL bMute)=0;
+	virtual void SetAccompany(
+		BOOL bMute,
+		int  nMusicTrack,
+		BOOL bAccompany)=0;
+	virtual void SetPLTFormat(
+		PLTFORMAT ePLTFormat)=0;
+};
+
+IPlayerCtrlInterface* CreatePlayerCtrlInterface();
+void DeletePlayerCtrlInterface(
+	IPlayerCtrlInterface* pPlayerCtrlInterface);
+
+
+
+typedef enum eUSERLOGINTYPE
+{
+	USERLOGINTYPE_BY_ACCOUNT_E, /**< 帐户名加密码登录 */
+	USERLOGINTYPE_BY_PHONE_E, /**< 手机号加密码登录 */
+	USERLOGINTYPE_BY_VERIFY_CODE_E, /**< 手机号加验证码登录 */
+} USERLOGINTYPE;
+
+typedef enum eCLOUD_USER_RESPONSE_RESULT
+{
+	CLOUD_USER_RESPONSE_RESULT_OK=0,
+	CLOUD_USER_RESPONSE_RESULT_ERR_UNKNOWN,
+	CLOUD_USER_RESPONSE_RESULT_TIMEOUT,
+	CLOUD_USER_RESPONSE_RESULT_ERR_NOTEXIST,
+	CLOUD_USER_RESPONSE_RESULT_ERR_PASSWORD_INVALID,
+	CLOUD_USER_RESPONSE_RESULT_ERR_TOKEN_EXPIRED,
+	CLOUD_USER_RESPONSE_RESULT_ERR_MAXCOUNT
+} CLOUD_USER_RESPONSE_RESULT;
+
+class ICloudEventListener
+{
+public:
+	virtual ~ICloudEventListener(void) {}
+
+	virtual void OnCloudLoginExpired(
+		UINT64 uUserData)=0;
+};
+
+class ICloudInterface
+{
+public:
+	virtual ~ICloudInterface(void) {}
+
+	virtual BOOL OnInit(
+		const char* cProjectName,
+		ICloudEventListener* pCloudEventListener,
+		UINT64 uUserData)=0;
+	virtual void OnDeInit()=0;
+
+	virtual CLOUD_USER_RESPONSE_RESULT DeleteMediaFile(
+		int nMediaID)=0;
+	virtual CLOUD_USER_RESPONSE_RESULT GetMediaUrl(
+		int nMediaID,
+		int nTranscodeType,
+		CSimpleStringA* pMediaUrl)=0;
+
+public:
+	// 用户注册
+	virtual CLOUD_USER_RESPONSE_RESULT CloudUserRegister(
+		const char* cUserName,
+		const char* cPassword,
+		const char* cNickName,
+		const char* cBirthday,
+		const char* cPhone,
+		char cGender)=0;
+	// 用户登陆
+	virtual CLOUD_USER_RESPONSE_RESULT CloudUserLogin(
+		USERLOGINTYPE eLoginType,
+		const char* cUserName,
+		const char* cPassword,
+		CSimpleStringA* pNickName,
+		CSimpleStringA* pBirthday,
+		CSimpleStringA* pPhone,
+		char* cGender)=0;
+	// 用户登出
+	virtual CLOUD_USER_RESPONSE_RESULT CloudUserLogout()=0;
+	// 删除用户
+	virtual CLOUD_USER_RESPONSE_RESULT CloudUserDelete()=0;
+	// 修改密码
+	virtual CLOUD_USER_RESPONSE_RESULT CloudUserChangePassword(
+		const char* oldPassword,
+		const char* cNewPassword)=0;
+	// 修改用户信息
+	virtual CLOUD_USER_RESPONSE_RESULT CloudUserChangeInfomation(
+		const char* cNickName,
+		const char* cBirthday,
+		const char* cPhone,
+		char cGender)=0;
+};
+
+ICloudInterface* CreateCloudInterface();
+void DeleteCloudInterface(
+	ICloudInterface* pCloudInterface);
+
+
+
+
+typedef enum eVIDEORECORD_QUALITYTYPE
+{
+	VIDEORECORD_QUALITYTYPE_LOW=0,
+	VIDEORECORD_QUALITYTYPE_NORMAL,
+	VIDEORECORD_QUALITYTYPE_HIGH
+} VIDEORECORD_QUALITYTYPE;
+
+typedef enum eLIVEBROADCAST_EVENTTYPE
+{
+	LIVEBROADCAST_EVENTTYPE_UNKNOWN=0,
+	LIVEBROADCAST_EVENTTYPE_INITERROR,
+	LIVEBROADCAST_EVENTTYPE_OPENINPUTERROR,
+	LIVEBROADCAST_EVENTTYPE_OPENOUTPUTERROR,
+	LIVEBROADCAST_EVENTTYPE_READINPUTERROR,
+	LIVEBROADCAST_EVENTTYPE_WRITEOUTPUTERROR
+} LIVEBROADCAST_EVENTTYPE;
+
+class ICameraDataCallbackListener
+{
+public:
+	virtual ~ICameraDataCallbackListener(void) {}
+
+	virtual void OnCameraDataRGB32(
+		UINT64 uUserData,
+		int nWidth,
+		int nHeight,
+		BYTE* pRGB32,
+		int nRGB32Length)=0;
+};
+
+class IUploadProgressListener
+{
+public:
+	virtual ~IUploadProgressListener(void) {}
+
+	virtual int OnUploadProgress(
+		UINT64 uUserData,
+		int nSizeToUpload,
+		float fSpeed)=0;
+};
+
+class ILiveBroadcastEventCallbackListener
+{
+public:
+	virtual ~ILiveBroadcastEventCallbackListener(void) {}
+
+	virtual void OnLiveBroadcastEventCallback(
+		UINT64 uUserData,
+		LIVEBROADCAST_EVENTTYPE eEventType)=0;
+};
+
+class IMultiMediaInterface
+{
+public:
+	virtual ~IMultiMediaInterface(void) {}
+
+	// devices
+public:
+	virtual void StartCamera(
+		const char* cDevName,
+		SIZE szResolution,
+		int nFrameRate,
+		RECT rcCamera,
+		ICameraDataCallbackListener* pCameraDataCallbackListener,
+		UINT64 uUserData)=0;
+	virtual void StopCamera()=0;
+	virtual void SetCameraColorKey(
+		BOOL bEnable,
+		BYTE bColorKey_R,
+		BYTE bColorKey_G,
+		BYTE bColorKey_B)=0;
+
+	virtual void EnableAudioInput(
+		BOOL bEnable)=0;
+
+	virtual void EnableAudioLineInToLineOut(
+		BOOL bEnable)=0;
+
+	virtual void EnableHdmiIn(
+		BOOL bEnable)=0;
+
+	// recorder
+public:
+	virtual CLOUD_USER_RESPONSE_RESULT StartAudioRecord(
+		IUploadProgressListener* pUploadProgressListener,
+		UINT64 uUploadProgressUserData,
+		int nTranscodeType,
+		const char* cSongName,
+		const char* cSingerName)=0;
+	virtual void StopAudioRecord(
+		int* pnMediaID)=0;
+
+	virtual CLOUD_USER_RESPONSE_RESULT StartVideoRecord(
+		VIDEORECORD_QUALITYTYPE eVideoQualityType,
+		int nVideoWidth,
+		int nVideoHeight,
+		int nFrameRate,
+		BOOL bIncludeMainPlayer,
+		BOOL bIncludeCamera,
+		RECT rcCamera,
+		BOOL bIncludeOSD,
+		RECT rcOSDFrom,
+		RECT rcOSDTo,
+		BOOL bEnableUpload,
+		IUploadProgressListener* pUploadProgressListener,
+		UINT64 uUploadProgressUserData,
+		int nTranscodeType,
+		const char* cSongName,
+		const char* cSingerName,
+		BOOL bEnableLiveBroadcast,
+		ILiveBroadcastEventCallbackListener* pLiveBroadcastEventCallbackListener,
+		UINT64 uLiveBroadcastEventUserData,
+		const char* cWrapFormat,
+		const char* cBroadcastUrl)=0;
+	virtual void StopVideoRecord(
+		int* pnMediaID)=0;
+};
+
+IMultiMediaInterface* CreateMultiMediaInterface();
+void DeleteMultiMediaInterface(
+	IMultiMediaInterface* pMultiMediaInterface);
+
+
+
+class IOSDInterface
+{
+public:
+	virtual ~IOSDInterface(void) {}
+
+public:
+	virtual void OSDHWInit()=0;
+	virtual void OSDHWDeinit()=0;
+	virtual BOOL IsBGROrder()=0;
+	virtual BOOL UseOpenGL()=0;
+	virtual BYTE* GetOSDHWAddress()=0;
+	virtual void ReleaseOSDHWAddress(
+		BYTE*  pOSDAddress)=0;
+	virtual void OSDHWRefresh()=0;
+	virtual void OSDHWRefreshWithEgl(
+		BOOL bEglOnOSD)=0;
+
+	virtual void OSDEGLInit(
+		int nWidth,
+		int nHeight)=0;
+	virtual void OSDReadEGLBuffer(
+		int nLeft,
+		int nTop,
+		int nWidth,
+		int nHeight,
+		BYTE* pBuffer)=0;
+};
+
+IOSDInterface* CreateOSDInterface();
+void DeleteOSDInterface(
+	IOSDInterface* pOSDInterface);
+
+class IAudioEffectInterface
+{
+public:
+	virtual ~IAudioEffectInterface(void) {}
+
+	virtual void OnInit(
+		int nParamter)=0;
+	virtual void OnDeInit()=0;
+
+	// EQ control
+public:
+	virtual void ProcessCommand(
+		const char* pAECmd)=0;
+};
+
+IAudioEffectInterface* CreateAudioEffectInterface();
+void DeleteAudioEffectInterface(
+	IAudioEffectInterface* pAudioEffectInterface);
+
+
+typedef enum eSCORECHANNELMODE
+{
+	SCORECHANNELMODE_MONO,
+	SCORECHANNELMODE_LEFT,
+	SCORECHANNELMODE_RIGHT,
+} SCORECHANNELMODE;
+
+typedef struct tagSCOREINDICATOR
+{
+	int nStartTime;			/**< 起始时间，单位:ms */
+	int nKeepTime;			/**< 持续时长，单位:ms */
+	int nNoteLevel;			/**< 音符等级，0~127 */
+} SCOREINDICATOR;
+
+typedef enum eSCORE_MATCH_TYPE
+{
+	SCORE_MATCH_TYPE_HIT=0,
+	SCORE_MATCH_TYPE_OUTOFTUNE,
+	SCORE_MATCH_TYPE_OUTOFSYNC,
+	SCORE_MATCH_TYPE_HIT_PERFECT,
+	SCORE_MATCH_TYPE_HIT_NORMAL,
+	SCORE_MATCH_TYPE_HIT_BAD
+}SCORE_MATCH_TYPE;
+
+class IScoreEventListener
+{
+public:
+	virtual ~IScoreEventListener(void) {}
+
+	virtual void OnScoreMatchEvent(
+		SCORE_MATCH_TYPE eMatchType,
+		UINT64 uUserData)=0;
+};
+
+class IScoreInterface
+{
+public:
+	virtual ~IScoreInterface(void) {}
+
+	virtual BOOL OnInit(
+		IScoreEventListener* pScoreEventListener,
+		UINT64 uUserData,
+		const char* cCacheDir,
+		int nSampleRate,
+		SCORECHANNELMODE eChannelMode)=0;
+	virtual void OnDeInit()=0;
+
+public:
+	// 加载歌曲评分资料
+	virtual BOOL PrepareScore(
+		const char* cSongID)=0;
+	// 获取评分资料信息
+	virtual void GetNoteLevelRange(
+		int* pnMin,
+		int* pnMax)=0;
+	virtual int GetIndicatorCount()=0;
+	virtual void GetIndicator(
+		SCOREINDICATOR* pIndicators,
+		int* pnCount)=0;
+	// 评分
+	virtual void StartScore()=0;
+	virtual void StopScore()=0;
+	virtual void PauseScore()=0;
+	virtual void ResumeScore()=0;
+	virtual void SetOriginalSingerMode(
+		BOOL bOriginalSingerMode)=0;
+
+	virtual void GetCurrentNoteLevel(
+		int* pnNoteLevel,
+		BOOL* pbHit)=0;
+	virtual void GetCurrentScore(
+		int* pnScore)=0;
+	virtual void GetRanking(
+		int nScore,
+		int* pnRanking,
+		int* pnBeatCount)=0;
+	virtual void GetSongMaxScore(
+		CSimpleStringA* pMaxScoreOwner,
+		int* pnMaxScore)=0;
+};
+
+IScoreInterface* CreateScoreInterface();
+void DeleteScoreInterface(
+		IScoreInterface* pScoreInterface);
+
