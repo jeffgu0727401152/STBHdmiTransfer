@@ -1,0 +1,177 @@
+<InputMethodBoard
+	Position="0,0,335,445"
+	BkgroundImg="InputMethodWnd/Bkground"
+	TypeBoundPosition="0,3,220,40"
+	TypeBtnSize="55,40">
+
+	<!--
+	<PrevTypeBtn Position="5,10,36,40" BkgroundImg="Common/PrevBtn"/>
+	<NextTypeBtn Position="175,10,36,40" BkgroundImg="Common/NextBtn"/>
+	-->
+
+	<LetterBtn FontText="拼" FontSize="24" FontColor="0xFFF6FAFE" BkgroundImg="InputMethodWnd/InputType"/>
+	<StrokeBtn FontText="划" FontSize="24" FontColor="0xFFF6FAFE" BkgroundImg="InputMethodWnd/InputType"/>
+	<HandwriteBtn FontText="手" FontSize="24" FontColor="0xFFF6FAFE" BkgroundImg="InputMethodWnd/InputType"/>
+	<SymbolBtn FontText="符" FontSize="24" FontColor="0xFFF6FAFE" BkgroundImg="InputMethodWnd/InputType"/>
+	<ChineseBtn FontText="中" FontSize="24" FontColor="0xFFF6FAFE" BkgroundImg="InputMethodWnd/InputType"/>
+	<SpeechBtn FontText="音" FontSize="24" FontColor="0xFFF6FAFE" BkgroundImg="InputMethodWnd/InputType"/>
+
+	<BackBtn Position="225,3,50,40" BkgroundImg="InputMethodWnd/Back"/>
+	<ClearBtn Position="280,3,50,40" BkgroundImg="InputMethodWnd/Clear"/>
+
+	<LetterDigitInputWnd
+		Position="5,60,325,380">
+		<letter_item0 Position="0,0,50,50" FontText="A" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item1 Position="55,0,50,50" FontText="B" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item2 Position="110,0,50,50" FontText="C" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item3 Position="165,0,50,50" FontText="D" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item4 Position="220,0,50,50" FontText="E" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item5 Position="275,0,50,50" FontText="F" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item6 Position="0,55,50,50" FontText="G" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item7 Position="55,55,50,50" FontText="H" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item8 Position="110,55,50,50" FontText="I" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item9 Position="165,55,50,50" FontText="J" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item10 Position="220,55,50,50" FontText="K" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item11 Position="275,55,50,50" FontText="L" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item12 Position="0,110,50,50" FontText="M" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item13 Position="55,110,50,50" FontText="N" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item14 Position="110,110,50,50" FontText="O" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item15 Position="165,110,50,50" FontText="P" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item16 Position="220,110,50,50" FontText="Q" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item17 Position="275,110,50,50" FontText="R" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item18 Position="0,165,50,50" FontText="S" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item19 Position="55,165,50,50" FontText="T" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item20 Position="110,165,50,50" FontText="U" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item21 Position="165,165,50,50" FontText="V" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item22 Position="220,165,50,50" FontText="W" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item23 Position="275,165,50,50" FontText="X" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item24 Position="0,220,50,50" FontText="Y" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item25 Position="55,220,50,50" FontText="Z" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item0 Position="110,220,50,50" FontText="0" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item1 Position="165,220,50,50" FontText="1" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item2 Position="220,220,50,50" FontText="2" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item3 Position="275,220,50,50" FontText="3" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item4 Position="0,275,50,50" FontText="4" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item5 Position="55,275,50,50" FontText="5" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item6 Position="110,275,50,50" FontText="6" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item7 Position="165,275,50,50" FontText="7" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item8 Position="220,275,50,50" FontText="8" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item9 Position="275,275,50,50" FontText="9" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<digit_item10 Position="0,330,50,50" FontText="." FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<ShiftBtn Position="275,330,50,45" BkgroundImg="InputMethodWnd/shift"/>
+	</LetterDigitInputWnd>
+	
+	<StrokeInputWnd
+		Position="5,60,325,380">
+		<item0 Position="35,20,90,90" BkgroundImg="InputMethodWnd/Stroke/Stroke_0"/>
+		<item1 Position="200,20,90,90" BkgroundImg="InputMethodWnd/Stroke/Stroke_1"/>
+		<item2 Position="35,120,90,90" BkgroundImg="InputMethodWnd/Stroke/Stroke_2"/>
+		<item3 Position="200,120,90,90" BkgroundImg="InputMethodWnd/Stroke/Stroke_3"/>
+		<item4 Position="35,220,90,90" BkgroundImg="InputMethodWnd/Stroke/Stroke_4"/>
+		<item5 Position="200,220,90,90" BkgroundImg="InputMethodWnd/Stroke/Stroke_5"/>
+	</StrokeInputWnd>
+
+	<HandwriteInputWnd
+		Position="5,60,325,380"
+		BkgroundImg="InputMethodWnd/Handwrite/HwBkground">
+		<CandicateWnd 
+			Position="5,0,315,48"
+			BkgroundImg="InputMethodWnd/Candicate">
+			<PrevPageBtn Position="0,0,45,48"/>
+			<NextPageBtn Position="270,0,45,48"/>
+			<CandicateBtn0 Position="45,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+			<CandicateBtn1 Position="90,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+			<CandicateBtn2 Position="135,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+			<CandicateBtn3 Position="185,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+			<CandicateBtn4 Position="225,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+		</CandicateWnd>
+		<LocusWnd Position="0,0,325,320" LineBorder="4" LineColor="0xFFFF0000" BgColor="0x1F000000"/>
+	</HandwriteInputWnd>
+
+	<SymbolInputWnd
+		Position="5,60,325,380">
+		<symbol_item0 Position="0,0,50,55" FontText="." FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item1 Position="55,0,50,55" FontText="," FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item2 Position="110,0,50,55" FontText="?" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item3 Position="165,0,50,55" FontText="!" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item4 Position="220,0,50,55" FontText="@" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item5 Position="275,0,50,55" FontText="&#x22;" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item6 Position="0,60,50,55" FontText="'" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item7 Position="55,60,50,55" FontText=":" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item8 Position="110,60,50,55" FontText=";" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item9 Position="165,60,50,55" FontText="+" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item10 Position="220,60,50,55" FontText="-" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item11 Position="275,60,50,55" FontText="*" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item12 Position="0,120,50,55" FontText="/" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item13 Position="55,120,50,55" FontText="=" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item14 Position="110,120,50,55" FontText="~" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item15 Position="165,120,50,55" FontText="(" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item16 Position="220,120,50,55" FontText=")" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item17 Position="275,120,50,55" FontText="[" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item18 Position="0,180,50,55" FontText="]" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item19 Position="55,180,50,55" FontText="{" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item20 Position="110,180,50,55" FontText="}" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item21 Position="165,180,50,55" FontText="<" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item22 Position="220,180,50,55" FontText=">" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item23 Position="275,180,50,55" FontText="|" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item24 Position="0,240,50,55" FontText="_" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item25 Position="55,240,50,55" FontText="\" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item26 Position="110,240,50,55" FontText="^" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item27 Position="165,240,50,55" FontText="`" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item28 Position="220,240,50,55" FontText="&" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item29 Position="275,240,50,55" FontText="#" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item30 Position="0,300,50,55" FontText="%" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<symbol_item31 Position="55,300,50,55" FontText="$" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<SpaceBtn Position="275,300,50,55" BkgroundImg="InputMethodWnd/space"/>
+	</SymbolInputWnd>
+	
+	<ChineseInputWnd
+		Position="5,60,325,380">
+		<letter_item0 Position="0,0,50,55" FontText="A" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item1 Position="55,0,50,55" FontText="B" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item2 Position="110,0,50,55" FontText="C" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item3 Position="165,0,50,55" FontText="D" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item4 Position="220,0,50,55" FontText="E" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item5 Position="275,0,50,55" FontText="F" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item6 Position="0,60,50,55" FontText="G" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item7 Position="55,60,50,55" FontText="H" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item8 Position="110,60,50,55" FontText="I" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item9 Position="165,60,50,55" FontText="J" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item10 Position="220,60,50,55" FontText="K" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item11 Position="275,60,50,55" FontText="L" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item12 Position="0,120,50,55" FontText="M" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item13 Position="55,120,50,55" FontText="N" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item14 Position="110,120,50,55" FontText="O" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item15 Position="165,120,50,55" FontText="P" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item16 Position="220,120,50,55" FontText="Q" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item17 Position="275,120,50,55" FontText="R" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item18 Position="0,180,50,55" FontText="S" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item19 Position="55,180,50,55" FontText="T" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item20 Position="110,180,50,55" FontText="U" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item21 Position="165,180,50,55" FontText="V" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item22 Position="220,180,50,55" FontText="W" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item23 Position="275,180,50,55" FontText="X" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item24 Position="0,240,50,55" FontText="Y" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<letter_item25 Position="55,240,50,55" FontText="Z" FontSize="32" FontColor="0xFFFFFFFF" BkgroundImg="InputMethodWnd/character"/>
+		<ChineseTextEdit Position="110,240,215,55" FontSize="28" BkgroundImg="InputMethodWnd/ChineseText"/>
+		<CandicateWnd 
+			Position="5,300,315,48"
+			BkgroundImg="InputMethodWnd/Candicate">
+			<PrevPageBtn Position="0,0,45,48"/>
+			<NextPageBtn Position="270,0,45,48"/>
+			<CandicateBtn0 Position="45,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+			<CandicateBtn1 Position="90,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+			<CandicateBtn2 Position="135,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+			<CandicateBtn3 Position="185,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+			<CandicateBtn4 Position="225,0,45,48" FontSize="28" FontColor="0xFF000000"/>
+		</CandicateWnd>
+	</ChineseInputWnd>
+	
+	<SpeechInputWnd
+		Position="5,60,325,380">
+		<SpeechPromptWnd Position="10,10,305,80" FontSize="24" FontText="语音技术由科大讯飞提供"/>
+		<StartSpeechBtn Position="110,105,105,105" BkgroundImg="InputMethodWnd/StartSpeech"/>
+		<SpeechStateWnd Position="10,220,305,100" FontSize="28"/>	
+	</SpeechInputWnd>
+
+</InputMethodBoard>

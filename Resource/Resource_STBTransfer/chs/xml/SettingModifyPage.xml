@@ -1,0 +1,49 @@
+<SettingModifyPage
+	Position="0,0,1280,720"
+	BkgroundImg="SettingPage/BkGround"
+	EditBkgroundImage="Common/InputEdit">
+
+	<StateText Position="92,85,400,32" FontText="状态：" FontSize="18" FontColor="0xFFA05CD9" FontDirect="0x0000000A"/>
+
+	<TitleStbSettingsWnd Position="92,132,150,22" FontText="机顶盒设置" FontSize="18" FontColor="0xFF0872BC" FontDirect="0x0000000A"/>
+	<TitleNetworkSettingsWnd Position="92,252,150,22" FontText="网络设置" FontSize="18" FontColor="0xFF0872BC" FontDirect="0x0000000A"/>
+	<TitleConnectSettingsWnd Position="92,452,150,22" FontText="连接设置" FontSize="18" FontColor="0xFF0872BC" FontDirect="0x0000000A"/>
+	<TitleRoomInfoSettingsWnd Position="92,572,150,22" FontText="包厢信息设置" FontSize="18" FontColor="0xFF0872BC" FontDirect="0x0000000A"/>
+
+	<StbIpPromptWnd Position="210,162,150,22" FontText="机顶盒IP" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+	<StbMacTextPromptWnd Position="210,202,150,22" FontText="MAC地址" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+
+	<NetGatePromptWnd Position="210,282,150,22" FontText="网关" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+	<MaskPromptWnd Position="210,322,150,22" FontText="子网掩码" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+	<Dns0PromptWnd Position="210,362,150,22" FontText="首选DNS" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+	<Dns1PromptWnd Position="210,402,150,22" FontText="备选DNS(选填)" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+
+	<ServerIpPromptWnd Position="210,482,150,22" FontText="服务器IP" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+	<VodIpPromptWnd Position="210,522,150,22" FontText="包厢IP(VOD)" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+
+	<RoomNamePromptWnd Position="210,602,150,22" FontText="包厢号" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+
+	<StbIpEdit Position="360,153,504,40" FontRect="20,0,480,40" FontSize="18" FontDirect="0x0000000A"/>
+	<StbMacText Position="360,193,504,40" FontText="12312:323214" FontRect="20,0,480,40" FontSize="18" FontColor="0xFFFFFFFF" FontDirect="0x0000000A"/>
+
+	<NetGateEdit Position="360,273,504,40" FontRect="20,0,480,40" FontSize="18" FontDirect="0x0000000A"/>
+	<MaskEdit Position="360,313,504,40" FontRect="20,0,480,40" FontSize="18" FontDirect="0x0000000A"/>
+	<Dns0Edit Position="360,353,504,40" FontRect="20,0,480,40" FontSize="18" FontDirect="0x0000000A"/>
+	<Dns1Edit Position="360,393,504,40" FontRect="20,0,480,40" FontSize="18" FontDirect="0x0000000A"/>
+
+	<ServerIpEdit Position="360,473,504,40" FontRect="20,0,480,40" FontSize="18" FontDirect="0x0000000A"/>
+	<VodIpEdit Position="360,513,504,40" FontRect="20,0,480,40" FontSize="18" FontDirect="0x0000000A"/>
+
+	<RoomNameEdit Position="360,593,504,40" FontRect="20,0,480,40" FontSize="18" FontDirect="0x0000000A"/>
+
+	<VersionText Position="92,665,150,32" FontText="version:" FontSize="16" FontColor="0xFF5A7385" FontDirect="0x0000000A"/>
+	<BackBtn Position="370,655,113,42" FontText="取消" FontSize="24" BkgroundImg="SettingPage/SettingCloseBtn"/>
+	<VerifyBtn Position="740,655,113,42" FontText="认证" FontSize="24" BkgroundImg="Common/CommonBtn2"/>
+
+	<WarningPromptWnd Position="890,660,400,32" FontText="*请填写正确的格式" FontSize="18" FontColor="0xFFA15CD9" FontDirect="0x0000000A"/>
+
+	<InputMethodWnd 
+		Position="890,160,335,445">
+	</InputMethodWnd>
+
+</SettingModifyPage> 
