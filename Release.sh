@@ -12,7 +12,7 @@ cp -arf ${workspace}/STBCGI_YW/BCM7251SRelease/STBCGI_YW 				${workspace}/Releas
 cp -arf ${workspace}/STBTransfer/BCM7251SRelease/STBTransfer 			${workspace}/Release/Program/
 cp -arf ${workspace}/Resource/Resource_STBTransfer/Skin_chs.IMG			${workspace}/Release/Program/Images/
 
-cp -arf ${workspace}/HeadLib/Lib/*										${workspace}/Release/Program/Lib/BCMLib/
+cp -arf ${workspace}/ToolChain/HeadLib/Lib/*									${workspace}/Release/Program/Lib/BCMLib/
 
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/bcmdriver.ko				${workspace}/Release/Program/Lib/nexus/
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libBasicUsageEnvironment.*	${workspace}/Release/Program/Lib/nexus/
