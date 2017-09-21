@@ -29,11 +29,14 @@ public:
 		RECT rcImagePosition,
 		const char *pImageUrlBuffer);
 
+	void PictureTextureDownload(int urlListIdx);
+
 private:
 	CBaseWnd mPictureWnd;
 
 	int mShowTimeMS;
 	RECT mShowPosition;
+	CPtrListCtrl mPictureUrlList;
 	CPtrListCtrl mPictureTextureList;
 	int mCurShowIndex;
 };

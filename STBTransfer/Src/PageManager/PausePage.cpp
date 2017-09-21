@@ -93,10 +93,19 @@ void CPausePage::OnTimer(
 
 	if (TIMERID_SHOWIMG == nTimerID)
 	{
-		if (mPictureTextureList.GetCount() > 0)
+		mCurShowIndex = (mCurShowIndex+1) % mPictureUrlList.GetCount();
+
+		if(mPictureUrlList.GetCount() > mPictureTextureList.GetCount())
+		{
+			PictureTextureDownload(mCurShowIndex);
+		}
+
+		LOGMSG(DBG_LEVEL_I, "PausePage OnTimer need to show idx %d, Texture count %d, url count %d\n",
+				mCurShowIndex, mPictureTextureList.GetCount(),mPictureUrlList.GetCount());
+
+		if (mPictureTextureList.GetCount() > mCurShowIndex)
 		{
 			// 显示下一张图片
-			mCurShowIndex = (mCurShowIndex+1) % mPictureTextureList.GetCount();
 			CTexture* pTexture = (CTexture*)mPictureTextureList.GetAt(mCurShowIndex);
 			mPictureWnd.SetBkgroundTexture(pTexture);
 		}
@@ -110,6 +119,7 @@ void CPausePage::PerformHttpCmd_Pause(
 {
 	DelTimer(TIMERID_SHOWIMG);
 	DelNormalList(&mPictureTextureList, CTexture);
+	DelArrayList(&mPictureUrlList, char);
 
 	mShowPosition = rcImagePosition;
 	mPictureWnd.MoveWindow(&mShowPosition);
@@ -135,32 +145,24 @@ void CPausePage::PerformHttpCmd_Pause(
 	for (int i = 0; i < sUrlList.GetCount(); i++)
 	{
 		const char* cUrl = (const char*)sUrlList.GetAt(i);
-
-		char cLocalFile[MAX_PATH]={0};
-		sprintf(cLocalFile, "%s/Pause.jpg", gKTVConfig.GetTempFolderPath());
-		unlink(cLocalFile);
-		CHttpFileClient sHttpFileClient;
-		HttpFileCopyFromServer(
-			&sHttpFileClient,
-			cUrl,
-			cLocalFile,
-			5000,
-			NULL,
-			0);
-		if (IsFileExist(cLocalFile))
+		if (cUrl && cUrl[0])
 		{
-			CImageBuffer sImageBuffer;
-			sImageBuffer.CreateFromImgFile(cLocalFile);
-			CTexture* pTexture = new CTexture();
-			if (pTexture)
+			char* cPicUrl = new char[strlen(cUrl)+1];
+			if (cPicUrl)
 			{
-				pTexture->CreateFromImageBuffer(GetE3DEngine(), &sImageBuffer);
-				mPictureTextureList.AddData(pTexture);
+				strcpy(cPicUrl, cUrl);
+				mPictureUrlList.AddData(cPicUrl);
 			}
 		}
 	}
 
 	Internal_DelArrayA(cDevString);
+
+	// 取出第一张图片
+	if(mPictureUrlList.GetCount()>0)
+	{
+		PictureTextureDownload(0);
+	}
 
 	// 显示第一张图片
 	if (mPictureTextureList.GetCount() > 0)
@@ -174,5 +176,39 @@ void CPausePage::PerformHttpCmd_Pause(
 	{
 		mPictureWnd.SetBkgroundTexture(NULL);
 		gPageManager->SetCurrentPage(Page_Hdmi);
+	}
+}
+
+void CPausePage::PictureTextureDownload(int urlListIdx)
+{
+	if (urlListIdx >= mPictureUrlList.GetCount())
+	{
+		LOGMSG(DBG_LEVEL_W, "urlListIdx too large!\n");
+		return;
+	}
+
+	const char* cUrl = (const char*) mPictureUrlList.GetAt(urlListIdx);
+
+	char cLocalFile[MAX_PATH] = { 0 };
+	sprintf(cLocalFile, "%s/Pause.jpg", gKTVConfig.GetTempFolderPath());
+	unlink(cLocalFile);
+	CHttpFileClient sHttpFileClient;
+	HttpFileCopyFromServer(
+			&sHttpFileClient,
+			cUrl,
+			cLocalFile,
+			5000,
+			NULL,
+			0);
+	if (IsFileExist(cLocalFile))
+	{
+		CImageBuffer sImageBuffer;
+		sImageBuffer.CreateFromImgFile(cLocalFile);
+		CTexture* pTexture = new CTexture();
+		if (pTexture)
+		{
+			pTexture->CreateFromImageBuffer(GetE3DEngine(), &sImageBuffer);
+			mPictureTextureList.AddData(pTexture);
+		}
 	}
 }
