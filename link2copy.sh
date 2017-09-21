@@ -1,17 +1,22 @@
 #! /bin/sh
 
-echo work in $(pwd)
+echo "now work in" $(pwd)
 
 for linkfile in $(find . -type l)
-do 
-    for binfile in $(find . -type f | grep ${linkfile})
+do
+    libname=${linkfile%.so*}
+    echo "process " ${linkfile} "    libname="${libname}
+    for binfile in $(find . -type f | grep ${libname})
     do
+        echo "    find " ${binfile}
         realbin=${binfile}
     done
 
-    echo "find link:" $linkfile "(switch it with:" ${realbin} ")"
+    echo "    copy " ${realbin} "to" ${linkfile}
     rm ${linkfile}
     cp ${realbin} ${linkfile}
+    echo "done"
+    echo "    "
 done
 
-echo "switch done"
+echo "all switch done"

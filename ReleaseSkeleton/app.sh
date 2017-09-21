@@ -1,7 +1,24 @@
 #! /bin/sh
 
-directory=$(cd `dirname $0`; pwd)
-#directory=`pwd`
+########################################################################
+#脚本功能:
+#
+#	该脚本可以放置于/stb/config/app下 或 u盘根目录的/app下,kernel的init进程起来后
+#将会会检查这两个位置(优先从u盘下执行该脚本)
+#
+#	此脚本会尝试挂载/stb/config/app/serverip.dat中的IP所指定的服务器的
+#的/root/STBVerify/Program目录(serverip.dat文件由程序认证页点击"认证"写入)
+#
+#	挂载成功后拷贝服务器/root/STBVerify/Program目录到本地的/app目录,建/networkflag.txt作标志
+#将本地/stb/config/app/Log/目录拷贝到服务器的/root/STBVerify/Private/{mac addr}目录
+#然后从/app目录执行程序,所有的运行log保存在本地的/stb/config/app/Log/目录(覆盖前次)
+#
+#	如果serverip.dat不存在 或 该文件指定的服务器无法成功挂载访问, 则改为从本地启动,
+#首先link {脚本所在的目录}/Program到/app目录,然后从/app目录执行程序
+########################################################################
+
+#directory=$(cd `dirname $0`; pwd)
+directory=`pwd`
 echo directory=$directory
 
 #network
@@ -27,9 +44,9 @@ else
 		touch /networkflag.txt
 
 		#网络启动必须copy,防止网络问题导致程序卡死
-        	mkdir /app
-        	cp -arf /tmpapp/* /app/
-        	umount /tmpapp
+		mkdir /app
+		cp -arf /tmpapp/* /app/
+		umount /tmpapp
 
 		mkdir /private
 		mount -t nfs -o nolock -o rw $SERVERIP:/root/STBVerify/Private /private
@@ -56,7 +73,7 @@ else
 		mv $PRIVATE_PATH/Log/STBCGI.log $PRIVATE_PATH/Log/STBCGI_Last.log
 		cp /stb/config/app/Log/STBCGI.log $PRIVATE_PATH/Log/STBCGI.log
 
-        umount /private
+		umount /private
 
 	else
 		# 从本地执行
@@ -64,12 +81,12 @@ else
 		
 		mkdir /stb/config/app/Log
 		
-		mv /stb/config/app/Log/lighttpd.log /stb/config/app/lighttpd_last.log
-		mv /stb/config/app/Log/STBVerify.log /stb/config/app/STBVerify_last.log
-		mv /stb/config/app/Log/STBCGI.log /stb/config/app/STBCGI_last.log
+		mv /stb/config/app/Log/lighttpd.log /stb/config/app/Log/lighttpd_last.log
+		mv /stb/config/app/Log/STBVerify.log /stb/config/app/Log/STBVerify_last.log
+		mv /stb/config/app/Log/STBCGI.log /stb/config/app/Log/STBCGI_last.log
 
-		ln -s /stb/config/app/Program /app
-		ln -s /stb/config/app/Private /private
+		ln -s ${directory}/Program /app
+		ln -s ${directory}/Private /private
 	fi
 fi
 

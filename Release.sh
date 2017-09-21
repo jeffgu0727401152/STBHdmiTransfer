@@ -41,7 +41,6 @@ cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libts*						${workspace}/Re
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libz.*						${workspace}/Release/Program/Lib/common/
 
 #U盘无法接受符号连接,如果希望从u盘启动,则放开下面注释
-echo arg1=$1
 if [ "$1" == "udisk" ]; then
 	echo "release is for usb disk boot!" 
 	cd ${workspace}/Release/Program/Lib/nexus/
