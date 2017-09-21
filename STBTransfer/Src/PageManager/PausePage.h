@@ -29,7 +29,9 @@ public:
 		RECT rcImagePosition,
 		const char *pImageUrlBuffer);
 
-	void PictureTextureDownload(int urlListIdx);
+	BOOL PictureTextureDownload(
+		int urlListIdx,
+		CTexture *pTexture);
 
 private:
 	CBaseWnd mPictureWnd;
@@ -37,7 +39,6 @@ private:
 	int mShowTimeMS;
 	RECT mShowPosition;
 	CPtrListCtrl mPictureUrlList;
-	CPtrListCtrl mPictureTextureList;
 	int mCurShowIndex;
 };
 

@@ -81,7 +81,7 @@ void CPausePage::OnWindowVisible(
 	else
 	{
 		DelTimer(TIMERID_SHOWIMG);
-		DelNormalList(&mPictureTextureList, CTexture);
+		DelArrayList(&mPictureUrlList, char);
 		mPictureWnd.SetBkgroundTexture(NULL);
 	}
 }
@@ -93,22 +93,16 @@ void CPausePage::OnTimer(
 
 	if (TIMERID_SHOWIMG == nTimerID)
 	{
+		LOGMSG(DBG_LEVEL_I, "PausePage OnTimer need to show idx %d, url count %d\n",
+			mCurShowIndex, mPictureUrlList.GetCount());
+
+		CTexture sTexture;
+		if (PictureTextureDownload(mCurShowIndex, &sTexture))
+		{
+			mPictureWnd.SetBkgroundTexture(&sTexture);
+		}
+
 		mCurShowIndex = (mCurShowIndex+1) % mPictureUrlList.GetCount();
-
-		if(mPictureUrlList.GetCount() > mPictureTextureList.GetCount())
-		{
-			PictureTextureDownload(mCurShowIndex);
-		}
-
-		LOGMSG(DBG_LEVEL_I, "PausePage OnTimer need to show idx %d, Texture count %d, url count %d\n",
-				mCurShowIndex, mPictureTextureList.GetCount(),mPictureUrlList.GetCount());
-
-		if (mPictureTextureList.GetCount() > mCurShowIndex)
-		{
-			// 显示下一张图片
-			CTexture* pTexture = (CTexture*)mPictureTextureList.GetAt(mCurShowIndex);
-			mPictureWnd.SetBkgroundTexture(pTexture);
-		}
 	}
 }
 
@@ -118,7 +112,6 @@ void CPausePage::PerformHttpCmd_Pause(
 	const char *pImageUrlBuffer)
 {
 	DelTimer(TIMERID_SHOWIMG);
-	DelNormalList(&mPictureTextureList, CTexture);
 	DelArrayList(&mPictureUrlList, char);
 
 	mShowPosition = rcImagePosition;
@@ -158,17 +151,10 @@ void CPausePage::PerformHttpCmd_Pause(
 
 	Internal_DelArrayA(cDevString);
 
-	// 取出第一张图片
-	if(mPictureUrlList.GetCount()>0)
-	{
-		PictureTextureDownload(0);
-	}
-
 	// 显示第一张图片
-	if (mPictureTextureList.GetCount() > 0)
+	if (mPictureUrlList.GetCount() > 0)
 	{
-		CTexture* pTexture = (CTexture*)mPictureTextureList.GetAt(0);
-		mPictureWnd.SetBkgroundTexture(pTexture);
+		OnTimer(TIMERID_SHOWIMG);
 		AddTimer(TIMERID_SHOWIMG, mShowTimeMS);
 		gPageManager->SetCurrentPage(Page_Pause);
 	}
@@ -179,15 +165,21 @@ void CPausePage::PerformHttpCmd_Pause(
 	}
 }
 
-void CPausePage::PictureTextureDownload(int urlListIdx)
+BOOL CPausePage::PictureTextureDownload(
+	int urlListIdx,
+	CTexture *pTexture)
 {
 	if (urlListIdx >= mPictureUrlList.GetCount())
 	{
 		LOGMSG(DBG_LEVEL_W, "urlListIdx too large!\n");
-		return;
+		return FALSE;
 	}
 
 	const char* cUrl = (const char*) mPictureUrlList.GetAt(urlListIdx);
+	if (!cUrl || cUrl[0])
+	{
+		return FALSE;
+	}
 
 	char cLocalFile[MAX_PATH] = { 0 };
 	sprintf(cLocalFile, "%s/Pause.jpg", gKTVConfig.GetTempFolderPath());
@@ -204,11 +196,9 @@ void CPausePage::PictureTextureDownload(int urlListIdx)
 	{
 		CImageBuffer sImageBuffer;
 		sImageBuffer.CreateFromImgFile(cLocalFile);
-		CTexture* pTexture = new CTexture();
-		if (pTexture)
-		{
-			pTexture->CreateFromImageBuffer(GetE3DEngine(), &sImageBuffer);
-			mPictureTextureList.AddData(pTexture);
-		}
+		pTexture->CreateFromImageBuffer(GetE3DEngine(), &sImageBuffer);
+		return TRUE;
 	}
+
+	return FALSE;
 }
