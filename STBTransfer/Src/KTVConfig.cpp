@@ -51,6 +51,11 @@ void CKTVConfig::LoadConfig(
 {
 	LOGMSG(DBG_LEVEL_I, "LoadConfig from %s!!\n", cConfigFileName);
 
+	CSimpleStringA sMacID;
+	GetEthMacAddress(&sMacID);
+	SAFE_STRNCPY(mMacAddr, sMacID.GetString(),13);
+	LOGMSG(DBG_LEVEL_I, "Mac addr is=%s!!\n", mMacAddr);
+
 	SAFE_STRNCPY(mConfigFileName, cConfigFileName, MAX_PATH);
 
 	mKTVConfigParser.LoadFromFile(mConfigFileName);
