@@ -83,6 +83,7 @@ void CPausePage::OnWindowVisible(
 		DelTimer(TIMERID_SHOWIMG);
 		DelArrayList(&mPictureUrlList, char);
 		mPictureWnd.SetBkgroundTexture(NULL);
+		mPictureWnd.SetBkgroundTexture(NULL);
 	}
 }
 
@@ -161,6 +162,7 @@ void CPausePage::PerformHttpCmd_Pause(
 	else
 	{
 		mPictureWnd.SetBkgroundTexture(NULL);
+		mPictureWnd.SetBkgroundTexture(NULL);
 		gPageManager->SetCurrentPage(Page_Hdmi);
 	}
 }
@@ -196,6 +198,8 @@ BOOL CPausePage::PictureTextureDownload(
 	{
 		CImageBuffer sImageBuffer;
 		sImageBuffer.CreateFromImgFile(cLocalFile);
+		sImageBuffer.Stretch(LAYOUT_WIDTH, LAYOUT_HEIGHT, DRAWMODE_HCENTER|DRAWMODE_VCENTER);
+		LOGMSG(DBG_LEVEL_W, "sImageBuffer (%dx%d)!\n", sImageBuffer.GetWidth(), sImageBuffer.GetHeight());
 		pTexture->CreateFromImageBuffer(GetE3DEngine(), &sImageBuffer);
 		return TRUE;
 	}
