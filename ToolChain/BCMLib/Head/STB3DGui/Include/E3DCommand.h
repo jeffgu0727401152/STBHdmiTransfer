@@ -8,8 +8,6 @@
 #include "PictureBox.h"
 #include "FontLib.h"
 
-#define ISVALID_TEXTURE(id) ((((uint)id)!=INVALIDATE_TEXTURE) && (id!=0))
-
 // 针对需要实时刷新的数据
 // 如鼠标，fps更新，背景更新等，
 // 可以在OnRefresh时更新
@@ -74,29 +72,29 @@ public:
 		const BYTE* pResKey,
 		int nKeyLength);
 
-	UINT32 CreateTexture();
+	CE3DTexture* CreateTexture();
 	void SetTextureData(
-		UINT32 textureID,
+		CE3DTexture* pE3DTexture,
 		CImageBuffer *pImageBuffer);
 	void UpdateTextureData(
-		UINT32 textureID,
+		CE3DTexture* pE3DTexture,
 		CImageBuffer *pImageBuffer,
 		int xStart,
 		int yStart,
 		int nWidth,
 		int nHeight);
-	UINT32 CreateTextureKHR(
+	CE3DTexture* CreateTextureKHR(
 		int nWidth,
 		int nHeight,
 		BOOL bBGROrder);
 	BYTE* GetKHRImageBuffer(
-		UINT32 textureID);
+		CE3DTexture* pE3DTexture);
 	void FlushKHRImage(
-		UINT32 textureID);
+		CE3DTexture* pE3DTexture);
 	void ClearSetTextureDataCmd(
-		UINT32 textureID);
+		CE3DTexture* pE3DTexture);
 	void RemoveTexture(
-		UINT32 textureID);
+		CE3DTexture* pE3DTexture);
 
 	void CaptureScreen(
 		int xStart,
@@ -125,7 +123,7 @@ public:
 
 	void SetPictureBoxTexture(
 		I3DPictureBox* pPictureBox,
-		UINT32 textureID);
+		CE3DTexture *pE3DTexture);
 	void SetPictureBoxColor(
 		I3DPictureBox* pPictureBox,
 		UINT32 uARGB);
@@ -173,7 +171,7 @@ public:
 		UINT32 uUpdateFlag,
 		bool bVisible,
 		UINT32 uARGB,
-		UINT32 textureID,
+		CE3DTexture* pE3DTexture,
 		float fItemPos,
 		float fLeft,
 		float fTop,
@@ -265,7 +263,7 @@ public:
 
 	void SetBreakBubbleAttr(
 		I3DListViewEffector* pEffector,
-		const BREAKBUBBLE_ATTRIBUTE& attrib);
+		BREAKBUBBLE_ATTRIBUTE& attrib);
 
 	void BreakCoverFlowItem(
 		I3DListViewEffector* pEffector,

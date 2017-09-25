@@ -196,6 +196,9 @@ public:
 public:
 	void EnableHdmiIn(
 		BOOL bEnable);
+	void EnableHdmiInputComponent(
+		BOOL bEnableVideo,
+		BOOL bEnableAudio);
 	void EnableAudioLineInToLineOut(
 		BOOL bEnable);
 

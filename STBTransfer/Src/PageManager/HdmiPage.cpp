@@ -72,18 +72,21 @@ void CHdmiPage::OnWindowVisible(
 	{
 		if (mHdmiInConnected)
 		{
+			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
 			gPlayerCtrl->PlayMain(
 				"99999910", //SONGID_HDMIIN
 				"hdmiin://", //filepath
 				FALSE, //loopplay
 				FALSE, //passthrough
 				0);
+			gPlayerCtrl->SetMainVolume(0);
 		}
 	}
 	else
 	{
 		if (mHdmiInConnected)
 		{
+			gMultiMediaCtrl->EnableAudioLineInToLineOut(FALSE);
 			gPlayerCtrl->StopMain();
 		}
 	}
@@ -102,6 +105,7 @@ void CHdmiPage::OnMsg(
 		mHdmiInConnected = TRUE;
 		if (IsWindowVisible())
 		{
+			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
 			gPlayerCtrl->PlayMain(
 				"99999910", //SONGID_HDMIIN
 				"hdmiin://", //filepath
@@ -113,6 +117,7 @@ void CHdmiPage::OnMsg(
 
 	case MSG_HDMIIN_DISCONNECT:
 		mHdmiInConnected = FALSE;
+		gMultiMediaCtrl->EnableAudioLineInToLineOut(FALSE);
 		break;
 
 	default:

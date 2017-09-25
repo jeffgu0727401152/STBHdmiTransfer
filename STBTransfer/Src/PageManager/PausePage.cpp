@@ -83,7 +83,6 @@ void CPausePage::OnWindowVisible(
 		DelTimer(TIMERID_SHOWIMG);
 		DelArrayList(&mPictureUrlList, char);
 		mPictureWnd.SetBkgroundTexture(NULL);
-		mPictureWnd.SetBkgroundTexture(NULL);
 	}
 }
 
@@ -161,7 +160,6 @@ void CPausePage::PerformHttpCmd_Pause(
 	}
 	else
 	{
-		mPictureWnd.SetBkgroundTexture(NULL);
 		mPictureWnd.SetBkgroundTexture(NULL);
 		gPageManager->SetCurrentPage(Page_Hdmi);
 	}

@@ -66,8 +66,4 @@ private:
 	BOOL mHasShown;
 	BOOL mNeedUpdatePosition;
 	BOOL mIsLocalTexture;
-
-	// 必须保留上次绘图的texture id引用,
-	// 因为刷新会比设定慢，刷新时会因为texture被释放而导致绘图出现白底
-	CTexture mLastDrawTexture;
 };

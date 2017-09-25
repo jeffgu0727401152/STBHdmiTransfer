@@ -364,6 +364,10 @@ public:
 	virtual void EnableHdmiIn(
 		BOOL bEnable)=0;
 
+	virtual void EnableHdmiInputComponent(
+		BOOL bEnableVideo,
+		BOOL bEnableAudio)=0;
+
 	// recorder
 public:
 	virtual CLOUD_USER_RESPONSE_RESULT StartAudioRecord(

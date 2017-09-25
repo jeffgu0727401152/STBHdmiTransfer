@@ -2,6 +2,7 @@
 
 #include "types.h"
 #include "ImageBuffer.h"
+#include "E3DCommon.h"
 
 class CE3DCommand;
 class CTextureSP
@@ -36,7 +37,8 @@ public:
 		int nWidth,
 		int nHeight);
 
-	UINT32 GetTextureID();
+	BOOL HasTexture();
+	CE3DTexture* GetE3DTexture();
 	int GetWidth();
 	int GetHeight();
 	int GetBytesPerPixel();
@@ -49,13 +51,13 @@ public:
 
 private:
 	CE3DCommand *mE3DEngine;
+	CE3DTexture* mpE3DTexture;
 	BOOL mUseKHR;
 
 	int mRefCount;
 	int mWidth;
 	int mHeight;
 	int mBytesPerPixel;
-	UINT32 mTextureID;
 };
 
 #ifdef PC_VERSION

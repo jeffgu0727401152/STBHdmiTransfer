@@ -703,13 +703,12 @@ void CMultiMediaCtrl::Start()
 {
 	mpMultiMediaInterface = CreateMultiMediaInterface();
 	EnableHdmiIn(TRUE);
-	EnableAudioLineInToLineOut(TRUE);
+	EnableHdmiInputComponent(TRUE, FALSE);
 }
 
 void CMultiMediaCtrl::Stop()
 {
 	EnableHdmiIn(FALSE);
-	EnableAudioLineInToLineOut(FALSE);
 
 	if (mpMultiMediaInterface)
 	{
@@ -724,6 +723,16 @@ void CMultiMediaCtrl::EnableHdmiIn(
 	if (mpMultiMediaInterface)
 	{
 		mpMultiMediaInterface->EnableHdmiIn(bEnable);
+	}
+}
+
+void CMultiMediaCtrl::EnableHdmiInputComponent(
+	BOOL bEnableVideo,
+	BOOL bEnableAudio)
+{
+	if (mpMultiMediaInterface)
+	{
+		mpMultiMediaInterface->EnableHdmiInputComponent(bEnableVideo, bEnableAudio);
 	}
 }
 

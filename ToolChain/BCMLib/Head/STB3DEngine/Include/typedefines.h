@@ -8,25 +8,15 @@
 #ifndef TYPEDEFINES_H_
 #define TYPEDEFINES_H_
 
+#include "basetype.h"
+#include "E3DTexture.h"
 #include "Vector.h"
 #include "Matrix.h"
 #include <vector>
 #include <deque>
+
 using std::vector;
 using std::deque;
-//
-// 基础数据类型
-//
-typedef unsigned char 	byte;
-
-typedef short int 		int16;
-typedef long			int32;
-typedef long long 		int64;
-
-typedef unsigned int			uint;
-typedef unsigned short int 		uint16;
-typedef unsigned long			uint32;
-typedef unsigned long long 		uint64;
 
 typedef enum tag_T3DITEM_TYPE
 {
@@ -62,7 +52,7 @@ struct T3DItem
 	T3DITEM_TYPE type;
 	uint flags;
 	mat4 modelTrans;
-	uint texture;
+	CE3DTexture texture;
 	T3DVertices vertices;
 };
 
@@ -151,11 +141,6 @@ typedef enum tag_ITEM_DATA_TYPE
 }ITEM_DATA_TYPE;
 
 
-struct ITEM_DATA_PICTURE
-{
-	uint texture;
-};
-
 struct ITEM_DATA_LISTVIEW
 {
 	int itemIndex;
@@ -166,7 +151,7 @@ struct ITEM_DATA_LISTVIEW
 	vec2 itemSize;
 	vec3 position;
 	vec2 size;
-	uint texture;
+	CE3DTexture texture;
 	vec4 color;
 };
 
@@ -197,26 +182,8 @@ struct BREAKBUBBLE_ATTRIBUTE
 	float breakBubbleMaxSpeed;
 	float breakBubbleMinFade;
 	float breakBubbleMaxFade;
-	uint breakBubbletexture;
+	CE3DTexture breakBubbleTexture;
 	vec2 breakBubbleSize;
 };
-
-#define INVALIDATE_TEXTURE	uint(-1)
-
-//
-// 默认情况下gcc导出所有全局符号。
-// 启用-fvisibility=hidden编译参数后, 默认不导出，
-// 用APIEXPORT指明需要导出的符号。
-// 导出函数的动作只有在动态库生成时需要做，
-// 所以BUILD_DYNAMIC_LIB只有在Enjoy3DEngine动态库的工程中需要设定，
-// 其它使用这个库的工程中不需要也不能定义这个宏
-//
-// BUILD_DYNAMIC_LIB是在工程的属性中设定的预定义宏
-//
-#ifdef BUILD_DYNAMIC_LIB
-#define APIEXPORT	__attribute__ ((visibility ("default")))
-#else
-#define APIEXPORT
-#endif
 
 #endif /* TYPEDEFINES_H_ */

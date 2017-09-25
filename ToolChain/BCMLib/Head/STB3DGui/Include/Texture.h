@@ -38,7 +38,7 @@ public:
 
 public:
 	BOOL HasTexture();
-	UINT32 GetTextureID();
+	CE3DTexture* GetE3DTexture();
 	int  GetWidth();
 	int  GetHeight();
 	int GetBytesPerPixel();

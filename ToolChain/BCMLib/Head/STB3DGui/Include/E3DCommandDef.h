@@ -129,12 +129,12 @@ public:
 	{
 		nE3DCommandType=E3DCOMMAND_CREATETEXTURE;
 
-		textureID = INVALIDATE_TEXTURE;
+		pE3DTexture = NULL;
 	}
 
 public:
 	// return value
-	UINT32 textureID;
+	CE3DTexture* pE3DTexture;
 };
 
 class CE3DCommandSetTextureDataParam : public CE3DCommandParam
@@ -143,13 +143,11 @@ public:
 	CE3DCommandSetTextureDataParam()
 	{
 		nE3DCommandType=E3DCOMMAND_SETTEXTUREDATA;
-
-		textureID = INVALIDATE_TEXTURE;
 	}
 
 public:
 	// command data
-	UINT32 textureID;
+	CE3DTexture sE3DTexture;
 	CImageBuffer sImgBuf;
 };
 
@@ -160,14 +158,13 @@ public:
 	{
 		nE3DCommandType=E3DCOMMAND_UPDATETEXTUREDATA;
 
-		textureID = INVALIDATE_TEXTURE;
 		xStart = 0;
 		yStart = 0;
 	}
 
 public:
 	// command data
-	UINT32 textureID;
+	CE3DTexture sE3DTexture;
 	CImageBuffer sImgBuf;
 	int xStart;
 	int yStart;
@@ -183,7 +180,8 @@ public:
 		nWidth = 0;
 		nHeight = 0;
 		bBGROrder = FALSE;
-		textureID = INVALIDATE_TEXTURE;
+
+		pE3DTexture = NULL;
 	}
 
 public:
@@ -193,7 +191,7 @@ public:
 	BOOL bBGROrder;
 
 	// return value
-	UINT32 textureID;
+	CE3DTexture* pE3DTexture;
 };
 
 class CE3DCommandGetKHRImageBufferParam : public CE3DCommandParam
@@ -203,13 +201,12 @@ public:
 	{
 		nE3DCommandType=E3DCOMMAND_GETKHRIMAGEBUFFER;
 
-		textureID = INVALIDATE_TEXTURE;
 		pImageBuffer = NULL;
 	}
 
 public:
 	// command data
-	UINT32 textureID;
+	CE3DTexture sE3DTexture;
 
 	// return value
 	BYTE* pImageBuffer;
@@ -222,13 +219,12 @@ public:
 	{
 		nE3DCommandType=E3DCOMMAND_FLUSHKHRIMAGE;
 
-		textureID = INVALIDATE_TEXTURE;
 		pImageBuffer = NULL;
 	}
 
 public:
 	// command data
-	UINT32 textureID;
+	CE3DTexture sE3DTexture;
 
 	// return value
 	BYTE* pImageBuffer;
@@ -240,13 +236,12 @@ public:
 	CE3DCommandRemoveTextureParam()
 	{
 		nE3DCommandType=E3DCOMMAND_REMOVETEXTURE;
-
-		textureID = INVALIDATE_TEXTURE;
+		pE3DTexture = NULL;
 	}
 
 public:
 	// command data
-	UINT32 textureID;
+	CE3DTexture* pE3DTexture;
 
 	// no return value
 };
@@ -366,13 +361,11 @@ public:
 	CE3DCommandSetPictureBoxTextureParam()
 	{
 		nE3DCommandType=E3DCOMMAND_SETPICTUREBOXTEXTURE;
-
-		textureID = INVALIDATE_TEXTURE;
 	}
 
 public:
 	// command data
-	UINT32 textureID;
+	CE3DTexture sE3DTexture;
 };
 
 class CE3DCommandSetPictureBoxColorParam : public CE3DCommandPictureBoxParam
@@ -510,7 +503,6 @@ public:
 		uUpdateFlag = 0;
 		bVisible = false;
 		uARGB = 0x00000000;
-		textureID = INVALIDATE_TEXTURE;
 		fItemPos = 0.0;
 		fLeft = 0.0;
 		fTop = 0.0;
@@ -524,7 +516,7 @@ public:
 	UINT32 uUpdateFlag;
 	bool bVisible;
 	UINT32 uARGB;
-	UINT32 textureID;
+	CE3DTexture sE3DTexture;
 	float fItemPos;
 	float fLeft;
 	float fTop;
