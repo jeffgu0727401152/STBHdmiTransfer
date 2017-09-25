@@ -30,6 +30,8 @@ public:
 public:
 	void PerformHttpCmd_Hdmi();
 
+	BOOL IsHdmiInConnected();
+
 private:
 	CBaseWnd mPictureWnd;
 

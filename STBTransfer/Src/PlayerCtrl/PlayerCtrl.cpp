@@ -338,6 +338,7 @@ void CPlayerCtrl::OnPlayCompleteEvent(
 void CPlayerCtrl::OnFirstAudioPtsEvent(
 	PLAYERINDEX ePlayerIndex)
 {}
+
 void CPlayerCtrl::OnFirstVideoPtsEvent(
 	PLAYERINDEX ePlayerIndex)
 {}

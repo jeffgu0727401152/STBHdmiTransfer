@@ -252,6 +252,7 @@ void NativeStart(
 
 	// 必须先初始化 bcm driver，否则 opengl 无法创建
 	gPlayerCtrl->Start();
+	gPlayerCtrl->SetMainVolume(gKTVConfig.GetMainVolume());
 	gMultiMediaCtrl->Start();
 	gHttpCmdClient->Start(gKTVConfig.GetServerIP(), gKTVConfig.GetServerPort());
 	gHttpCmdServer->Create(HTTPCMD_SOCKETPORT, FALSE, "HttpCmd_ServerSocket");

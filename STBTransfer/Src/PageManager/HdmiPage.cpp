@@ -79,7 +79,6 @@ void CHdmiPage::OnWindowVisible(
 				FALSE, //loopplay
 				FALSE, //passthrough
 				0);
-			gPlayerCtrl->SetMainVolume(0);
 		}
 	}
 	else
@@ -118,6 +117,9 @@ void CHdmiPage::OnMsg(
 	case MSG_HDMIIN_DISCONNECT:
 		mHdmiInConnected = FALSE;
 		gMultiMediaCtrl->EnableAudioLineInToLineOut(FALSE);
+		gPlayerCtrl->StopMain();
+		break;
+
 		break;
 
 	default:
@@ -128,4 +130,9 @@ void CHdmiPage::OnMsg(
 void CHdmiPage::PerformHttpCmd_Hdmi()
 {
 	gPageManager->SetCurrentPage(Page_Hdmi);
+}
+
+BOOL CHdmiPage::IsHdmiInConnected()
+{
+	return mHdmiInConnected;
 }
