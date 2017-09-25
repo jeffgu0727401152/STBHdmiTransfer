@@ -722,6 +722,7 @@ void CMultiMediaCtrl::EnableHdmiIn(
 {
 	if (mpMultiMediaInterface)
 	{
+		LOGMSG(DBG_LEVEL_I, "EnableHdmiIn bEnable=%d\n", bEnable);
 		mpMultiMediaInterface->EnableHdmiIn(bEnable);
 	}
 }
@@ -732,6 +733,7 @@ void CMultiMediaCtrl::EnableHdmiInputComponent(
 {
 	if (mpMultiMediaInterface)
 	{
+		LOGMSG(DBG_LEVEL_I, "EnableHdmiInputComponent bEnableVideo=%d, bEnableAudio=%d\n", bEnableVideo, bEnableAudio);
 		mpMultiMediaInterface->EnableHdmiInputComponent(bEnableVideo, bEnableAudio);
 	}
 }
@@ -741,6 +743,7 @@ void CMultiMediaCtrl::EnableAudioLineInToLineOut(
 {
 	if (mpMultiMediaInterface)
 	{
+		LOGMSG(DBG_LEVEL_I, "EnableAudioLineInToLineOut bEnable=%d\n", bEnable);
 		mpMultiMediaInterface->EnableAudioLineInToLineOut(bEnable);
 	}
 }
