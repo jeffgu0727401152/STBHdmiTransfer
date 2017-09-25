@@ -6,8 +6,9 @@
 #	该脚本可以放置于/stb/config/app下 或 u盘根目录的/app下,kernel的init进程起来后
 #将会会检查这两个位置(优先从u盘下执行该脚本)
 #
-#	此脚本会尝试挂载/stb/config/app/serverip.dat中的IP所指定的服务器的
-#的/root/STBVerify/Program目录(serverip.dat文件由程序认证页点击"认证"写入)
+#	此脚本首先会设置主板自己的IP,设置为/stb/config/app/deviceip.dat文件所指定的IP
+#然后会尝试挂载/stb/config/app/serverip.dat中的IP所指定的服务器的/root/STBVerify/Program目录
+#(serverip.dat,deviceip.dat等文件由程序认证页点击"认证"写入)
 #
 #	挂载成功后拷贝服务器/root/STBVerify/Program目录到本地的/app目录,建/networkflag.txt作标志
 #将本地/stb/config/app/Log/目录拷贝到服务器的/root/STBVerify/Private/{mac addr}目录
@@ -22,19 +23,36 @@ directory=`pwd`
 echo directory=$directory
 
 #network
+# 关闭自动获取IP的udhcpc
 killall udhcpc
-udhcpc -b -i eth0
-ifconfig lo up
 
+# 从文件获得地址信息
+SERVERIP=$(cat /stb/config/app/serverip.dat)
+DEVICEIP=$(cat /stb/config/app/deviceip.dat)
+MASK=$(cat /stb/config/app/mask.dat)
+GATEWAY=$(cat /stb/config/app/gateway.dat)
+echo "remote server ip = " ${SERVERIP}
+echo "local device ip = " ${DEVICEIP}
+echo "local mask = " ${MASK}
+echo "local gateway = " ${GATEWAY}
+
+# 配置网络
+#udhcpc -b -i eth0
+ifconfig eth0 ${DEVICEIP} netmask ${MASK}
+route add default gw ${GATEWAY}
+ifconfig lo up
 hostname STBVod
+ifconfig
+
+# 等待10秒,等待网络稳定
+sleep 10
 
 # 判断 /app 目录下是否存在数据
 FILENUM=$(ls /app -lR | grep "^-" | wc -l)
 if [ $FILENUM -gt 0 ]; then
 	echo "app folder has data, run directly"
 else
-	# 获取serverIP
-	SERVERIP=$(cat /stb/config/app/serverip.dat)
+	# 挂载远程可执行文件目录
 	mkdir /tmpapp
 	mount -t nfs -o nolock -o ro $SERVERIP:/root/STBVerify/Program /tmpapp
 
@@ -43,7 +61,7 @@ else
 		echo "run from network..."
 		touch /networkflag.txt
 
-		#网络启动必须copy,防止网络问题导致程序卡死
+		# 网络启动必须copy,防止网络问题导致程序卡死
 		mkdir /app
 		cp -arf /tmpapp/* /app/
 		umount /tmpapp

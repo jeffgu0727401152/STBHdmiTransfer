@@ -271,9 +271,14 @@ void CSettingModifyPage::OnClick(
 			CommitSettingToConfig();
 
 			//将server ip在主板上储存起来,下次主板启动会根据ip从server上远程mount启动
-			//板上运行的程序,serverip.dat的位置必须定死
 			CSimpleStringA sTmpCmd;
 			sTmpCmd.Format("echo %ls > /stb/config/app/serverip.dat",mServerIpEdit.GetWindowTextW());
+			system(sTmpCmd.GetString());
+			sTmpCmd.Format("echo %ls > /stb/config/app/deviceip.dat",mStbIpEdit.GetWindowTextW());
+			system(sTmpCmd.GetString());
+			sTmpCmd.Format("echo %ls > /stb/config/app/mask.dat",mMaskEdit.GetWindowTextW());
+			system(sTmpCmd.GetString());
+			sTmpCmd.Format("echo %ls > /stb/config/app/gateway.dat",mNetGateEdit.GetWindowTextW());
 			system(sTmpCmd.GetString());
 
 			//使用新的Server IP与Port启动服务
