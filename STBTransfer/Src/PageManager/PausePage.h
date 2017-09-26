@@ -30,7 +30,7 @@ public:
 		const char *pImageUrlBuffer);
 
 	BOOL PictureTextureDownload(
-		int urlListIdx,
+		const char *cNetFile,
 		CTexture *pTexture);
 
 private:
@@ -38,6 +38,8 @@ private:
 
 	int mShowTimeMS;
 	RECT mShowPosition;
+
+	CBaseLock mLock;
 	CPtrListCtrl mPictureUrlList;
 	int mCurShowIndex;
 };

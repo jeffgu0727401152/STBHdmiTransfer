@@ -41,6 +41,7 @@ private:
 private:
 	CBaseWnd mPictureWnd;
 
+	CBaseLock mLock;
 	CPtrListCtrl mVideoUrlList;
 	int mCurPlayIndex;
 };

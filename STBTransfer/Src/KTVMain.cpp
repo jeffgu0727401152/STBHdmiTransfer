@@ -138,7 +138,7 @@ void InitUI()
 	theBaseApp->StartInput();
 	gInitUIComplete = TRUE;
 
-	if(IsFileExist("/networkflag.txt"))
+	if(!IsFileExist("/networkflag.txt"))
 	{
 		LOGMSG(DBG_LEVEL_W, "mount remote failed, so boot is from board!!!\n");
 	}

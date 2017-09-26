@@ -81,7 +81,12 @@ void CPausePage::OnWindowVisible(
 	else
 	{
 		DelTimer(TIMERID_SHOWIMG);
+
+		mLock.Lock();
 		DelArrayList(&mPictureUrlList, char);
+		mCurShowIndex = 0;
+		mLock.Unlock();
+
 		mPictureWnd.SetBkgroundTexture(NULL);
 	}
 }
@@ -96,13 +101,21 @@ void CPausePage::OnTimer(
 		LOGMSG(DBG_LEVEL_I, "PausePage OnTimer need to show idx %d, url count %d\n",
 			mCurShowIndex, mPictureUrlList.GetCount());
 
+		mLock.Lock();
+		char cNetFile[MAX_PATH] = {0};
+		if (mPictureUrlList.GetCount() > 0)
+		{
+			mCurShowIndex = (mCurShowIndex+1) % mPictureUrlList.GetCount();
+			const char* cUrl = (const char*) mPictureUrlList.GetAt(mCurShowIndex);
+			SAFE_STRNCPY(cNetFile, cUrl, MAX_PATH);
+		}
+		mLock.Unlock();
+
 		CTexture sTexture;
-		if (PictureTextureDownload(mCurShowIndex, &sTexture))
+		if (PictureTextureDownload(cNetFile, &sTexture))
 		{
 			mPictureWnd.SetBkgroundTexture(&sTexture);
 		}
-
-		mCurShowIndex = (mCurShowIndex+1) % mPictureUrlList.GetCount();
 	}
 }
 
@@ -112,7 +125,11 @@ void CPausePage::PerformHttpCmd_Pause(
 	const char *pImageUrlBuffer)
 {
 	DelTimer(TIMERID_SHOWIMG);
+
+	mLock.Lock();
+
 	DelArrayList(&mPictureUrlList, char);
+	mCurShowIndex = 0;
 
 	mShowPosition = rcImagePosition;
 	mPictureWnd.MoveWindow(&mShowPosition);
@@ -122,8 +139,6 @@ void CPausePage::PerformHttpCmd_Pause(
 		nSecondsPerImage = 1;
 	}
 	mShowTimeMS = nSecondsPerImage * 1000;
-
-	mCurShowIndex = 0;
 
 	CPtrArrayCtrl sUrlList;
 	const char *cDevString = DevideStringByCharListA(
@@ -151,10 +166,22 @@ void CPausePage::PerformHttpCmd_Pause(
 
 	Internal_DelArrayA(cDevString);
 
+	int nCount = mPictureUrlList.GetCount();
+	char cNetFile[MAX_PATH] = {0};
+	const char* cUrl = (const char*) mPictureUrlList.GetAt(mCurShowIndex);
+	SAFE_STRNCPY(cNetFile, cUrl, MAX_PATH);
+
+	mLock.Unlock();
+
 	// 显示第一张图片
-	if (mPictureUrlList.GetCount() > 0)
+	if (nCount > 0)
 	{
-		OnTimer(TIMERID_SHOWIMG);
+		CTexture sTexture;
+		if (PictureTextureDownload(cNetFile, &sTexture))
+		{
+			mPictureWnd.SetBkgroundTexture(&sTexture);
+		}
+
 		AddTimer(TIMERID_SHOWIMG, mShowTimeMS);
 		gPageManager->SetCurrentPage(Page_Pause);
 	}
@@ -166,17 +193,10 @@ void CPausePage::PerformHttpCmd_Pause(
 }
 
 BOOL CPausePage::PictureTextureDownload(
-	int urlListIdx,
+	const char *cNetFile,
 	CTexture *pTexture)
 {
-	if (urlListIdx >= mPictureUrlList.GetCount())
-	{
-		LOGMSG(DBG_LEVEL_W, "urlListIdx too large!\n");
-		return FALSE;
-	}
-
-	const char* cUrl = (const char*) mPictureUrlList.GetAt(urlListIdx);
-	if (!cUrl || cUrl[0]=='\0')
+	if (!cNetFile || cNetFile[0] == '\0')
 	{
 		return FALSE;
 	}
@@ -184,10 +204,11 @@ BOOL CPausePage::PictureTextureDownload(
 	char cLocalFile[MAX_PATH] = { 0 };
 	sprintf(cLocalFile, "%s/Pause.jpg", gKTVConfig.GetTempFolderPath());
 	unlink(cLocalFile);
+
 	CHttpFileClient sHttpFileClient;
 	HttpFileCopyFromServer(
 			&sHttpFileClient,
-			cUrl,
+			cNetFile,
 			cLocalFile,
 			5000,
 			NULL,
