@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    
+<head>          
+
+ <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848"> 
+       
+    <title>test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <script src="http://static.blog.csdn.net/scripts/blog_static_head.min.js" type="text/javascript"></script>
+
+        <!--new top-->
+       
+        <!--new top-->
+    
+      <!-- ad begin -->
+			
+    <!-- ad end-->
+
+</head>
+<script>
+function sleep(numberMillis) { 
+    var now = new Date(); 
+    var exitTime = now.getTime() + numberMillis; 
+    while (true) { 
+    now = new Date(); 
+    if (now.getTime() > exitTime) 
+    return; 
+    } 
+}
+
+
+$("document").ready(function(){
+    $("#button1").click(function(){
+        $val = $("#input").val();
+        window.open( "http://" +$val +"/ads/api?action=8");
+    })
+    $("#button2").click(function(){
+        $val = $("#input").val();
+        window.open( "http://" +$val +"/ads/api?action=6");
+    })
+    $("#button3").click(function(){
+        $val = $("#input").val();
+        window.open( "http://" +$val +"/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4");
+    })
+    $("#button4").click(function(){
+        $val = $("#input").val();
+        $var2 = $("#pause_input").val();
+        window.open("http://" +$val +"/ads/api?action=3&image_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/2012081210371.jpg&position=" + $var2);
+    })
+    $("#button5").click(function(){
+        $val = $("#input").val();
+        $var2 = $("#open_input").val();
+        window.open( "http://" +$val +"/ads/api?action=1&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/qianyan_test.mkv,http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv&position="+ $var2 + "&qr_url=1234567890");
+    })
+})
+    
+</script>
+<body>  
+    <ul class="panel_head"><span>ktv测试</span></ul>
+	<div class="addrss input">
+    	<ul>
+    		<li>
+    		<label for="地址">地址</label>
+        	<input type="text" id= "input" value="192.168.4.135:8080"></li>
+        </ul>
+    </div>
+<!--
+    <div>
+	    <li><label for="rect">视频1</label><input type="text" id="video1" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+	    <li><label for="rect">视频2</label><input type="text" id="video2" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+	    <li><label for="rect">视频3</label><input type="text" id="video3" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+	    <li><label for="rect">视频4</label><input type="text" id="video4" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+
+	    <li><label for="rect">图片1</label><input type="text" id="video1" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+	    <li><label for="rect">图片2</label><input type="text" id="video2" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+	    <li><label for="rect">图片3</label><input type="text" id="video3" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+	    <li><label for="rect">图片4</label><input type="text" id="video4" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+	    <li><label for="rect">图片4</label><input type="text" id="video4" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
+	</div>
+-->
+	<ul class="panel_body">    
+
+        <li>
+            <button type="button"  id="button1">重置接口</button>
+        </li>
+         <li>
+            <button type="button"  id="button2">取消暂停</button>
+        </li>
+         <li>
+            <button type="button"  id="button3">支付回调/关房</button>
+            
+        </li>
+        
+         <li>
+            <button type="button"  id="button4">暂停</button>
+        	<label for="rect">位置</label><input type="text" id="pause_input" value="0,0,1280,720" style="width:200px; height:15px;">
+        </li>
+        
+         <li>
+            <button type="button"  id="button5">开房</button>
+        	<label for="rect">位置</label><input type="text" id="open_input" value="0,0,320,240" style="width:200px; height:15px;">
+        </li>
+         <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/2012081210371.jpg" onclick="">图片1</a>
+         <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/20170912111609.jpg" onclick="">图片2</a>
+        </li>               
+         <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/20170912111615.jpg" onclick="">图片3</a>
+        </li>
+         <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/20170912111620.jpg " onclick="">图片4</a>
+        </li>
+         <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/63d9f2d3572c11df8f468a14612762d0f703c275.jpg " onclick="">图片5</a>
+        </li>
+         <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4" onclick="">视频1</a>
+        </li>
+         <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/qianyan_test.mkv " onclick="">视频2</a>
+        </li>
+        <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv" onclick="">视频3</a>
+        </li>
+        <li>
+            <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/%E5%AD%98%E5%9C%A8.mkv " onclick="">视频4</a>
+        </li>
+    </ul>
+</body>
+</html>
