@@ -176,7 +176,7 @@ BOOL CPausePage::PictureTextureDownload(
 	}
 
 	const char* cUrl = (const char*) mPictureUrlList.GetAt(urlListIdx);
-	if (!cUrl || cUrl[0])
+	if (!cUrl || cUrl[0]=='\0')
 	{
 		return FALSE;
 	}
