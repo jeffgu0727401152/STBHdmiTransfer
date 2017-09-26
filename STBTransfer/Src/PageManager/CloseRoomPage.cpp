@@ -68,17 +68,21 @@ void CCloseRoomPage::OnWindowVisible(
 {
 	CBaseWnd::OnWindowVisible(bVisible);
 
+	LOGMSG(DBG_LEVEL_I, "======CCloseRoomPage OnWindowVisible=%d======!\n", bVisible);
+
 	if (bVisible)
 	{
 	}
 	else
 	{
+		UnRegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
+
 		gPlayerCtrl->StopMain();
 
+		mLock.Lock();
 		DelArrayList(&mVideoUrlList, char);
 		mCurPlayIndex = 0;
-
-		UnRegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
+		mLock.Unlock();
 	}
 }
 
@@ -92,36 +96,47 @@ void CCloseRoomPage::OnMsg(
 	switch(uType)
 	{
 	case MSG_PLAYER_COMPLETE:
-		if (mVideoUrlList.GetCount() > 0)
 		{
-			mCurPlayIndex = mCurPlayIndex + 1;
-			if (mCurPlayIndex >= mVideoUrlList.GetCount())
+			LOGMSG(DBG_LEVEL_I, "CCloseRoomPage::OnMsg MSG_PLAYER_COMPLETE!\n");
+			mLock.Lock();
+			int nCount = mVideoUrlList.GetCount();
+			mLock.Unlock();
+			if (nCount > 0)
 			{
+				mCurPlayIndex = mCurPlayIndex + 1;
+				if (mCurPlayIndex >= nCount)
+				{
+					mLock.Lock();
+					DelArrayList(&mVideoUrlList, char);
+					mCurPlayIndex = 0;
+					mLock.Unlock();
+
+					UnRegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
+					gPageManager->SetCurrentPage(Page_Hdmi);
+				}
+				else
+				{
+					// 播放下一个视频
+					const char* cVideoUrl = (const char*)mVideoUrlList.GetAt(mCurPlayIndex);
+					LOGMSG(DBG_LEVEL_I, "%s:%d, PlayMain!\n", __PRETTY_FUNCTION__, __LINE__);
+					gPlayerCtrl->PlayMain(
+						"90000000", //SONGID_USER_START
+						cVideoUrl, //filepath
+						FALSE, //loopplay
+						FALSE, //passthrough
+						0);
+				}
+			}
+			else
+			{
+				mLock.Lock();
 				DelArrayList(&mVideoUrlList, char);
 				mCurPlayIndex = 0;
+				mLock.Unlock();
 
 				UnRegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
 				gPageManager->SetCurrentPage(Page_Hdmi);
 			}
-			else
-			{
-				// 播放下一个视频
-				const char* cVideoUrl = (const char*)mVideoUrlList.GetAt(mCurPlayIndex);
-				gPlayerCtrl->PlayMain(
-					"90000000", //SONGID_USER_START
-					cVideoUrl, //filepath
-					FALSE, //loopplay
-					FALSE, //passthrough
-					0);
-			}
-		}
-		else
-		{
-			DelArrayList(&mVideoUrlList, char);
-			mCurPlayIndex = 0;
-
-			UnRegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
-			gPageManager->SetCurrentPage(Page_Hdmi);
 		}
 		break;
 
@@ -133,8 +148,10 @@ void CCloseRoomPage::OnMsg(
 void CCloseRoomPage::PerformHttpCmd_CloseRoom(
 	const char *cVideoUrlBuffer)
 {
+	mLock.Lock();
 	DelArrayList(&mVideoUrlList, char);
 	mCurPlayIndex = 0;
+	mLock.Unlock();
 
 	CPtrArrayCtrl sUrlList;
 	const char *cDevString = DevideStringByCharListA(
@@ -146,6 +163,9 @@ void CCloseRoomPage::PerformHttpCmd_CloseRoom(
 		&sUrlList,
 		-1);
 
+	LOGMSG(DBG_LEVEL_I, "CCloseRoomPage::PerformHttpCmd_CloseRoom cVideoUrlBuffer=%s urlCount=%d!\n", cVideoUrlBuffer, sUrlList.GetCount());
+
+	mLock.Lock();
 	for (int i = 0; i < sUrlList.GetCount(); i++)
 	{
 		const char* cUrl = (const char*)sUrlList.GetAt(i);
@@ -159,16 +179,20 @@ void CCloseRoomPage::PerformHttpCmd_CloseRoom(
 			}
 		}
 	}
+	int nCount = mVideoUrlList.GetCount();
+	mLock.Unlock();
 
 	Internal_DelArrayA(cDevString);
 
 	// 播放第一个视频
-	if (mVideoUrlList.GetCount() > 0)
+	if (nCount > 0)
 	{
 		RegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
 		gPageManager->SetCurrentPage(Page_CloseRoom);
 
 		const char* cVideoUrl = (const char*)mVideoUrlList.GetAt(0);
+
+		LOGMSG(DBG_LEVEL_I, "%s:%d, PlayMain!\n", __PRETTY_FUNCTION__, __LINE__);
 		gPlayerCtrl->PlayMain(
 			"90000000", //SONGID_USER_START
 			cVideoUrl, //filepath

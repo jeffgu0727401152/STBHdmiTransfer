@@ -187,6 +187,8 @@ void CSettingModifyPage::OnWindowVisible(
 {
 	CBaseWnd::OnWindowVisible(bVisible);
 
+	LOGMSG(DBG_LEVEL_I, "======CSettingModifyPage OnWindowVisible=%d======!\n", bVisible);
+
 	if (bVisible)
 	{
 		if (!gKTVConfig.IsConfigFileValid())
@@ -288,8 +290,19 @@ void CSettingModifyPage::OnClick(
 			mStateText.SetWindowTextA("状态：认证进行中 。。。");
 			mStateText.SetWindowVisible(TRUE);
 
+			const char *pRawTmpStr;
+			pRawTmpStr = gKTVConfig.GetMacAddr();
+			char targetFormatMacStr[18];
+			memset(targetFormatMacStr,0,18);
+			for (int i =0; i<6; i++)
+			{
+			    snprintf(targetFormatMacStr + 3*i,3,"%s",&(pRawTmpStr[2*i]));
+			    if (i!=5) targetFormatMacStr[3*i + 2] = ':';
+			}
+
 			BOOL clientVerifyResult = gHttpCmdClient->ClientVerify(
-				gKTVConfig.GetMacAddr(),
+				/*gKTVConfig.GetMacAddr(),*/
+				targetFormatMacStr,
 				gKTVConfig.GetStbIP(),
 				gKTVConfig.GetVodIP(),
 				gKTVConfig.GetRoomName());

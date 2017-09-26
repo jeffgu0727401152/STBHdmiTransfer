@@ -44,8 +44,8 @@ ifconfig lo up
 hostname STBVod
 ifconfig
 
-# 等待10秒,等待网络稳定
-sleep 10
+# 等待5秒,等待网络稳定
+sleep 5
 
 # 判断 /app 目录下是否存在数据
 FILENUM=$(ls /app -lR | grep "^-" | wc -l)

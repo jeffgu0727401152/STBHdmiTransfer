@@ -25,8 +25,8 @@ static void SendResponseString(CSimpleStringA *pResultString)
 static void GenerateErrorString(CSimpleStringA *pResultString)
 {
 	Json::Value resultJson;
-	resultJson["code"] = Json::Value(-1);
-	resultJson["codemsg"] = Json::Value("命令发送失败");
+	resultJson["code"] = Json::Value("-1");
+	resultJson["code_msg"] = Json::Value("命令发送失败");
 	Json::FastWriter fast_writer;
 	pResultString->Set(fast_writer.write(resultJson).c_str());
 }
@@ -111,7 +111,7 @@ void ProcessCommand(
 		// 开房
 		const char* cQRCodeString = NULL;
 		const char* cVideoUrlBuffer = NULL;
-		RECT rcQRCodePosition = {0, 0, 0, 0};
+		RECT rcQRCodePosition = {0, 0, 320, 240};
 		for (int i = 1; i < pArgList->GetCount(); i++)
 		{
 			const char* cArg = (const char*)pArgList->GetAt(i);

@@ -83,13 +83,13 @@ BOOL CHttpCmdClient::ThreadLoop(
 				break;
 			}
 
-			if (root["codemsg"].isNull())
+			if (root["code_msg"].isNull())
 			{
 				break;
 			}
 
-			int code = root["code"].asInt();
-			std::string msg = root["codemsg"].asString();
+			int code = atoi(root["code"].asString().c_str());
+			std::string msg = root["code_msg"].asString();
 
 			LOGMSG(DBG_LEVEL_I, "check online return: code=%d, msg=%s\n",
 				code, msg.c_str());
@@ -122,8 +122,8 @@ BOOL CHttpCmdClient::ClientVerify(
 	CSimpleStringA sData;
 	Json::Value resultJson;
 	resultJson["mac"] = Json::Value(cMac);
-	resultJson["ip"] = Json::Value(cStbIP);
-	resultJson["client_ip"] = Json::Value(cVodIP);
+	resultJson["client_ip"] = Json::Value(cStbIP);
+	resultJson["room_ip"] = Json::Value(cVodIP);
 	resultJson["room_id"] = Json::Value(cRoomID);
 	Json::FastWriter fast_writer;
 	sData.Set(fast_writer.write(resultJson).c_str());
@@ -142,6 +142,7 @@ BOOL CHttpCmdClient::ClientVerify(
 		1024,
 		&uActualResultSize))
 	{
+		LOGMSG(DBG_LEVEL_E, "ClientVerify return: PerformHttpPostCommand error\n");
 		return FALSE;
 	}
 
@@ -152,25 +153,30 @@ BOOL CHttpCmdClient::ClientVerify(
 
 	cResultBuffer[uActualResultSize] = '\0';
 
+	LOGMSG(DBG_LEVEL_I, "ClientVerify return: raw result buffer=%s\n",cResultBuffer);
+
 	Json::Reader reader;
 	Json::Value root;
 	if (!reader.parse((char*)cResultBuffer, root))
 	{
+		LOGMSG(DBG_LEVEL_E, "ClientVerify return: reader parse no root)\n");
 		return FALSE;
 	}
 
 	if (root["code"].isNull())
 	{
+		LOGMSG(DBG_LEVEL_E, "ClientVerify return: code is Null)\n");
 		return FALSE;
 	}
 
-	if (root["codemsg"].isNull())
+	if (root["code_msg"].isNull())
 	{
+		LOGMSG(DBG_LEVEL_E, "ClientVerify return: code_msg is Null)\n");
 		return FALSE;
 	}
 
-	int code = root["code"].asInt();
-	std::string msg = root["codemsg"].asString();
+	int code = atoi(root["code"].asString().c_str());
+	std::string msg = root["code_msg"].asString();
 
 	LOGMSG(DBG_LEVEL_I, "verify return: code=%d, msg=%s\n",
 		code, msg.c_str());

@@ -68,11 +68,14 @@ void CHdmiPage::OnWindowVisible(
 {
 	CBaseWnd::OnWindowVisible(bVisible);
 
+	LOGMSG(DBG_LEVEL_I, "======CHdmiPage OnWindowVisible=%d======!\n", bVisible);
+
 	if (bVisible)
 	{
 		if (mHdmiInConnected)
 		{
 			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
+			LOGMSG(DBG_LEVEL_I, "%s:%d, Play hdmi!\n", __PRETTY_FUNCTION__, __LINE__);
 			gPlayerCtrl->PlayMain(
 				"99999910", //SONGID_HDMIIN
 				"hdmiin://", //filepath
@@ -105,6 +108,7 @@ void CHdmiPage::OnMsg(
 		if (IsWindowVisible())
 		{
 			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
+			LOGMSG(DBG_LEVEL_I, "%s:%d, play hdmi!\n", __PRETTY_FUNCTION__, __LINE__);
 			gPlayerCtrl->PlayMain(
 				"99999910", //SONGID_HDMIIN
 				"hdmiin://", //filepath

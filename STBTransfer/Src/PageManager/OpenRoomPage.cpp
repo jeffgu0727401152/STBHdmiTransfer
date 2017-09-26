@@ -71,6 +71,8 @@ void COpenRoomPage::OnWindowVisible(
 {
 	CBaseWnd::OnWindowVisible(bVisible);
 
+	LOGMSG(DBG_LEVEL_I, "======COpenRoomPage OnWindowVisible=%d======!\n", bVisible);
+
 	if (bVisible)
 	{
 	}
@@ -95,11 +97,13 @@ void COpenRoomPage::OnMsg(
 	switch(uType)
 	{
 	case MSG_PLAYER_COMPLETE:
+		LOGMSG(DBG_LEVEL_I, "COpenRoomPage::OnMsg MSG_PLAYER_COMPLETE!\n");
 		if (mVideoUrlList.GetCount() > 0)
 		{
 			mCurPlayIndex = (mCurPlayIndex+1) % mVideoUrlList.GetCount();
 			// 播放下一个视频
 			const char* cVideoUrl = (const char*)mVideoUrlList.GetAt(mCurPlayIndex);
+			LOGMSG(DBG_LEVEL_I, "%s:%d, PlayMain!\n", __PRETTY_FUNCTION__, __LINE__);
 			gPlayerCtrl->PlayMain(
 				"90000000", //SONGID_USER_START
 				cVideoUrl, //filepath
@@ -157,6 +161,7 @@ void COpenRoomPage::PerformHttpCmd_OpenRoom(
 		gPageManager->SetCurrentPage(Page_OpenRoom);
 
 		const char* cVideoUrl = (const char*)mVideoUrlList.GetAt(0);
+		LOGMSG(DBG_LEVEL_I, "%s:%d, PlayMain!\n", __PRETTY_FUNCTION__, __LINE__);
 		gPlayerCtrl->PlayMain(
 			"90000000", //SONGID_USER_START
 			cVideoUrl, //filepath
@@ -176,13 +181,16 @@ void COpenRoomPage::CreateQRImage(
 {
 	if (!cString)
 	{
+		LOGMSG(DBG_LEVEL_E, "CreateQRImage cString is NULL!\n");
 		return;
 	}
+	LOGMSG(DBG_LEVEL_I, "CreateQRImage cString=%s!\n", cString);
 
 	QRcode *code = QRcode_encodeString(
 		cString, 0, QR_ECLEVEL_L, QR_MODE_8, 1);
 	if(!code)
 	{
+		LOGMSG(DBG_LEVEL_E, "QRcode_encodeString fail!\n");
 		return;
 	}
 

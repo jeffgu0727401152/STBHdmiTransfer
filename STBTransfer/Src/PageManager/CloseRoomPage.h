@@ -32,6 +32,7 @@ public:
 		const char *cVideoUrlBuffer);
 
 private:
+	CBaseLock mLock;
 	CPtrListCtrl mVideoUrlList;
 	int mCurPlayIndex;
 };

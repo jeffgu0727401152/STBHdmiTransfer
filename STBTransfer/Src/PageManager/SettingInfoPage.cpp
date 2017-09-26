@@ -136,6 +136,9 @@ void CSettingInfoPage::OnWindowVisible(
 {
 	CBaseWnd::OnWindowVisible(bVisible);
 
+	LOGMSG(DBG_LEVEL_I, "======CSettingInfoPage OnWindowVisible=%d======!\n", bVisible);
+
+
 	if (bVisible)
 	{
 		UpdateUiFromConfig();
