@@ -97,7 +97,7 @@ void ProcessCommand(
 		if (!gHttpCmdClient.SendPauseCmd(
 			nSecondsPerImage,
 			rcImagePosition,
-			cImageUrlBuffer?strlen(cImageUrlBuffer):0,
+			cImageUrlBuffer?strlen(cImageUrlBuffer)+1:0,
 			cImageUrlBuffer,
 			&sResultString))
 		{
@@ -137,7 +137,7 @@ void ProcessCommand(
 		if (!gHttpCmdClient.SendOpenRoomCmd(
 			cQRCodeString,
 			rcQRCodePosition,
-			cVideoUrlBuffer?strlen(cVideoUrlBuffer):0,
+			cVideoUrlBuffer?strlen(cVideoUrlBuffer)+1:0,
 			cVideoUrlBuffer,
 			&sResultString))
 		{
@@ -165,7 +165,7 @@ void ProcessCommand(
 		}
 
 		if (!gHttpCmdClient.SendCloseRoomCmd(
-			cVideoUrlBuffer?strlen(cVideoUrlBuffer):0,
+			cVideoUrlBuffer?strlen(cVideoUrlBuffer)+1:0,
 			cVideoUrlBuffer,
 			&sResultString))
 		{

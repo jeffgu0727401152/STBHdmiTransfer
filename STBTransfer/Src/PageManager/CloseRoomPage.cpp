@@ -94,8 +94,8 @@ void CCloseRoomPage::OnMsg(
 	case MSG_PLAYER_COMPLETE:
 		if (mVideoUrlList.GetCount() > 0)
 		{
-			mCurPlayIndex = (mCurPlayIndex+1) % mVideoUrlList.GetCount();
-			if (mCurPlayIndex == mVideoUrlList.GetCount())
+			mCurPlayIndex = mCurPlayIndex + 1;
+			if (mCurPlayIndex >= mVideoUrlList.GetCount())
 			{
 				DelArrayList(&mVideoUrlList, char);
 				mCurPlayIndex = 0;
