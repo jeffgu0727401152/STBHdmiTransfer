@@ -4,6 +4,8 @@
 #include <json/json.h>
 #include "../GlobalUIClass.h"
 
+#define HEART_BEAT_LOST_THRESHOLD 2
+
 CHttpCmdClient::CHttpCmdClient()
 {
 	mServerIP[0] = '\0';
@@ -54,6 +56,8 @@ BOOL CHttpCmdClient::ThreadLoop(
 		uActualResultSize = 0;
 		do
 		{
+			static unsigned short heartBeatLostCountTag;
+
 			if (!PerformHttpGetCommand(
 				sURL.GetString(),
 				NULL,
@@ -61,9 +65,21 @@ BOOL CHttpCmdClient::ThreadLoop(
 				1024,
 				&uActualResultSize))
 			{
+				heartBeatLostCountTag++;
+				if(heartBeatLostCountTag > HEART_BEAT_LOST_THRESHOLD)
+				{
+					LOGMSG(DBG_LEVEL_I, "check online return failed , try to use HDMI transmission\n");
+					PAGE_TYPE currentPage  = gPageManager->GetCurPageType();
+					if(!(Page_Hdmi ==  currentPage || Page_SettingModify == currentPage || Page_SettingInfo == currentPage))
+					{
+						gPageManager->SetCurrentPage(Page_Hdmi);
+					}
+					
+					heartBeatLostCountTag = 3;
+				}
 				break;
 			}
-
+			heartBeatLostCountTag = 0;
 			if (uActualResultSize >= 1024)
 			{
 				uActualResultSize = 1023;
@@ -99,7 +115,7 @@ BOOL CHttpCmdClient::ThreadLoop(
 
 		mIsServerOnline = bIsOnline;
 
-		mExitEvent.Wait(10000);
+		mExitEvent.Wait(5000);
 	}
 
 	return FALSE;
