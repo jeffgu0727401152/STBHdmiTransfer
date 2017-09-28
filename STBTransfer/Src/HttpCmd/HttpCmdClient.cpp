@@ -57,6 +57,7 @@ BOOL CHttpCmdClient::ThreadLoop(
 		uActualResultSize = 0;
 		do
 		{
+			LOGMSG(DBG_LEVEL_I, "check online, fail count = %d\n",heartBeatLostCount);
 			if (!PerformHttpGetCommand(
 				sURL.GetString(),
 				NULL,
@@ -73,12 +74,13 @@ BOOL CHttpCmdClient::ThreadLoop(
 					{
 						gPageManager->SetCurrentPage(Page_Hdmi);
 					}
-					
-					heartBeatLostCount = 3;
+					heartBeatLostCount = 0;
 				}
 				break;
 			}
+
 			heartBeatLostCount = 0;
+
 			if (uActualResultSize >= 1024)
 			{
 				uActualResultSize = 1023;
