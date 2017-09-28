@@ -8,7 +8,8 @@ const char* gPageName[Page_Count] =
 	"Page_SettingInfo",
 	"Page_Pause",
 	"Page_CloseRoom",
-	"Page_OpenRoom"
+	"Page_OpenRoom",
+	"Page_FirstLanch"
 };
 
 CPageManager::CPageManager()
@@ -34,6 +35,7 @@ void CPageManager::Create(
 	mPausePage.Create(pE3DEngine, pParent);
 	mCloseRoomPage.Create(pE3DEngine, pParent);
 	mOpenRoomPage.Create(pE3DEngine, pParent);
+	mFirstLanchPage.Create(pE3DEngine, pParent);
 
 	mpPageWnd[Page_Hdmi] = &mHdmiPage;
 	mpPageWnd[Page_SettingModify] = &mSettingModifyPage;
@@ -41,6 +43,7 @@ void CPageManager::Create(
 	mpPageWnd[Page_Pause] = &mPausePage;
 	mpPageWnd[Page_CloseRoom] = &mCloseRoomPage;
 	mpPageWnd[Page_OpenRoom] = &mOpenRoomPage;
+	mpPageWnd[Page_FirstLanch] = &mFirstLanchPage;
 
 	int i;
 	for ( i = 0; i < Page_Count; i++ )
