@@ -34,6 +34,9 @@ public:
 		const char* cStbIP,
 		const char* cVodIP,
 		const char* cRoomID);
+	BOOL ClientOpen(
+		const char* cVodIP,
+		CSimpleStringA *pResultUrlString);
 
 private:
 	char mServerIP[16];

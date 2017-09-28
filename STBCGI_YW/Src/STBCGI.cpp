@@ -46,6 +46,16 @@ void ProcessCommand(
 		sResultString.Set("this is just for test");
 		SendResponseString(&sResultString);
 	}
+	else if (strncasecmp(cCmdType, "action=9", 8) == 0)
+	{
+		// 查询盒子状态
+		if (!gHttpCmdClient.SendCheckStatusCmd(&sResultString))
+		{
+			GenerateErrorString(&sResultString);
+		}
+
+		SendResponseString(&sResultString);
+	}
 	else if (strncasecmp(cCmdType, "action=8", 8) == 0)
 	{
 		// 重启盒子

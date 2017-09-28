@@ -53,6 +53,10 @@ private:
 		int nSocketFD,
 		HTTPCMDREQCLOSEROOMCMD *pReqCloseRoomCmd);
 
+	void OnRequestCheckStatusCmd(
+		int nSocketFD,
+		HTTPCMDREQCHECKSTATUSCMD *pReqCheckStatusCmd);
+
 private:
 	CBaseLock mOperatorLock;
 };

@@ -48,6 +48,7 @@ BOOL CHttpCmdClient::ThreadLoop(
 
 	BYTE cResultBuffer[1024];
 	UINT32 uActualResultSize = 0;
+	UINT32 heartBeatLostCount = 0;
 
 	while (!mExitThread)
 	{
@@ -56,8 +57,6 @@ BOOL CHttpCmdClient::ThreadLoop(
 		uActualResultSize = 0;
 		do
 		{
-			static unsigned short heartBeatLostCountTag;
-
 			if (!PerformHttpGetCommand(
 				sURL.GetString(),
 				NULL,
@@ -65,8 +64,8 @@ BOOL CHttpCmdClient::ThreadLoop(
 				1024,
 				&uActualResultSize))
 			{
-				heartBeatLostCountTag++;
-				if(heartBeatLostCountTag > HEART_BEAT_LOST_THRESHOLD)
+				heartBeatLostCount++;
+				if(heartBeatLostCount > HEART_BEAT_LOST_THRESHOLD)
 				{
 					LOGMSG(DBG_LEVEL_I, "check online return failed , try to use HDMI transmission\n");
 					PAGE_TYPE currentPage  = gPageManager->GetCurPageType();
@@ -75,11 +74,11 @@ BOOL CHttpCmdClient::ThreadLoop(
 						gPageManager->SetCurrentPage(Page_Hdmi);
 					}
 					
-					heartBeatLostCountTag = 3;
+					heartBeatLostCount = 3;
 				}
 				break;
 			}
-			heartBeatLostCountTag = 0;
+			heartBeatLostCount = 0;
 			if (uActualResultSize >= 1024)
 			{
 				uActualResultSize = 1023;
@@ -196,6 +195,78 @@ BOOL CHttpCmdClient::ClientVerify(
 
 	LOGMSG(DBG_LEVEL_I, "verify return: code=%d, msg=%s\n",
 		code, msg.c_str());
+
+	return code == 0 ? TRUE : FALSE;
+}
+
+BOOL CHttpCmdClient::ClientOpen(
+	const char* cVodIP,
+	CSimpleStringA *pResultUrlString)
+{
+	CSimpleStringA sURL;
+	sURL.Format("http://%s:%d/ads/api/open?room_ip=%s", mServerIP, mServerPort,cVodIP);
+
+	BYTE cResultBuffer[1024];
+	UINT32 uActualResultSize = 0;
+
+	if (!PerformHttpGetCommand(
+		sURL.GetString(),
+		NULL,
+		cResultBuffer,
+		1024,
+		&uActualResultSize))
+	{
+		LOGMSG(DBG_LEVEL_E, "ClientOpen return: PerformHttpGetCommand error\n");
+		return FALSE;
+	}
+
+	if (uActualResultSize >= 1024)
+	{
+		uActualResultSize = 1023;
+	}
+
+	cResultBuffer[uActualResultSize] = '\0';
+
+	LOGMSG(DBG_LEVEL_I, "ClientOpen return: raw result buffer=%s\n",cResultBuffer);
+
+	Json::Reader reader;
+	Json::Value root;
+	if (!reader.parse((char*)cResultBuffer, root))
+	{
+		LOGMSG(DBG_LEVEL_E, "ClientOpen return: reader parse no root\n");
+		return FALSE;
+	}
+
+	if (root["code"].isNull())
+	{
+		LOGMSG(DBG_LEVEL_E, "ClientOpen return: code is Null\n");
+		return FALSE;
+	}
+
+	if (root["codemsg"].isNull())
+	{
+		LOGMSG(DBG_LEVEL_E, "ClientOpen return: codemsg is Null\n");
+		return FALSE;
+	}
+
+	if (root["video_url"].isNull())
+	{
+		LOGMSG(DBG_LEVEL_W, "ClientOpen return: video_url is Null\n");
+		//return FALSE;
+	}
+
+	int code = atoi(root["code"].asString().c_str());
+	std::string msg = root["codemsg"].asString();
+	std::string url;
+	if (!root["video_url"].isNull())
+	{
+		url = root["video_url"].asString();
+		pResultUrlString->Set(url.c_str());
+	}
+
+	LOGMSG(DBG_LEVEL_I, "ClientOpen return: code=%d, msg=%s, video_url=%s\n",
+		code, msg.c_str(), url.c_str());
+
 
 	return code == 0 ? TRUE : FALSE;
 }

@@ -76,6 +76,10 @@ void CHttpCmdClient::OnClientReceiveTCPData(
 				OnResponseOpenRoomCmd((HTTPCMDRESOPENROOMCMD *)phdr);
 				break;
 
+			case HTTPCMD_RES_CHECKSTATUS:
+				OnResponseCheckStatusCmd((HTTPCMDRESCHECKSTATUSCMD *)phdr);
+				break;
+
 			default:
 				break;
 			}
@@ -109,6 +113,65 @@ void CHttpCmdClient::OnClientDisconnectFromServer(
 	}
 
 	mRequestWithEventListLock.Unlock();
+}
+
+BOOL CHttpCmdClient::SendCheckStatusCmd(
+	CSimpleStringA *pResultString)
+{
+	if (!IsConnect())
+	{
+		LOGMSG(DBG_LEVEL_I, "%s: HttpCmdServer NOT Started\n", __PRETTY_FUNCTION__);
+
+		return FALSE;
+	}
+
+	BOOL bSendOK = FALSE;
+
+	HTTPCMDREQCHECKSTATUSCMD request;
+	request.nHttpCmdVer = HTTPCMD_VER;
+	request.nRequestID = mRequestID++;
+	request.nCommandType = HTTPCMD_REQ_CHECKSTATUS;
+	request.uPrivData = (UINT64)pResultString;
+
+	HTTPCMDREQWITHEVENT requestWithEvent;
+	requestWithEvent.nRequestID = request.nRequestID;
+	mRequestWithEventListLock.Lock();
+	mRequestWithEventList.AddData(&requestWithEvent);
+	mRequestWithEventListLock.Unlock();
+
+	LOGMSG(DBG_LEVEL_I, "%s: req:nRequestID=%d\n", __PRETTY_FUNCTION__, request.nRequestID);
+	if (SendData(MSG_TO_SERVERSOCKET, &request, sizeof(HTTPCMDREQCHECKSTATUSCMD)))
+	{
+		if (!requestWithEvent.complete.Wait(5000))
+		{
+			LOGMSG(DBG_LEVEL_I, "%s: wait response timeout\n", __PRETTY_FUNCTION__);
+		}
+		else
+		{
+			bSendOK = TRUE;
+		}
+	}
+	else
+	{
+		LOGMSG(DBG_LEVEL_I, "%s: SendData Failed\n", __PRETTY_FUNCTION__);
+	}
+
+	mRequestWithEventListLock.Lock();
+	mRequestWithEventList.DeleteAt(mRequestWithEventList.FindFirst(&requestWithEvent));
+	mRequestWithEventListLock.Unlock();
+
+	return bSendOK;
+}
+
+void CHttpCmdClient::OnResponseCheckStatusCmd(
+	HTTPCMDRESCHECKSTATUSCMD *pResCheckStatusCmdParam)
+{
+	CSimpleStringA *pResultString = (CSimpleStringA *)pResCheckStatusCmdParam->uPrivData;
+	if (pResCheckStatusCmdParam->uSize > 0)
+	{
+		const char *pReadBuf = ((const char *)pResCheckStatusCmdParam)+sizeof(HTTPCMDRESCHECKSTATUSCMD);
+		pResultString->Set(pReadBuf, pResCheckStatusCmdParam->uSize);
+	}
 }
 
 BOOL CHttpCmdClient::SendRebootCmd(

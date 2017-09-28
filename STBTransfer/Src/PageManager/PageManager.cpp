@@ -43,7 +43,7 @@ void CPageManager::Create(
 	mpPageWnd[Page_Pause] = &mPausePage;
 	mpPageWnd[Page_CloseRoom] = &mCloseRoomPage;
 	mpPageWnd[Page_OpenRoom] = &mOpenRoomPage;
-	mpPageWnd[Page_FirstLanch] = &mFirstLanchPage;
+	mpPageWnd[Page_FirstLaunch] = &mFirstLanchPage;
 
 	int i;
 	for ( i = 0; i < Page_Count; i++ )

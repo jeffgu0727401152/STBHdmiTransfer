@@ -44,6 +44,9 @@ public:
 		int nSocketFD);
 
 public:
+	BOOL SendCheckStatusCmd(
+		CSimpleStringA *pResultString);
+
 	BOOL SendRebootCmd(
 		CSimpleStringA *pResultString);
 
@@ -68,6 +71,9 @@ public:
 		CSimpleStringA *pResultString);
 
 private:
+	void OnResponseCheckStatusCmd(
+		HTTPCMDRESCHECKSTATUSCMD *pResCheckStatusCmdParam);
+
 	void OnResponseRebootCmd(
 		HTTPCMDRESREBOOTCMD *pResRebootCmdParam);
 

@@ -165,7 +165,8 @@ void InitUI()
 			SetDNS(gKTVConfig.GetDNS1());
 #endif
 
-			gPageManager->SetCurrentPage(Page_FirstLanch);
+			gPageManager->SetCurrentPage(Page_Hdmi);
+			gPageManager->mFirstLanchPage.StartGetClientOpenUrl();
 	}
 }
 

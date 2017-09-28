@@ -62,6 +62,10 @@ void CHttpCmdServer::OnServerReceiveTCPData(
 		OnRequestCloseRoomCmd(nSocketFD, (HTTPCMDREQCLOSEROOMCMD *)phdr);
 		break;
 
+	case HTTPCMD_REQ_CHECKSTATUS:
+		OnRequestCheckStatusCmd(nSocketFD, (HTTPCMDREQCHECKSTATUSCMD *)phdr);
+		break;
+
 	default:
 		break;
 	}
@@ -361,6 +365,62 @@ void CHttpCmdServer::OnRequestCloseRoomCmd(
 	{
 		response.uSize = 0;
 		SendData(nSocketFD, &response, sizeof(HTTPCMDRESCLOSEROOMCMD));
+	}
+
+	mOperatorLock.Unlock();
+}
+
+void CHttpCmdServer::OnRequestCheckStatusCmd(
+	int nSocketFD,
+	HTTPCMDREQCHECKSTATUSCMD *pReqCheckStatusCmd)
+{
+	LOGMSG(DBG_LEVEL_I, "%s:\n", __PRETTY_FUNCTION__);
+
+	CSimpleStringA sResponseStateString;
+
+	Json::Value resultJson;
+	if(!IsFileExist("/networkflag.txt"))
+	{
+		resultJson["code"] = Json::Value("1");
+		resultJson["codemsg"] = Json::Value("程序不是从网络启动");
+	}
+	else
+	{
+		resultJson["code"] = Json::Value("0");
+		resultJson["codemsg"] = Json::Value("在线");
+	}
+
+	Json::FastWriter fast_writer;
+	sResponseStateString.Set(fast_writer.write(resultJson).c_str());
+
+	mOperatorLock.Lock();
+
+	HTTPCMDRESCHECKSTATUSCMD response;
+	response.nHttpCmdVer = HTTPCMD_VER;
+	response.nRequestID = pReqCheckStatusCmd->nRequestID;
+	response.nCommandType = HTTPCMD_RES_CHECKSTATUS;
+	response.uPrivData = pReqCheckStatusCmd->uPrivData;
+	response.uSize = sResponseStateString.GetLength();
+
+	UINT32 uSendBufSize = sizeof(HTTPCMDRESCHECKSTATUSCMD) + response.uSize;
+	BYTE *pSendBuffer = new BYTE[uSendBufSize];
+	if (pSendBuffer)
+	{
+		int nBufPos = 0;
+
+		memcpy(pSendBuffer+nBufPos, &response, sizeof(HTTPCMDRESCHECKSTATUSCMD));
+		nBufPos += sizeof(HTTPCMDRESCHECKSTATUSCMD);
+
+		memcpy(pSendBuffer+nBufPos, sResponseStateString.GetString(), response.uSize);
+		nBufPos += response.uSize;
+		SendData(nSocketFD, pSendBuffer, uSendBufSize);
+
+		delete []pSendBuffer;
+	}
+	else
+	{
+		response.uSize = 0;
+		SendData(nSocketFD, &response, sizeof(HTTPCMDRESCHECKSTATUSCMD));
 	}
 
 	mOperatorLock.Unlock();

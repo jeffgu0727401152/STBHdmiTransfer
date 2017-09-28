@@ -124,8 +124,6 @@ void CHdmiPage::OnMsg(
 		gPlayerCtrl->StopMain();
 		break;
 
-		break;
-
 	default:
 		break;
 	}

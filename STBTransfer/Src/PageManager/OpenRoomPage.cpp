@@ -78,14 +78,14 @@ void COpenRoomPage::OnWindowVisible(
 	}
 	else
 	{
+		UnRegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
+
 		gPlayerCtrl->StopMain();
 
 		mLock.Lock();
 		DelArrayList(&mVideoUrlList, char);
 		mCurPlayIndex = 0;
 		mLock.Unlock();
-
-		UnRegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
 	}
 }
 
