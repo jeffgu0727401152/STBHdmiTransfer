@@ -99,13 +99,13 @@ BOOL CHttpCmdClient::ThreadLoop(
 				break;
 			}
 
-			if (root["code_msg"].isNull())
+			if (root["codemsg"].isNull())
 			{
 				break;
 			}
 
 			int code = atoi(root["code"].asString().c_str());
-			std::string msg = root["code_msg"].asString();
+			std::string msg = root["codemsg"].asString();
 
 			LOGMSG(DBG_LEVEL_I, "check online return: code=%d, msg=%s\n",
 				code, msg.c_str());
@@ -185,14 +185,14 @@ BOOL CHttpCmdClient::ClientVerify(
 		return FALSE;
 	}
 
-	if (root["code_msg"].isNull())
+	if (root["codemsg"].isNull())
 	{
-		LOGMSG(DBG_LEVEL_E, "ClientVerify return: code_msg is Null)\n");
+		LOGMSG(DBG_LEVEL_E, "ClientVerify return: codemsg is Null)\n");
 		return FALSE;
 	}
 
 	int code = atoi(root["code"].asString().c_str());
-	std::string msg = root["code_msg"].asString();
+	std::string msg = root["codemsg"].asString();
 
 	LOGMSG(DBG_LEVEL_I, "verify return: code=%d, msg=%s\n",
 		code, msg.c_str());

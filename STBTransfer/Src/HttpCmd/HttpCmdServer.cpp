@@ -77,7 +77,7 @@ void CHttpCmdServer::OnRequestRebootCmd(
 
 	Json::Value resultJson;
 	resultJson["code"] = Json::Value("0");
-	resultJson["code_msg"] = Json::Value("请求成功");
+	resultJson["codemsg"] = Json::Value("请求成功");
 	Json::FastWriter fast_writer;
 	sResponseStateString.Set(fast_writer.write(resultJson).c_str());
 
@@ -127,7 +127,7 @@ void CHttpCmdServer::OnRequestPauseCmd(
 
 	Json::Value resultJson;
 	resultJson["code"] = Json::Value("0");
-	resultJson["code_msg"] = Json::Value("请求成功");
+	resultJson["codemsg"] = Json::Value("请求成功");
 	Json::FastWriter fast_writer;
 	sResponseStateString.Set(fast_writer.write(resultJson).c_str());
 
@@ -192,7 +192,7 @@ void CHttpCmdServer::OnRequestResumeCmd(
 
 	Json::Value resultJson;
 	resultJson["code"] = Json::Value("0");
-	resultJson["code_msg"] = Json::Value("请求成功");
+	resultJson["codemsg"] = Json::Value("请求成功");
 	Json::FastWriter fast_writer;
 	sResponseStateString.Set(fast_writer.write(resultJson).c_str());
 
@@ -249,7 +249,7 @@ void CHttpCmdServer::OnRequestOpenRoomCmd(
 
 	Json::Value resultJson;
 	resultJson["code"] = Json::Value("0");
-	resultJson["code_msg"] = Json::Value("请求成功");
+	resultJson["codemsg"] = Json::Value("请求成功");
 	Json::FastWriter fast_writer;
 	sResponseStateString.Set(fast_writer.write(resultJson).c_str());
 
@@ -314,7 +314,7 @@ void CHttpCmdServer::OnRequestCloseRoomCmd(
 
 	Json::Value resultJson;
 	resultJson["code"] = Json::Value("0");
-	resultJson["code_msg"] = Json::Value("请求成功");
+	resultJson["codemsg"] = Json::Value("请求成功");
 	Json::FastWriter fast_writer;
 	sResponseStateString.Set(fast_writer.write(resultJson).c_str());
 

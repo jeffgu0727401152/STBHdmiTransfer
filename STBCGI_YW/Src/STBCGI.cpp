@@ -26,7 +26,7 @@ static void GenerateErrorString(CSimpleStringA *pResultString)
 {
 	Json::Value resultJson;
 	resultJson["code"] = Json::Value("-1");
-	resultJson["code_msg"] = Json::Value("命令发送失败");
+	resultJson["codemsg"] = Json::Value("命令发送失败");
 	Json::FastWriter fast_writer;
 	pResultString->Set(fast_writer.write(resultJson).c_str());
 }
