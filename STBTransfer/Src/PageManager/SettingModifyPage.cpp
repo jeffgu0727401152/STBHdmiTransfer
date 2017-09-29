@@ -266,7 +266,7 @@ void CSettingModifyPage::OnClick(
 {
 	if (pWnd == &mVerifyBtn)
 	{
-		if (!PromptInvalidEditContent())
+		if (!PromptInvalidEditContent() && gProgramBootMode!=Mode_Factory)
 		{
 			LOGMSG(DBG_LEVEL_I, "Edit text content is ok, so save settings to configure file!\n");
 			ConfigEthNet();

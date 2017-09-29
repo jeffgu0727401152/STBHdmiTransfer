@@ -9,6 +9,7 @@ CPlayerCtrl* gPlayerCtrl=NULL;
 CMultiMediaCtrl* gMultiMediaCtrl=NULL;
 CHttpCmdClient* gHttpCmdClient=NULL;
 CHttpCmdServer* gHttpCmdServer=NULL;
+BOOT_MODE gProgramBootMode = Mode_Local;
 
 void InitGlobalClass()
 {
@@ -20,6 +21,24 @@ void InitGlobalClass()
 	gMultiMediaCtrl = new CMultiMediaCtrl();
 	gHttpCmdClient = new CHttpCmdClient();
 	gHttpCmdServer = new CHttpCmdServer();
+
+	if (IsFileExist("/factoryflag.txt"))
+	{
+		gProgramBootMode = Mode_Factory;
+		LOGMSG(DBG_LEVEL_I, "boot is from factory!!!\n");
+	}
+	else if (IsFileExist("/networkflag.txt"))
+	{
+		gProgramBootMode = Mode_Network;
+		LOGMSG(DBG_LEVEL_I, "boot is from network!!!\n");
+	}
+	else
+	{
+		gProgramBootMode = Mode_Local;
+		LOGMSG(DBG_LEVEL_W, "mount remote failed, so boot is from local!!!\n");
+	}
+
+
 }
 
 void DeInitGlobalClass()

@@ -106,10 +106,19 @@ void CFirstLaunchPage::OnMsg(
 		{
 			LOGMSG(DBG_LEVEL_I, "CFirstLaunchPage::OnMsg MSG_PLAYER_COMPLETE!\n");
 
+			if (lParam == PlayComplete_ReasonType_StartError)
+			{
+				LOGMSG(DBG_LEVEL_E, "CFirstLaunchPage, play failed, idx = %d, total video = %d!\n",
+						mCurPlayIndex, mVideoUrlList.GetCount());
+				mLock.Lock();
+				mVideoUrlList.DeleteAt(mCurPlayIndex);
+				mCurPlayIndex--;
+				mLock.Unlock();
+			}
+
 			char cVideoUrlLocal[MAX_PATH] = {0};
 
 			mLock.Lock();
-
 			int nCount = mVideoUrlList.GetCount();
 			if (nCount > 0)
 			{
@@ -118,7 +127,6 @@ void CFirstLaunchPage::OnMsg(
 				const char* cVideoUrl = (const char*)mVideoUrlList.GetAt(mCurPlayIndex);
 				SAFE_STRNCPY(cVideoUrlLocal, cVideoUrl, MAX_PATH);
 			}
-
 			mLock.Unlock();
 
 			if (cVideoUrlLocal[0])

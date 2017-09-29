@@ -16,6 +16,16 @@ extern CHttpCmdClient* gHttpCmdClient;
 extern CHttpCmdServer* gHttpCmdServer;
 extern CHandWriteOperator* gHandWriteOperator;
 
+typedef enum eBOOT_MODE
+{
+	Mode_Network=0,				// 网络启动
+	Mode_Local,					// 本机启动
+	Mode_Factory,				// 厂测启动
+	Mode_Count
+} BOOT_MODE;
+
+extern BOOT_MODE gProgramBootMode;
+
 void InitGlobalClass();
 void DeInitGlobalClass();
 

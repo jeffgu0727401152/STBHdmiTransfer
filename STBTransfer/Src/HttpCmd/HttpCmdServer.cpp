@@ -379,7 +379,7 @@ void CHttpCmdServer::OnRequestCheckStatusCmd(
 	CSimpleStringA sResponseStateString;
 
 	Json::Value resultJson;
-	if(!IsFileExist("/networkflag.txt"))
+	if (gProgramBootMode!=Mode_Network)
 	{
 		resultJson["code"] = Json::Value("1");
 		resultJson["codemsg"] = Json::Value("程序不是从网络启动");

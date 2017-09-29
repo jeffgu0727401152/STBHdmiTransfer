@@ -138,11 +138,6 @@ void InitUI()
 	theBaseApp->StartInput();
 	gInitUIComplete = TRUE;
 
-	if(!IsFileExist("/networkflag.txt"))
-	{
-		LOGMSG(DBG_LEVEL_W, "mount remote failed, so boot is from board!!!\n");
-	}
-
 	if (!gKTVConfig.IsConfigFileValid())
 	{//本地没有经过认证的配置,认定为首次启动,直接进入设置页面
 		LOGMSG(DBG_LEVEL_I, "configure file not verified,show modify page\n");

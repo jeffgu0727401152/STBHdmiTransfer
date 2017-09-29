@@ -105,8 +105,22 @@ BOOL CHttpCmdClient::ThreadLoop(
 				break;
 			}
 
-			int code = atoi(root["code"].asString().c_str());
-			std::string msg = root["codemsg"].asString();
+			int code = 1;
+			std::string msg;
+			if (root["code"].isInt())
+			{
+				code = root["code"].asInt();
+			}
+			else if (root["code"].isString() )
+			{
+				code = atoi(root["code"].asString().c_str());
+			}
+
+
+			if (root["codemsg"].isString() )
+			{
+				msg = root["codemsg"].asString();
+			}
 
 			LOGMSG(DBG_LEVEL_I, "check online return: code=%d, msg=%s\n",
 				code, msg.c_str());
@@ -192,8 +206,22 @@ BOOL CHttpCmdClient::ClientVerify(
 		return FALSE;
 	}
 
-	int code = atoi(root["code"].asString().c_str());
-	std::string msg = root["codemsg"].asString();
+	int code = 1;
+	std::string msg;
+	if (root["code"].isInt())
+	{
+		code = root["code"].asInt();
+	}
+	else if (root["code"].isString() )
+	{
+		code = atoi(root["code"].asString().c_str());
+	}
+
+
+	if (root["codemsg"].isString() )
+	{
+		msg = root["codemsg"].asString();
+	}
 
 	LOGMSG(DBG_LEVEL_I, "verify return: code=%d, msg=%s\n",
 		code, msg.c_str());
@@ -257,10 +285,25 @@ BOOL CHttpCmdClient::ClientOpen(
 		//return FALSE;
 	}
 
-	int code = atoi(root["code"].asString().c_str());
-	std::string msg = root["codemsg"].asString();
+	int code = 1;
+	std::string msg;
 	std::string url;
-	if (!root["video_url"].isNull())
+	if (root["code"].isInt())
+	{
+		code = root["code"].asInt();
+	}
+	else if (root["code"].isString() )
+	{
+		code = atoi(root["code"].asString().c_str());
+	}
+
+
+	if (root["codemsg"].isString() )
+	{
+		msg = root["codemsg"].asString();
+	}
+
+	if (!root["video_url"].isNull() && root["video_url"].isString())
 	{
 		url = root["video_url"].asString();
 		pResultUrlString->Set(url.c_str());

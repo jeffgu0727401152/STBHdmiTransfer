@@ -209,17 +209,21 @@ void CSettingInfoPage::UpdateStateText()
 	{
 		if (gHttpCmdClient->GetIsServerOnline())
 		{
-			if(IsFileExist("/networkflag.txt"))
-				mStateText.SetWindowTextA("状态：连接成功！");
-			else
+			if (gProgramBootMode == Mode_Factory)
+				mStateText.SetWindowTextA("状态：连接成功(工厂启动)！");
+			else if (gProgramBootMode == Mode_Local)
 				mStateText.SetWindowTextA("状态：连接成功(本地启动)！");
+			else
+				mStateText.SetWindowTextA("状态：连接成功！");
 		}
 		else
 		{
-			if(IsFileExist("/networkflag.txt"))
-				mStateText.SetWindowTextA("状态：连接离线！");
-			else
+			if (gProgramBootMode == Mode_Factory)
+				mStateText.SetWindowTextA("状态：连接离线(工厂启动)！");
+			else if (gProgramBootMode == Mode_Local)
 				mStateText.SetWindowTextA("状态：连接离线(本地启动)！");
+			else
+				mStateText.SetWindowTextA("状态：连接离线！");
 		}
 	}
 	else
