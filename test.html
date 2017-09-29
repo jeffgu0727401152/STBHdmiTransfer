@@ -57,6 +57,10 @@ $("document").ready(function(){
         $var2 = $("#open_input").val();
         window.open( "http://" +$val +"/client/api?action=1&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/qianyan_test.mkv,http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv&position="+ $var2 + "&qr_url=1234567890");
     })
+    $("#button6").click(function(){
+        $val = $("#input").val();
+        window.open( "http://" +$val +"/client/api?action=9");
+    })
 })
     
 </script>
@@ -104,6 +108,9 @@ $("document").ready(function(){
          <li>
             <button type="button"  id="button5">开房</button>
         	<label for="rect">位置</label><input type="text" id="open_input" value="0,0,320,240" style="width:200px; height:15px;">
+        </li>
+        <li>
+            <button type="button"  id="button6">状态检测</button>
         </li>
          <li>
             <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/2012081210371.jpg" onclick="">图片1</a>
