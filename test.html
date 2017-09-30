@@ -23,45 +23,58 @@
 
 </head>
 <script>
-function sleep(numberMillis) { 
-    var now = new Date(); 
-    var exitTime = now.getTime() + numberMillis; 
-    while (true) { 
-    now = new Date(); 
-    if (now.getTime() > exitTime) 
-    return; 
-    } 
+
+function isStringOK(str)//True 没有全角，False有全角
+{
+    for (var i = 0; i < str.length; i++)
+    {
+        strCode = str.charCodeAt(i);
+        if(strCode   < 46 || strCode > 58)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 
 $("document").ready(function(){
-    $("#button1").click(function(){
-        $val = $("#input").val();
-        window.open( "http://" +$val +"/client/api?action=8");
-    })
-    $("#button2").click(function(){
-        $val = $("#input").val();
-        window.open( "http://" +$val +"/client/api?action=6");
-    })
-    $("#button3").click(function(){
-        $val = $("#input").val();
-        window.open( "http://" +$val +"/client/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4");
-    })
-    $("#button4").click(function(){
-        $val = $("#input").val();
-        $var2 = $("#pause_input").val();
-        window.open("http://" +$val +"/client/api?action=3&image_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/2012081210371.jpg&position=" + $var2);
-    })
-    $("#button5").click(function(){
-        $val = $("#input").val();
-        $var2 = $("#open_input").val();
-        window.open( "http://" +$val +"/client/api?action=1&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/qianyan_test.mkv,http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv&position="+ $var2 + "&qr_url=1234567890");
-    })
-    $("#button6").click(function(){
-        $val = $("#input").val();
-        window.open( "http://" +$val +"/client/api?action=9");
-    })
-})
+        $("#button1").click(function(){
+            $val = $("#input").val();
+            window.open( "http://" +$val +"/client/api?action=8");
+        })
+        $("#button2").click(function(){
+            $val = $("#input").val();
+            window.open( "http://" +$val +"/client/api?action=6");
+        })
+        $("#button3").click(function(){
+            $val = $("#input").val();
+            window.open( "http://" +$val +"/client/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4");
+        })
+        $("#button4").click(function(){
+            $val = $("#input").val();
+            $var2 = $("#pause_input").val();
+            window.open("http://" +$val +"/client/api?action=3&image_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/2012081210371.jpg&position=" + $var2);
+        })
+        $("#button5").click(function(){
+            $val = $("#input").val();
+            $var2 = $("#open_input").val();
+            window.open( "http://" +$val +"/client/api?action=1&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/qianyan_test.mkv,http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv&position="+ $var2 + "&qr_url=1234567890");
+        })
+        $("#button6").click(function(){
+            $val = $("#input").val();
+            window.open( "http://" +$val +"/client/api?action=9");
+        })
+        $("#input").blur(function(){
+            if( isStringOK($("#input").val()))
+            {
+                
+            }else{
+                alert("非法地址");
+            }
+        })
+    }
+)
     
 </script>
 <body>  
