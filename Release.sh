@@ -3,7 +3,10 @@
 workspace=$(cd `dirname $0`; pwd)
 echo workspace=$workspace
 
-rm -r ${workspace}/Release
+if [ -d ${workspace}/Release ]; then
+	rm -r ${workspace}/Release
+fi
+
 mkdir ${workspace}/Release
 
 cp -arf ${workspace}/ReleaseSkeleton/*									${workspace}/Release/
@@ -40,7 +43,7 @@ cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libssl.*					${workspace}/R
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libts*						${workspace}/Release/Program/Lib/common/
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libz.*						${workspace}/Release/Program/Lib/common/
 
-#U盘无法接受符号连接,如果希望从u盘启动,则放开下面注释
+#U盘无法接受符号连接
 if [ "$1" == "udisk" ]; then
 	echo "release is for usb disk boot!" 
 	cd ${workspace}/Release/Program/Lib/nexus/
@@ -48,6 +51,7 @@ if [ "$1" == "udisk" ]; then
 	cd ${workspace}/Release/Program/Lib/common/
 	sh ${workspace}/link2copy.sh
 elif [ "$1" == "factory" ]; then
+	rm -r ${workspace}/Release/Private
 	echo "release is for factory preburn!" 
 else
 	rm ${workspace}/Release/STBCfg.xml

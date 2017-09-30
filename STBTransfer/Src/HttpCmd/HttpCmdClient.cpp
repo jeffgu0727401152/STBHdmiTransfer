@@ -65,13 +65,20 @@ BOOL CHttpCmdClient::ThreadLoop(
 				1024,
 				&uActualResultSize))
 			{
-				heartBeatLostCount++;
-				if(heartBeatLostCount > HEART_BEAT_LOST_THRESHOLD)
+				if (gProgramBootMode == Mode_Factory)
 				{
-					LOGMSG(DBG_LEVEL_I, "check online return failed , try to use HDMI transmission\n");
+					LOGMSG(DBG_LEVEL_W, "check online failed, but gProgramBootMode is Mode_Factory, so do nothing!\n");
+					break;
+				}
+
+				heartBeatLostCount++;
+				if (heartBeatLostCount > HEART_BEAT_LOST_THRESHOLD)
+				{
+
 					PAGE_TYPE currentPage  = gPageManager->GetCurPageType();
-					if(!(Page_Hdmi ==  currentPage || Page_SettingModify == currentPage || Page_SettingInfo == currentPage))
+					if (!(Page_Hdmi ==  currentPage || Page_SettingModify == currentPage || Page_SettingInfo == currentPage))
 					{
+						LOGMSG(DBG_LEVEL_W, "check online failed, SetCurrentPage HDMI\n");
 						gPageManager->SetCurrentPage(Page_Hdmi);
 					}
 					heartBeatLostCount = 0;

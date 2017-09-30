@@ -266,7 +266,14 @@ void CSettingModifyPage::OnClick(
 {
 	if (pWnd == &mVerifyBtn)
 	{
-		if (!PromptInvalidEditContent() && gProgramBootMode!=Mode_Factory)
+		if (gProgramBootMode==Mode_Factory)
+		{
+			PromptInvalidEditContent();
+			LOGMSG(DBG_LEVEL_W, "gProgramBootMode is Mode_Factory, so do nothing just return after verifyClick!\n");
+			return;
+		}
+
+		if (!PromptInvalidEditContent())
 		{
 			LOGMSG(DBG_LEVEL_I, "Edit text content is ok, so save settings to configure file!\n");
 			ConfigEthNet();

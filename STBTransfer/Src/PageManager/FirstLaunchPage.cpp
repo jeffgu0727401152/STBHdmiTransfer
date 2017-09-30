@@ -139,6 +139,11 @@ void CFirstLaunchPage::OnMsg(
 					FALSE, //passthrough
 					0);
 			}
+			else
+			{
+				LOGMSG(DBG_LEVEL_I, "%s:%d, mVideoUrlList empty,show hdmi page!\n", __PRETTY_FUNCTION__, __LINE__);
+				gPageManager->SetCurrentPage(Page_Hdmi);
+			}
 		}
 		break;
 
@@ -263,6 +268,7 @@ void CFirstLaunchPage::PerformLaunchVideo()
 	}
 	else
 	{
+		LOGMSG(DBG_LEVEL_I, "%s:%d, mVideoUrlList empty,show hdmi page!\n", __PRETTY_FUNCTION__, __LINE__);
 		gPageManager->SetCurrentPage(Page_Hdmi);
 	}
 }

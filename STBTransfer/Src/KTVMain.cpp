@@ -138,14 +138,19 @@ void InitUI()
 	theBaseApp->StartInput();
 	gInitUIComplete = TRUE;
 
-	if (!gKTVConfig.IsConfigFileValid())
+	if (gProgramBootMode==Mode_Factory)
+	{
+		LOGMSG(DBG_LEVEL_I, "Mode_Factory,show hdmi page\n");
+		gPageManager->SetCurrentPage(Page_Hdmi);
+	}
+	else if (!gKTVConfig.IsConfigFileValid())
 	{//本地没有经过认证的配置,认定为首次启动,直接进入设置页面
 		LOGMSG(DBG_LEVEL_I, "configure file not verified,show modify page\n");
 		gPageManager->SetCurrentPage(Page_SettingModify);
 	}
 	else
 	{//本地有经过认证的配置,平时正常情况走这边
-		LOGMSG(DBG_LEVEL_I, "configure file verified,set ip and show hdmi page\n");
+		LOGMSG(DBG_LEVEL_I, "configure file verified,set ip & show hdmi page & send open http cmd\n");
 		CSimpleStringA sInterfaceName;
 		GetAvailbalEthNetworkInterface(&sInterfaceName);
 
