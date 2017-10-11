@@ -100,43 +100,30 @@ void CCloseRoomPage::OnMsg(
 		{
 			LOGMSG(DBG_LEVEL_I, "CCloseRoomPage::OnMsg MSG_PLAYER_COMPLETE!\n");
 
-			BOOL bAllPlayComplete = FALSE;
+			if (lParam == PlayComplete_ReasonType_StartError)
+			{
+				LOGMSG(DBG_LEVEL_E, "CCloseRoomPage, play failed, idx = %d, total video = %d!\n",
+						mCurPlayIndex, mVideoUrlList.GetCount());
+				mLock.Lock();
+				mVideoUrlList.DeleteAt(mCurPlayIndex);
+				mCurPlayIndex--;
+				mLock.Unlock();
+			}
+
 			char cVideoUrlLocal[MAX_PATH] = {0};
 
 			mLock.Lock();
-
 			int nCount = mVideoUrlList.GetCount();
 			if (nCount > 0)
 			{
-				mCurPlayIndex = mCurPlayIndex + 1;
-				if (mCurPlayIndex >= nCount)
-				{
-					DelArrayList(&mVideoUrlList, char);
-					mCurPlayIndex = 0;
-					bAllPlayComplete = TRUE;
-				}
-				else
-				{
-					// 播放下一个视频
-					const char* cVideoUrl = (const char*)mVideoUrlList.GetAt(mCurPlayIndex);
-					SAFE_STRNCPY(cVideoUrlLocal, cVideoUrl, MAX_PATH);
-				}
+				mCurPlayIndex = (mCurPlayIndex+1) % nCount;
+				// 播放下一个视频
+				const char* cVideoUrl = (const char*)mVideoUrlList.GetAt(mCurPlayIndex);
+				SAFE_STRNCPY(cVideoUrlLocal, cVideoUrl, MAX_PATH);
 			}
-			else
-			{
-				DelArrayList(&mVideoUrlList, char);
-				mCurPlayIndex = 0;
-				bAllPlayComplete = TRUE;
-			}
-
 			mLock.Unlock();
 
-			if (bAllPlayComplete)
-			{
-				UnRegisterBroadcastMsg(MSG_PLAYER_COMPLETE);
-				gPageManager->SetCurrentPage(Page_Hdmi);
-			}
-			else if (cVideoUrlLocal[0])
+			if (cVideoUrlLocal[0])
 			{
 				LOGMSG(DBG_LEVEL_I, "%s:%d, PlayMain!\n", __PRETTY_FUNCTION__, __LINE__);
 				gPlayerCtrl->PlayMain(
@@ -145,6 +132,11 @@ void CCloseRoomPage::OnMsg(
 					FALSE, //loopplay
 					FALSE, //passthrough
 					0);
+			}
+			else
+			{
+				LOGMSG(DBG_LEVEL_I, "%s:%d, mVideoUrlList empty,show hdmi page!\n", __PRETTY_FUNCTION__, __LINE__);
+				gPageManager->SetCurrentPage(Page_Hdmi);
 			}
 		}
 		break;
