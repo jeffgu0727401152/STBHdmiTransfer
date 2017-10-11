@@ -36,6 +36,7 @@ void CPageManager::Create(
 	mCloseRoomPage.Create(pE3DEngine, pParent);
 	mOpenRoomPage.Create(pE3DEngine, pParent);
 	mFirstLanchPage.Create(pE3DEngine, pParent);
+	mPayCallbackPage.Create(pE3DEngine, pParent);
 
 	mpPageWnd[Page_Hdmi] = &mHdmiPage;
 	mpPageWnd[Page_SettingModify] = &mSettingModifyPage;
@@ -44,6 +45,7 @@ void CPageManager::Create(
 	mpPageWnd[Page_CloseRoom] = &mCloseRoomPage;
 	mpPageWnd[Page_OpenRoom] = &mOpenRoomPage;
 	mpPageWnd[Page_FirstLaunch] = &mFirstLanchPage;
+	mpPageWnd[Page_PayCallback] = &mPayCallbackPage;
 
 	int i;
 	for ( i = 0; i < Page_Count; i++ )

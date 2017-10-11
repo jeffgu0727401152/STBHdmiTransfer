@@ -62,6 +62,10 @@ void CHttpCmdServer::OnServerReceiveTCPData(
 		OnRequestCloseRoomCmd(nSocketFD, (HTTPCMDREQCLOSEROOMCMD *)phdr);
 		break;
 
+	case HTTPCMD_REQ_PAYCALLBACK:
+		OnRequestPayCallbackCmd(nSocketFD, (HTTPCMDREQPAYCALLBACKCMD *)phdr);
+		break;
+
 	case HTTPCMD_REQ_CHECKSTATUS:
 		OnRequestCheckStatusCmd(nSocketFD, (HTTPCMDREQCHECKSTATUSCMD *)phdr);
 		break;
@@ -365,6 +369,68 @@ void CHttpCmdServer::OnRequestCloseRoomCmd(
 	{
 		response.uSize = 0;
 		SendData(nSocketFD, &response, sizeof(HTTPCMDRESCLOSEROOMCMD));
+	}
+
+	mOperatorLock.Unlock();
+}
+
+void CHttpCmdServer::OnRequestPayCallbackCmd(
+		int nSocketFD,
+		HTTPCMDREQPAYCALLBACKCMD *pReqPayCallbackCmd)
+{
+	LOGMSG(DBG_LEVEL_I, "%s:\n", __PRETTY_FUNCTION__);
+
+	CSimpleStringA sResponseStateString;
+
+	Json::Value resultJson;
+	resultJson["code"] = Json::Value("0");
+	resultJson["codemsg"] = Json::Value("请求成功");
+	Json::FastWriter fast_writer;
+	sResponseStateString.Set(fast_writer.write(resultJson).c_str());
+
+	mOperatorLock.Lock();
+
+	HTTPCMDRESPAYCALLBACKCMD response;
+	response.nHttpCmdVer = HTTPCMD_VER;
+	response.nRequestID = pReqPayCallbackCmd->nRequestID;
+	response.nCommandType = HTTPCMD_RES_CLOSEROOM;
+	response.uPrivData = pReqPayCallbackCmd->uPrivData;
+	response.uSize = sResponseStateString.GetLength();
+
+	UINT32 uSendBufSize = sizeof(HTTPCMDRESPAYCALLBACKCMD) + response.uSize;
+	BYTE *pSendBuffer = new BYTE[uSendBufSize];
+	if (pSendBuffer)
+	{
+		int nBufPos = 0;
+
+		memcpy(pSendBuffer+nBufPos, &response, sizeof(HTTPCMDRESPAYCALLBACKCMD));
+		nBufPos += sizeof(HTTPCMDRESPAYCALLBACKCMD);
+
+		memcpy(pSendBuffer+nBufPos, sResponseStateString.GetString(), response.uSize);
+		nBufPos += response.uSize;
+		SendData(nSocketFD, pSendBuffer, uSendBufSize);
+
+		delete []pSendBuffer;
+
+		if ( (gPageManager->GetCurPageType() == Page_SettingModify) ||
+			 (gPageManager->GetCurPageType() == Page_SettingInfo) )
+		{
+			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, we ignore this request!\n", __PRETTY_FUNCTION__);
+		}
+		else
+		{
+			const char* cVideoUrlBuffer = NULL;
+			if (pReqPayCallbackCmd->nVideoUrlBufLength)
+			{
+				cVideoUrlBuffer = ((const char*)pReqPayCallbackCmd) + sizeof(HTTPCMDREQPAYCALLBACKCMD);
+			}
+			gPayCallbackPage->PerformHttpCmd_PayCallback(cVideoUrlBuffer);
+		}
+	}
+	else
+	{
+		response.uSize = 0;
+		SendData(nSocketFD, &response, sizeof(HTTPCMDRESPAYCALLBACKCMD));
 	}
 
 	mOperatorLock.Unlock();

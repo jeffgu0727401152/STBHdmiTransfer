@@ -69,6 +69,10 @@ public:
 		int nVideoUrlBufLength,
 		const char *cVideoUrlBuffer,
 		CSimpleStringA *pResultString);
+	BOOL SendPayCallbackCmd(
+		int nVideoUrlBufLength,
+		const char *cVideoUrlBuffer,
+		CSimpleStringA *pResultString);
 
 private:
 	void OnResponseCheckStatusCmd(
@@ -86,6 +90,8 @@ private:
 		HTTPCMDRESOPENROOMCMD *pResOpenRoomCmdParam);
 	void OnResponseCloseRoomCmd(
 		HTTPCMDRESCLOSEROOMCMD *pResCloseRoomCmdParam);
+	void OnResponsePayCallbackCmd(
+		HTTPCMDRESPAYCALLBACKCMD *pResPayCallbackCmdParam);
 
 private:
 	CBaseLock mRequestWithEventListLock;

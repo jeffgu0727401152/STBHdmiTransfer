@@ -52,6 +52,9 @@ private:
 	void OnRequestCloseRoomCmd(
 		int nSocketFD,
 		HTTPCMDREQCLOSEROOMCMD *pReqCloseRoomCmd);
+	void OnRequestPayCallbackCmd(
+		int nSocketFD,
+		HTTPCMDREQPAYCALLBACKCMD *pReqPayCallbackCmd);
 
 	void OnRequestCheckStatusCmd(
 		int nSocketFD,

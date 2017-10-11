@@ -80,6 +80,10 @@ void CHttpCmdClient::OnClientReceiveTCPData(
 				OnResponseCheckStatusCmd((HTTPCMDRESCHECKSTATUSCMD *)phdr);
 				break;
 
+			case HTTPCMD_RES_PAYCALLBACK:
+				OnResponsePayCallbackCmd((HTTPCMDRESPAYCALLBACKCMD *)phdr);
+				break;
+
 			default:
 				break;
 			}
@@ -531,5 +535,83 @@ void CHttpCmdClient::OnResponseCloseRoomCmd(
 	{
 		const char *pReadBuf = ((const char *)pResCloseRoomCmdParam)+sizeof(HTTPCMDRESCLOSEROOMCMD);
 		pResultString->Set(pReadBuf, pResCloseRoomCmdParam->uSize);
+	}
+}
+
+BOOL CHttpCmdClient::SendPayCallbackCmd(
+	int nVideoUrlBufLength,
+	const char *cVideoUrlBuffer,
+	CSimpleStringA *pResultString)
+{
+	if (!IsConnect())
+	{
+		LOGMSG(DBG_LEVEL_I, "%s: HttpCmdServer NOT Started\n", __PRETTY_FUNCTION__);
+
+		return FALSE;
+	}
+
+	BOOL bSendOK = FALSE;
+
+	HTTPCMDREQPAYCALLBACKCMD request;
+	request.nHttpCmdVer = HTTPCMD_VER;
+	request.nRequestID = mRequestID++;
+	request.nCommandType = HTTPCMD_REQ_PAYCALLBACK;
+	request.uPrivData = (UINT64)pResultString;
+
+	request.nVideoUrlBufLength = nVideoUrlBufLength;
+
+	UINT32 uSendBufSize = sizeof(HTTPCMDREQPAYCALLBACKCMD) + nVideoUrlBufLength;
+	BYTE *pSendBuffer = new BYTE[uSendBufSize];
+	if (!pSendBuffer)
+	{
+		return FALSE;
+	}
+
+	memcpy(pSendBuffer, &request, sizeof(HTTPCMDREQPAYCALLBACKCMD));
+	if (nVideoUrlBufLength > 0)
+	{
+		memcpy(pSendBuffer+sizeof(HTTPCMDREQPAYCALLBACKCMD), cVideoUrlBuffer, nVideoUrlBufLength);
+	}
+
+	HTTPCMDREQWITHEVENT requestWithEvent;
+	requestWithEvent.nRequestID = request.nRequestID;
+	mRequestWithEventListLock.Lock();
+	mRequestWithEventList.AddData(&requestWithEvent);
+	mRequestWithEventListLock.Unlock();
+
+	LOGMSG(DBG_LEVEL_I, "%s: req:nRequestID=%d\n", __PRETTY_FUNCTION__, request.nRequestID);
+	if (SendData(MSG_TO_SERVERSOCKET, pSendBuffer, uSendBufSize))
+	{
+		if (!requestWithEvent.complete.Wait(5000))
+		{
+			LOGMSG(DBG_LEVEL_I, "%s: wait response timeout\n", __PRETTY_FUNCTION__);
+		}
+		else
+		{
+			bSendOK = TRUE;
+		}
+	}
+	else
+	{
+		LOGMSG(DBG_LEVEL_I, "%s: SendData Failed\n", __PRETTY_FUNCTION__);
+	}
+
+	mRequestWithEventListLock.Lock();
+	mRequestWithEventList.DeleteAt(mRequestWithEventList.FindFirst(&requestWithEvent));
+	mRequestWithEventListLock.Unlock();
+
+	delete []pSendBuffer;
+
+	return bSendOK;
+}
+
+void CHttpCmdClient::OnResponsePayCallbackCmd(
+	HTTPCMDRESPAYCALLBACKCMD *pResPayCallbackCmdParam)
+{
+	CSimpleStringA *pResultString = (CSimpleStringA *)pResPayCallbackCmdParam->uPrivData;
+	if (pResPayCallbackCmdParam->uSize > 0)
+	{
+		const char *pReadBuf = ((const char *)pResPayCallbackCmdParam)+sizeof(HTTPCMDRESPAYCALLBACKCMD);
+		pResultString->Set(pReadBuf, pResPayCallbackCmdParam->uSize);
 	}
 }

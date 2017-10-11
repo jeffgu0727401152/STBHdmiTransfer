@@ -116,7 +116,7 @@ void ProcessCommand(
 
 		SendResponseString(&sResultString);
 	}
-	else if (strncasecmp(cCmdType, "action=1", 8) == 0)
+	else if (strncasecmp(cCmdType, "action=1", 8) == 0 && (cCmdType[8] <= '0' || cCmdType[8] >= '9') )
 	{
 		// 开房
 		const char* cQRCodeString = NULL;
@@ -158,7 +158,35 @@ void ProcessCommand(
 	}
 	else if (strncasecmp(cCmdType, "action=4", 8) == 0)
 	{
-		// 支付回调/关房
+		// 支付回调
+		const char* cVideoUrlBuffer = NULL;
+		for (int i = 1; i < pArgList->GetCount(); i++)
+		{
+			const char* cArg = (const char*)pArgList->GetAt(i);
+			if (!cArg)
+			{
+				continue;
+			}
+
+			if (strncasecmp(cArg, "video_url=", 10) == 0)
+			{
+				cVideoUrlBuffer = cArg + 10;
+			}
+		}
+
+		if (!gHttpCmdClient.SendPayCallbackCmd(
+			cVideoUrlBuffer?strlen(cVideoUrlBuffer)+1:0,
+			cVideoUrlBuffer,
+			&sResultString))
+		{
+			GenerateErrorString(&sResultString);
+		}
+
+		SendResponseString(&sResultString);
+	}
+	else if (strncasecmp(cCmdType, "action=11", 9) == 0)
+	{
+		// 关房回调
 		const char* cVideoUrlBuffer = NULL;
 		for (int i = 1; i < pArgList->GetCount(); i++)
 		{

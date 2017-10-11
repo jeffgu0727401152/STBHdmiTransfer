@@ -7,6 +7,7 @@
 #include "CloseRoomPage.h"
 #include "FirstLaunchPage.h"
 #include "OpenRoomPage.h"
+#include "PayCallbackPage.h"
 
 typedef enum ePAGE_TYPE
 {
@@ -17,6 +18,7 @@ typedef enum ePAGE_TYPE
 	Page_CloseRoom,			// 关房页面
 	Page_OpenRoom,			// 开放页面
 	Page_FirstLaunch,		// 开机页面
+	Page_PayCallback,		// 支付回调页面 
 	Page_Count
 } PAGE_TYPE;
 
@@ -47,6 +49,7 @@ public:
 	CCloseRoomPage mCloseRoomPage;
 	COpenRoomPage mOpenRoomPage;
 	CFirstLaunchPage mFirstLanchPage;
+	CPayCallbackPage mPayCallbackPage;
 
 private:
 	PAGE_TYPE mCurPageType;

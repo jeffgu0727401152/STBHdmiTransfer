@@ -65,6 +65,10 @@ $("document").ready(function(){
             $val = $("#input").val();
             window.open( "http://" +$val +"/client/api?action=9");
         })
+        $("#button7").click(function(){
+            $val = $("#input").val();
+            window.open( "http://" +$val +"/client/api?action=11&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4");
+        })
         $("#input").blur(function(){
             if( isStringOK($("#input").val()))
             {
@@ -109,7 +113,11 @@ $("document").ready(function(){
             <button type="button"  id="button2">取消暂停</button>
         </li>
          <li>
-            <button type="button"  id="button3">支付回调/关房</button>
+            <button type="button"  id="button3">支付回调</button>
+            
+        </li>
+        <li>
+            <button type="button"  id="button7">关房</button>
             
         </li>
         
