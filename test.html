@@ -12,7 +12,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <script src="http://static.blog.csdn.net/scripts/blog_static_head.min.js" type="text/javascript"></script>
-
+    
 </head>
 <script>
 
@@ -50,6 +50,10 @@ function loadXMLDoc( urlaaa )
         }
     }
     xmlhttp.open("GET", urlaaa,true);
+    //xmlhttp.setRequestHeader("Access-Control-Allow-Origin", "*")
+    //xmlhttp.setRequestHeader("Access-Control-Max-Age", "3628800")
+    //xmlhttp.setRequestHeader("Access-Control-Allow-Methods", "GET")
+    //xmlhttp.setRequestHeader("Access-Control-Allow-Headers", "content-type")
     xmlhttp.send();
 }
 
@@ -159,6 +163,11 @@ $("document").ready(function(){
         </li>
         <li>
             <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/%E5%AD%98%E5%9C%A8.mkv " onclick="">测试视频4</a>
+        </li>
+        <li>
+        <div><h3>RETURN CODE</h3></div>
+
+        <div id="myReturnCodeDiv"><h3></h3></div>
         </li>
     </ul>
 

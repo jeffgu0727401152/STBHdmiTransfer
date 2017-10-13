@@ -17,6 +17,9 @@ static void SendResponseString(CSimpleStringA *pResultString)
 {
 	FCGI_printf(
 		"Content-type: text/html\r\n"
+		"Access-Control-Allow-Origin:*\r\n"
+		"Access-Control-Allow-Methods:GET,POST\r\n"
+		"Access-Control-Allow-Headers:content-type\r\n"
 		"\r\n");
 
 	FCGI_puts(pResultString->GetString());
