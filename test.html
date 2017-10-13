@@ -13,14 +13,6 @@
 
     <script src="http://static.blog.csdn.net/scripts/blog_static_head.min.js" type="text/javascript"></script>
 
-        <!--new top-->
-       
-        <!--new top-->
-    
-      <!-- ad begin -->
-			
-    <!-- ad end-->
-
 </head>
 <script>
 
@@ -37,37 +29,61 @@ function isStringOK(str)//True 没有全角，False有全角
     return true;
 }
 
+function loadXMLDoc( urlaaa )
+{
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            document.getElementById("myReturnCodeDiv").innerHTML=xmlhttp.responseText;
+        }
+    }
+    xmlhttp.open("GET", urlaaa,true);
+    xmlhttp.send();
+}
+
 
 $("document").ready(function(){
         $("#button1").click(function(){
             $val = $("#input").val();
-            window.open( "http://" +$val +"/client/api?action=8");
+            loadXMLDoc("http://" +$val +"/client/api?action=8");
         })
         $("#button2").click(function(){
             $val = $("#input").val();
-            window.open( "http://" +$val +"/client/api?action=6");
+            loadXMLDoc("http://" +$val +"/client/api?action=6");
         })
         $("#button3").click(function(){
             $val = $("#input").val();
-            window.open( "http://" +$val +"/client/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4,http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv");
+            loadXMLDoc("http://" +$val +"/client/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4,http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv");
         })
         $("#button4").click(function(){
             $val = $("#input").val();
             $var2 = $("#pause_input").val();
-            window.open("http://" +$val +"/client/api?action=3&image_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/2012081210371.jpg&position=" + $var2);
+            loadXMLDoc("http://" +$val +"/client/api?action=3&image_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/2012081210371.jpg&position=" + $var2);
         })
         $("#button5").click(function(){
             $val = $("#input").val();
             $var2 = $("#open_input").val();
-            window.open( "http://" +$val +"/client/api?action=1&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4&position="+ $var2 + "&qr_url=1234567890");
+            loadXMLDoc("http://" +$val +"/client/api?action=1&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4&position="+ $var2 + "&qr_url=1234567890");
         })
         $("#button6").click(function(){
             $val = $("#input").val();
-            window.open( "http://" +$val +"/client/api?action=9");
+            loadXMLDoc("http://" +$val +"/client/api?action=9");
         })
         $("#button7").click(function(){
             $val = $("#input").val();
-            window.open( "http://" +$val +"/client/api?action=11&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4");
+            loadXMLDoc("http://" +$val +"/client/api?action=11&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4");
         })
         $("#input").blur(function(){
             if( isStringOK($("#input").val()))
@@ -81,29 +97,16 @@ $("document").ready(function(){
 )
     
 </script>
-<body>  
+<body>
+    
     <ul class="panel_head"><span>ktv测试</span></ul>
 	<div class="addrss input">
     	<ul>
     		<li>
     		<label for="地址">地址</label>
-        	<input type="text" id= "input" value="192.168.4.135:8080"></li>
+        	<input type="text" id= "input" value="192.168.4.44:8080"></li>
         </ul>
     </div>
-<!--
-    <div>
-	    <li><label for="rect">视频1</label><input type="text" id="video1" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-	    <li><label for="rect">视频2</label><input type="text" id="video2" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-	    <li><label for="rect">视频3</label><input type="text" id="video3" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-	    <li><label for="rect">视频4</label><input type="text" id="video4" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-
-	    <li><label for="rect">图片1</label><input type="text" id="video1" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-	    <li><label for="rect">图片2</label><input type="text" id="video2" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-	    <li><label for="rect">图片3</label><input type="text" id="video3" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-	    <li><label for="rect">图片4</label><input type="text" id="video4" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-	    <li><label for="rect">图片4</label><input type="text" id="video4" value="/ads/api?action=4&video_url=http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4"></li>
-	</div>
--->
 	<ul class="panel_body">    
 
         <li>
@@ -160,5 +163,7 @@ $("document").ready(function(){
             <a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/%E5%AD%98%E5%9C%A8.mkv " onclick="">视频4</a>
         </li>
     </ul>
+
+    
 </body>
 </html>
