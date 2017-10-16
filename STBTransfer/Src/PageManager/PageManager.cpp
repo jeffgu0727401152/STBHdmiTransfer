@@ -63,6 +63,17 @@ void CPageManager::SetCurrentPage(
 
 	if (ePageType != mCurPageType)
 	{
+		if(Page_SettingModify == ePageType || Page_SettingInfo == ePageType)
+		{
+			theBaseApp->ForceShowCursor(TRUE);
+			theBaseApp->EnableDrawCursor(TRUE);
+
+		}
+		else
+		{
+			theBaseApp->ForceShowCursor(FALSE);
+			theBaseApp->EnableDrawCursor(FALSE);
+		}
 		int nIndex = mPageList.FindFirst(
 			(const void *)((UINT64)ePageType));
 		if (nIndex >= 0)

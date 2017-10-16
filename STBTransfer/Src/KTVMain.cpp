@@ -105,7 +105,7 @@ void InitUI()
 {
 	LOGMSG(DBG_LEVEL_W, "Start...\n");
 
-	theBaseApp->ForceShowCursor(TRUE);
+	theBaseApp->ForceShowCursor(FALSE);
 
 	theBaseApp->SetInputType(INPUTTYPE_DEVICE);
 

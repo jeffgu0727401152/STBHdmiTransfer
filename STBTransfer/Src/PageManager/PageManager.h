@@ -8,6 +8,7 @@
 #include "FirstLaunchPage.h"
 #include "OpenRoomPage.h"
 #include "PayCallbackPage.h"
+#include "BaseApp.h"
 
 typedef enum ePAGE_TYPE
 {
