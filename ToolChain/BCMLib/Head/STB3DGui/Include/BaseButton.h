@@ -1,10 +1,12 @@
 #pragma once
 
 #include "BaseWnd.h"
+#include "AnimationEffect.h"
 
 class CRadioButtonGroup;
 
-class CBaseButton: public CBaseWnd
+class CBaseButton: public CBaseWnd,
+	public IAnimationEffectListener
 {
 	typedef CBaseWnd CParentClass;
 
@@ -27,6 +29,15 @@ public:
 
 	virtual void OnWindowVisible(
 		BOOL bVisible);
+
+// interface
+public:
+	virtual void OnAnimationFrameChange(
+		CAnimationEffect *pEffect,
+		CImageBuffer *pImageBuffer,
+		int nCurIndex,
+		int nTotalIndex,
+		UINT64 uUserData);
 
 protected:
 	virtual void OnSubclassTouchDown(
@@ -82,12 +93,12 @@ private:
 	int mOldBtnState;
 
 	// 0-normal, 1-pressing
-	IWndEffect *mpNormalButtonEffect[2];
+	CAnimationEffect* mpNormalButtonEffect[2];
 
 	// 0-normal, 1-pressing
-	IWndEffect *mpPressedButtonEffect[2];
+	CAnimationEffect* mpPressedButtonEffect[2];
 
-	IWndEffect *mpCurBtnEffect;
+	CAnimationEffect* mpCurBtnEffect;
 
 	CRadioButtonGroup *mpRadioGroup;
 };

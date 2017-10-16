@@ -66,13 +66,9 @@ public:
 	virtual int GetYPosMax();
 
 public:
-	void SetCalibrationParam(
-		int nCalParam[7]);
 	void SetInputType(
 		INPUTTYPE type);
 	INPUTTYPE GetInputType();
-	void SetDeviceEventName(
-		const char* cDevEventName);
 	void SetMonkeyParam(
 		UINT64 uInterval);
 
@@ -108,7 +104,6 @@ public:
 		UINT64 uThreadData);
 
 private:
-	void AddSpecialEventDevices();
 	void AddEventDevicesFromInputDevice();
 
 	void ParseUevent(
@@ -137,7 +132,6 @@ private:
 
 #ifdef HAVE_EVENT_DEV
 	CEventDevice mEventDevice;
-	char mDevEventName[MAX_PATH];
 
 	CBaseThread mWatchInputDeviceThread;
 	int mInputDeviceInotifyFD;
@@ -151,7 +145,4 @@ private:
 	int mCurYPos;
 	int mXPosMax;
 	int mYPosMax;
-
-	// calibration
-	int mCalParam[7];
 } ;

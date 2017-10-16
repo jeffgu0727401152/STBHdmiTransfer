@@ -54,13 +54,9 @@ public:
 	void Resume();
 
 public:
-	void SetCalibrationParam(
-		int nCalParam[7]);
 	void SetInputType(
 		INPUTTYPE type);
 	INPUTTYPE GetInputType();
-	void SetDeviceEventName(
-		const char* cDevEventName);
 	void SetMonkeyParam(
 		UINT64 uInterval);
 	void StartInput();

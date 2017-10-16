@@ -1,27 +1,24 @@
 #pragma once
 
 #include "AnimationFrame.h"
-#include "IWndEffect.h"
 #include "BaseWnd.h"
 
 class CAnimationEffect;
 
-class IAnimationFrameListener
+class IAnimationEffectListener
 {
 public:
-	virtual ~IAnimationFrameListener(void) {}
+	virtual ~IAnimationEffectListener(void) {}
 
 	virtual void OnAnimationFrameChange(
 		CAnimationEffect *pEffect,
-		CBaseWnd *pWnd,
+		CImageBuffer *pImageBuffer,
 		int nCurIndex,
 		int nTotalIndex,
 		UINT64 uUserData)=0;
 };
 
-class CAnimationEffect :
-	public IWndEffect,
-	public IMessageOwner
+class CAnimationEffect : public IMessageOwner
 {
 public:
 	CAnimationEffect();
@@ -32,11 +29,23 @@ public:
 	virtual const char* GetEffectName();
 
 	virtual void Create(
-		CBaseWnd *pEffectWnd);
+		IAnimationEffectListener *pAnimationEffectListener,
+		UINT64 uUserData);
 	virtual void Delete();
 
-	virtual void ParserFromXmlNode(
+	void LoadEffectFromXmlNode(
 		XMLNode *pNode);
+	void LoadEffectFromChildXmlNode(
+		XMLNode *pNode,
+		const char* cChildNodeName);
+	BOOL LoadFromImageFile(
+		const char* cImageFileName);
+	BOOL LoadFromImageBuffer(
+		CImageBuffer *pImageBuf);
+	BOOL LoadFromGifFile(
+		const char* cGifFileName);
+	BOOL LoadFromGifBuffer(
+		CBuffer *pGifBuf);
 
 	virtual void StartEffect();
 	virtual void StopEffect();
@@ -46,19 +55,12 @@ public:
 		UINT64 wParam,
 		UINT64 lParam);
 
-public:
-	void SetAnimationFrameListener(
-		IAnimationFrameListener *pAnimationFrameListener,
-		UINT64 uUserData);
-
 private:
 	void UpdateFrame();
 
 private:
 	CAnimationFrame mAnimationFrame;
 
-	IAnimationFrameListener *mpAnimationFrameListener;
+	IAnimationEffectListener *mpAnimationEffectListener;
 	UINT64 mUserData;
-
-	CBaseWnd *mpEffectWnd;
 };

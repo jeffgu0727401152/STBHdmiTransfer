@@ -10,7 +10,6 @@
 #include "PictureBox.h"
 #include "E3DCommand.h"
 #include "ImageBuffer.h"
-#include "IWndEffect.h"
 
 #define LOAD_RES_WHEN_NEED
 
@@ -247,31 +246,13 @@ public:
 
 	void RePositionWindow();
 
-	void SetEffectRect(
-		RECT *prcRect);
-	void GetEffectRect(
-		RECT *prcRect);
-	virtual void SetEffectTexture(
-		CTexture *pTexture);
-	void UpdateEffectBuffer(
-		CImageBuffer *pImageBuffer,
-		RECT  *prcUpdate);
-	void GetEffectTexture(
-		CTexture *pTexture);
-	float GetEffectZorder();
-	void SetEffectAlphaColor(
-		UINT32 uColor);
-	UINT32 GetEffectAlphaColor();
-	void SetEffectAngle(
-		int nAngle);
-	int GetEffectAngle();
-
 	void SetBkgroundRect(
 		RECT *prcRect);
 	void GetBkgroundRect(
 		RECT *prcRect);
 	virtual void SetBkgroundTexture(
 		CTexture *pTexture);
+	// when update texture, must set prcUpdate, otherwise, it will use new texture
 	virtual void SetBkgroundImageBuffer(
 		CImageBuffer *pImageBuffer,
 		RECT  *prcUpdate);
@@ -331,10 +312,6 @@ protected:
 
 	BOOL mWindowEnable;
 	BOOL mWindowVisible;
-
-	CPictureBox mEffectPictureBox;
-	RECT mEffectRect;
-	IWndEffect *mpWndEffect;
 
 	CPictureBox mBkgroundPictureBox;
 	RECT mBkgroundRect;
@@ -472,7 +449,6 @@ public:
 
 	virtual void OnUpdateZorder();
 	virtual void OnRedraw();
-	virtual void OnRedrawEffect();
 	virtual void OnRedrawBkground();
 	virtual void OnRedrawText();
 

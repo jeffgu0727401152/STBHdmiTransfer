@@ -61,7 +61,7 @@ private:
 };
 
 #ifdef PC_VERSION
-#define DETECT_TEXTURE_LEAK
+//#define DETECT_TEXTURE_LEAK
 #endif
 
 #ifdef DETECT_TEXTURE_LEAK
