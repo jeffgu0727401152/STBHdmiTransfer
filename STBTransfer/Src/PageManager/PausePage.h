@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseWnd.h"
+#include "GifWnd.h"
 
 class CPausePage: public CBaseWnd
 {
@@ -29,12 +30,12 @@ public:
 		RECT rcImagePosition,
 		const char *pImageUrlBuffer);
 
-	BOOL PictureTextureDownload(
+	BOOL PictureLocalDownload(
 		const char *cNetFile,
-		CTexture *pTexture);
+		char cLocalFile[MAX_PATH]);
 
 private:
-	CBaseWnd mPictureWnd;
+	CGifWnd mPictureWnd;
 
 	int mShowTimeMS;
 	RECT mShowPosition;

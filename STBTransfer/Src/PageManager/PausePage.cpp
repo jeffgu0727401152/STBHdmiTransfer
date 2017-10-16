@@ -35,7 +35,7 @@ void CPausePage::Create(
 		WINDOWFLAG_DEFAULT,
 		WINDOWSTATE_INVISIBLE);
 
-	mPictureWnd.CreateStatic(pE3DEngine, this);
+	mPictureWnd.Create(pE3DEngine, this);
 
 	LOGMSG(DBG_LEVEL_I, "%s ---\n", __PRETTY_FUNCTION__);
 }
@@ -111,10 +111,18 @@ void CPausePage::OnTimer(
 		}
 		mLock.Unlock();
 
-		CTexture sTexture;
-		if (PictureTextureDownload(cNetFile, &sTexture))
+		char cLocalFile[MAX_PATH];
+		if (PictureLocalDownload(cNetFile, cLocalFile))
 		{
-			mPictureWnd.SetBkgroundTexture(&sTexture);
+			int length = strlen(cNetFile);
+			if(strcasecmp(cNetFile + length - 4, ".gif") == 0)
+			{
+				mPictureWnd.LoadFromGifFile(cLocalFile);
+			}
+			else
+			{
+				mPictureWnd.LoadFromImageFile(cLocalFile);
+			}
 		}
 	}
 }
@@ -176,10 +184,18 @@ void CPausePage::PerformHttpCmd_Pause(
 	// 显示第一张图片
 	if (nCount > 0)
 	{
-		CTexture sTexture;
-		if (PictureTextureDownload(cNetFile, &sTexture))
+		char cLocalFile[MAX_PATH];
+		if (PictureLocalDownload(cNetFile, cLocalFile))
 		{
-			mPictureWnd.SetBkgroundTexture(&sTexture);
+			int length = strlen(cNetFile);
+			if(strcasecmp(cNetFile + length - 4, ".gif") == 0)
+			{
+				mPictureWnd.LoadFromGifFile(cLocalFile);
+			}
+			else
+			{
+				mPictureWnd.LoadFromImageFile(cLocalFile);
+			}
 		}
 
 		AddTimer(TIMERID_SHOWIMG, mShowTimeMS);
@@ -192,16 +208,15 @@ void CPausePage::PerformHttpCmd_Pause(
 	}
 }
 
-BOOL CPausePage::PictureTextureDownload(
+BOOL CPausePage::PictureLocalDownload(
 	const char *cNetFile,
-	CTexture *pTexture)
+	char cLocalFile[MAX_PATH])
 {
 	if (!cNetFile || cNetFile[0] == '\0')
 	{
 		return FALSE;
 	}
 
-	char cLocalFile[MAX_PATH] = { 0 };
 	sprintf(cLocalFile, "%s/Pause.jpg", gKTVConfig.GetTempFolderPath());
 	unlink(cLocalFile);
 
@@ -215,11 +230,6 @@ BOOL CPausePage::PictureTextureDownload(
 			0);
 	if (IsFileExist(cLocalFile))
 	{
-		CImageBuffer sImageBuffer;
-		sImageBuffer.CreateFromImgFile(cLocalFile);
-		sImageBuffer.Stretch(LAYOUT_WIDTH, LAYOUT_HEIGHT, DRAWMODE_HCENTER|DRAWMODE_VCENTER);
-		LOGMSG(DBG_LEVEL_W, "sImageBuffer (%dx%d)!\n", sImageBuffer.GetWidth(), sImageBuffer.GetHeight());
-		pTexture->CreateFromImageBuffer(GetE3DEngine(), &sImageBuffer);
 		return TRUE;
 	}
 
