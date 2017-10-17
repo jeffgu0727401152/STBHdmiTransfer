@@ -337,11 +337,19 @@ void CPlayerCtrl::OnPlayCompleteEvent(
 
 void CPlayerCtrl::OnFirstAudioPtsEvent(
 	PLAYERINDEX ePlayerIndex)
-{}
+{
+	LOGMSG(DBG_LEVEL_I,"%s: ePlayerIndex=%d\n",
+		__PRETTY_FUNCTION__,ePlayerIndex);
+	if (ePlayerIndex == PLAYERINDEX_MAIN)
+	{
+		gHdmiPage->PostMsg(MSG_FIRSTAUDIO, 0, 0);
+	}
+}
 
 void CPlayerCtrl::OnFirstVideoPtsEvent(
 	PLAYERINDEX ePlayerIndex)
-{}
+{
+}
 
 void CPlayerCtrl::OnHttpStreamCaching(
 	PLAYERINDEX ePlayerIndex,
@@ -702,13 +710,16 @@ CMultiMediaCtrl::~CMultiMediaCtrl()
 
 void CMultiMediaCtrl::Start()
 {
+	mMultiMediaCtrlLock.Lock();
 	mpMultiMediaInterface = CreateMultiMediaInterface();
 	EnableHdmiIn(TRUE);
-	EnableHdmiInputComponent(TRUE, FALSE);
+	MuteHdmiInputAudio(TRUE);
+	mMultiMediaCtrlLock.Unlock();
 }
 
 void CMultiMediaCtrl::Stop()
 {
+	mMultiMediaCtrlLock.Lock();
 	EnableHdmiIn(FALSE);
 
 	if (mpMultiMediaInterface)
@@ -716,35 +727,41 @@ void CMultiMediaCtrl::Stop()
 		DeleteMultiMediaInterface(mpMultiMediaInterface);
 		mpMultiMediaInterface = NULL;
 	}
+	mMultiMediaCtrlLock.Unlock();
 }
 
 void CMultiMediaCtrl::EnableHdmiIn(
 	BOOL bEnable)
 {
+	mMultiMediaCtrlLock.Lock();
 	if (mpMultiMediaInterface)
 	{
 		LOGMSG(DBG_LEVEL_I, "EnableHdmiIn bEnable=%d\n", bEnable);
 		mpMultiMediaInterface->EnableHdmiIn(bEnable);
 	}
+	mMultiMediaCtrlLock.Unlock();
 }
 
-void CMultiMediaCtrl::EnableHdmiInputComponent(
-	BOOL bEnableVideo,
-	BOOL bEnableAudio)
+void CMultiMediaCtrl::MuteHdmiInputAudio(
+	BOOL bMute)
 {
+	mMultiMediaCtrlLock.Lock();
 	if (mpMultiMediaInterface)
 	{
-		LOGMSG(DBG_LEVEL_I, "EnableHdmiInputComponent bEnableVideo=%d, bEnableAudio=%d\n", bEnableVideo, bEnableAudio);
-		mpMultiMediaInterface->EnableHdmiInputComponent(bEnableVideo, bEnableAudio);
+		LOGMSG(DBG_LEVEL_I, "MuteHdmiInputAudio bMute=%d\n", bMute);
+		mpMultiMediaInterface->MuteHdmiInputAudio(bMute);
 	}
+	mMultiMediaCtrlLock.Unlock();
 }
 
 void CMultiMediaCtrl::EnableAudioLineInToLineOut(
 	BOOL bEnable)
 {
+	mMultiMediaCtrlLock.Lock();
 	if (mpMultiMediaInterface)
 	{
 		LOGMSG(DBG_LEVEL_I, "EnableAudioLineInToLineOut bEnable=%d\n", bEnable);
 		mpMultiMediaInterface->EnableAudioLineInToLineOut(bEnable);
 	}
+	mMultiMediaCtrlLock.Unlock();
 }

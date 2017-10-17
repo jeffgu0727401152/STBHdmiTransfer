@@ -63,8 +63,7 @@ extern "C" {
 D_VOID WSD_AL_HDMIIN_Init(D_VOID);
 D_VOID WSD_AL_HDMIIN_Uninit(D_VOID);
 
-D_VOID WSD_AL_HDMIIN_EnableVideo(D_BOOL bEnable);
-D_VOID WSD_AL_HDMIIN_EnableAudio(D_BOOL bEnable);
+D_VOID WSD_AL_HDMIIN_MuteAudio(D_BOOL bMute);
 
 #ifdef __cplusplus
 }

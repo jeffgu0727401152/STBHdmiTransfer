@@ -74,7 +74,6 @@ void CHdmiPage::OnWindowVisible(
 	{
 		if (mHdmiInConnected)
 		{
-			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
 			LOGMSG(DBG_LEVEL_I, "%s:%d, Play hdmi!\n", __PRETTY_FUNCTION__, __LINE__);
 			gPlayerCtrl->PlayMain(
 				"99999910", //SONGID_HDMIIN
@@ -82,6 +81,7 @@ void CHdmiPage::OnWindowVisible(
 				FALSE, //loopplay
 				FALSE, //passthrough
 				0);
+			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
 		}
 	}
 	else
@@ -107,7 +107,6 @@ void CHdmiPage::OnMsg(
 		mHdmiInConnected = TRUE;
 		if (IsWindowVisible())
 		{
-			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
 			LOGMSG(DBG_LEVEL_I, "%s:%d, play hdmi!\n", __PRETTY_FUNCTION__, __LINE__);
 			gPlayerCtrl->PlayMain(
 				"99999910", //SONGID_HDMIIN
@@ -115,6 +114,7 @@ void CHdmiPage::OnMsg(
 				FALSE, //loopplay
 				FALSE, //passthrough
 				0);
+			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
 		}
 		break;
 
@@ -122,6 +122,9 @@ void CHdmiPage::OnMsg(
 		mHdmiInConnected = FALSE;
 		gMultiMediaCtrl->EnableAudioLineInToLineOut(FALSE);
 		gPlayerCtrl->StopMain();
+		break;
+
+	case MSG_FIRSTAUDIO:
 		break;
 
 	default:

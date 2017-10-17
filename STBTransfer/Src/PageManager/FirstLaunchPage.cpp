@@ -216,7 +216,7 @@ BOOL CFirstLaunchPage::ThreadLoop(
 	{
 		LOGMSG(DBG_LEVEL_I, "FirstLaunch Get mVideoUrlList, try to change page\n");
 		PAGE_TYPE currentPage  = gPageManager->GetCurPageType();
-		if(Page_Hdmi ==  currentPage)
+		if(Page_Hdmi == currentPage)
 		{
 			LOGMSG(DBG_LEVEL_I, "FirstLaunch Change page from Page_Hdmi to FirstLaunch\n");
 			gPageManager->SetCurrentPage(Page_FirstLaunch);

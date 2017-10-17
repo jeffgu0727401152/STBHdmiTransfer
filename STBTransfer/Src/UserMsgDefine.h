@@ -7,7 +7,12 @@
 
 // wParam: player index
 // lParam: complete reason
-#define MSG_PLAYER_COMPLETE 		(WNDMSG_USERBASE+0x3)
+#define MSG_PLAYER_COMPLETE 	(WNDMSG_USERBASE+0x3)
+
+// wParam: player index
+// lParam: not used
+#define MSG_FIRSTAUDIO 			(WNDMSG_USERBASE+0x4)
+#define MSG_FIRSTVIDEO		 	(WNDMSG_USERBASE+0x5)
 
 // wParam: not used
 // lParam: not used

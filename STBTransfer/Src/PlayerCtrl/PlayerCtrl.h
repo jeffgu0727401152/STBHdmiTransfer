@@ -196,13 +196,13 @@ public:
 public:
 	void EnableHdmiIn(
 		BOOL bEnable);
-	void EnableHdmiInputComponent(
-		BOOL bEnableVideo,
-		BOOL bEnableAudio);
+	void MuteHdmiInputAudio(
+		BOOL bMute);
 	void EnableAudioLineInToLineOut(
 		BOOL bEnable);
 
 private:
 	IMultiMediaInterface *mpMultiMediaInterface;
+	CBaseLock mMultiMediaCtrlLock;
 };
 

@@ -240,7 +240,8 @@ public:
 	virtual CLOUD_USER_RESPONSE_RESULT GetMediaUrl(
 		int nMediaID,
 		int nTranscodeType,
-		CSimpleStringA* pMediaUrl)=0;
+		CSimpleStringA* pMediaUrl,
+		CSimpleStringA* pVodUrl)=0;
 
 public:
 	// 用户注册
@@ -305,12 +306,28 @@ class ICameraDataCallbackListener
 public:
 	virtual ~ICameraDataCallbackListener(void) {}
 
-	virtual void OnCameraDataRGB32(
+	virtual BOOL OnCameraDataYUV422(
 		UINT64 uUserData,
 		int nWidth,
 		int nHeight,
-		BYTE* pRGB32,
-		int nRGB32Length)=0;
+		BYTE* pYUV422,
+		int nYUV422Length)=0;
+
+	virtual BOOL OnCameraDataARGB32(
+		UINT64 uUserData,
+		int nWidth,
+		int nHeight,
+		BYTE* pARGB32,
+		int nARGB32Length)=0;
+};
+
+class ICameraColorKeyCallbackListener
+{
+public:
+	virtual ~ICameraColorKeyCallbackListener(void) {}
+
+	virtual void OnColorKeyLearnComplete(
+		UINT64 uUserData)=0;
 };
 
 class IUploadProgressListener
@@ -345,15 +362,73 @@ public:
 		const char* cDevName,
 		SIZE szResolution,
 		int nFrameRate,
+		int nHorzFlip,
 		RECT rcCamera,
 		ICameraDataCallbackListener* pCameraDataCallbackListener,
 		UINT64 uUserData)=0;
+	virtual void GetCameraResolution(
+		SIZE* pszResolution)=0;
 	virtual void StopCamera()=0;
-	virtual void SetCameraColorKey(
+	virtual BOOL CameraGetAutoWhiteBalance(
+		int *autoWB,
+		int *defvalue)=0;
+	virtual BOOL CameraSetAutoWhiteBalance(
+		int autoWB)=0;
+	virtual BOOL CameraGetWhiteBalance(
+		int *min,
+		int *max,
+		int *value,
+		int *defvalue)=0;
+	virtual BOOL CameraSetWhiteBalance(
+		int value)=0;
+	virtual BOOL CameraGetAutoFocus(
+		int *autoFocus,
+		int *defvalue)=0;
+	virtual BOOL CameraSetAutoFocus(
+		int autoFocus)=0;
+	virtual BOOL CameraGetFocus(
+		int *min,
+		int *max,
+		int *value,
+		int *defvalue)=0;
+	virtual BOOL CameraSetFocus(
+		int value)=0;
+	virtual BOOL CameraGetAutoExposure(
+		int *autoExp,
+		int *defvalue)=0;
+	virtual BOOL CameraSetAutoExposure(
+		int autoExp)=0;
+	virtual BOOL CameraGetExposure(
+		int *min,
+		int *max,
+		int *value,
+		int *defvalue)=0;
+	virtual BOOL CameraSetExposure(
+		int value)=0;
+	virtual BOOL CameraGetGain(
+		int *min,
+		int *max,
+		int *value,
+		int *defvalue)=0;
+	virtual BOOL CameraSetGain(
+		int value)=0;
+	virtual void CameraInitColorKey(
+		int nWidth,
+		int nHeight)=0;
+		virtual void CameraDeInitColorKey()=0;
+	virtual void CameraSetColorKey(
 		BOOL bEnable,
 		BYTE bColorKey_R,
 		BYTE bColorKey_G,
 		BYTE bColorKey_B)=0;
+	virtual void CameraSetColorKeyRange(
+		BYTE bColorKey_R_Range,
+		BYTE bColorKey_G_Range,
+		BYTE bColorKey_B_Range)=0;
+	virtual void CameraColorKeyLearning(
+		int nColorKeyDetectFrames,
+		ICameraColorKeyCallbackListener* pCameraColorKeyCallbackListener,
+		UINT64 uUserData)=0;
 
 	virtual void EnableAudioInput(
 		BOOL bEnable)=0;
@@ -364,9 +439,8 @@ public:
 	virtual void EnableHdmiIn(
 		BOOL bEnable)=0;
 
-	virtual void EnableHdmiInputComponent(
-		BOOL bEnableVideo,
-		BOOL bEnableAudio)=0;
+	virtual void MuteHdmiInputAudio(
+		BOOL bMute)=0;
 
 	// recorder
 public:
@@ -384,7 +458,8 @@ public:
 		int nVideoWidth,
 		int nVideoHeight,
 		int nFrameRate,
-		BOOL bIncludeMainPlayer,
+		BOOL bIncludePlayer,
+		PLAYERINDEX ePlayerIndex,
 		BOOL bIncludeCamera,
 		RECT rcCamera,
 		BOOL bIncludeOSD,
