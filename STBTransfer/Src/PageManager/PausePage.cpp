@@ -75,6 +75,8 @@ void CPausePage::OnWindowVisible(
 {
 	CParentClass::OnWindowVisible(bVisible);
 
+	LOGMSG(DBG_LEVEL_I, "======CPausePage OnWindowVisible=%d======!\n", bVisible);
+
 	if (bVisible)
 	{
 	}

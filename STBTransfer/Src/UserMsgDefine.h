@@ -16,6 +16,10 @@
 
 // wParam: not used
 // lParam: not used
+#define MSG_PAGESWITCH_LAUNCH	(WNDMSG_USERBASE+0x6)
+
+// wParam: not used
+// lParam: not used
 #define INPUTWND_BACKMSG		(WNDMSG_USERBASE+0x20)
 
 // wParam: not used

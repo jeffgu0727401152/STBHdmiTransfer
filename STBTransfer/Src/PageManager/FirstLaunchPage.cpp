@@ -147,6 +147,11 @@ void CFirstLaunchPage::OnMsg(
 		}
 		break;
 
+	case MSG_PAGESWITCH_LAUNCH:
+		LOGMSG(DBG_LEVEL_I, "FirstLaunch Change page from Page_Hdmi to FirstLaunch\n");
+		gPageManager->SetCurrentPage(Page_FirstLaunch);
+		break;
+
 	default:
 		break;
 	}
@@ -218,8 +223,7 @@ BOOL CFirstLaunchPage::ThreadLoop(
 		PAGE_TYPE currentPage  = gPageManager->GetCurPageType();
 		if(Page_Hdmi == currentPage)
 		{
-			LOGMSG(DBG_LEVEL_I, "FirstLaunch Change page from Page_Hdmi to FirstLaunch\n");
-			gPageManager->SetCurrentPage(Page_FirstLaunch);
+			PostMsg(MSG_PAGESWITCH_LAUNCH, 0, 0);
 		}
 	}
 
