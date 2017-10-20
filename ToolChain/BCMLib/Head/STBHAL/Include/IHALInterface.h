@@ -405,6 +405,11 @@ public:
 		int *defvalue)=0;
 	virtual BOOL CameraSetExposure(
 		int value)=0;
+	virtual BOOL CameraGetAutoGain(
+		int *autoGain,
+		int *defvalue)=0;
+	virtual BOOL CameraSetAutoGain(
+		int autoGain)=0;
 	virtual BOOL CameraGetGain(
 		int *min,
 		int *max,
@@ -416,15 +421,8 @@ public:
 		int nWidth,
 		int nHeight)=0;
 		virtual void CameraDeInitColorKey()=0;
-	virtual void CameraSetColorKey(
-		BOOL bEnable,
-		BYTE bColorKey_R,
-		BYTE bColorKey_G,
-		BYTE bColorKey_B)=0;
-	virtual void CameraSetColorKeyRange(
-		BYTE bColorKey_R_Range,
-		BYTE bColorKey_G_Range,
-		BYTE bColorKey_B_Range)=0;
+	virtual void CameraEnableColorKey(
+		BOOL bEnable)=0;
 	virtual void CameraColorKeyLearning(
 		int nColorKeyDetectFrames,
 		ICameraColorKeyCallbackListener* pCameraColorKeyCallbackListener,

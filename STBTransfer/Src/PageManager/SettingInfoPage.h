@@ -3,10 +3,14 @@
 #include "BaseButton.h"
 #include "BaseEdit.h"
 #include "PopupWnd.h"
+#include "BaseSpin.h"
+#include "BaseSlide.h"
 
 
 class CSettingInfoPage : public CBaseWnd,
-	public IClickEventListener
+	public IClickEventListener,
+	public ISlidePositionChangeEventListener,
+	public ISpinPositionChangeEventListener
 {
 public:
 	CSettingInfoPage();
@@ -40,6 +44,18 @@ public:
 	virtual void OnTimer(
 		int nTimerID);
 
+	virtual void OnSlidePositionChange(
+		CBaseWnd *pWnd,
+		int nOldPosition,
+		int nNewPosition,
+		BOOL bChangeEnd);
+
+	virtual void OnSpinPositionChange(
+		CBaseWnd *pWnd,
+		int nOldPosition,
+		int nNewPosition,
+		BOOL bChangeEnd);
+
 private:
 	CBaseWnd mStateText;
 	CBaseButton mGoModifyBtn;
@@ -71,6 +87,10 @@ private:
 	CBaseWnd mRoomNameText;
 
 	CBaseWnd mVersionText;
+
+	// 音量
+	CBaseSpin mMainVolumeSpin;
+	CBaseSlide mMainVolumeSlide;
 
 	int mUpdateTimeMS;
 };

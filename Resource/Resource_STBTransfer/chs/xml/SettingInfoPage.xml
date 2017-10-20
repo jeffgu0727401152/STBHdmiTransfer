@@ -39,4 +39,13 @@
 	<VersionText Position="92,665,150,32" FontText="version:" FontSize="16" FontColor="0xFF5A7385" FontDirect="0x0000000A"/>
 	<BackBtn Position="370,655,113,42" FontText="取消" FontSize="24" BkgroundImg="SettingPage/SettingCloseBtn"/>
 
+	<MainVolumeSpin Position="775,132,214,24" Min="0" Max="15" Default="8">
+		<PromptWnd Position="0,0,64,24" FontText="音量" FontSize="18" FontColor="0xFF0872BC" FontDirect="0x0000000A"/>
+		<DownBtn Position="64,1,24,22" BkgroundImg="Common/SpinDown"/>
+		<ValueWnd Position="88,1,38,22"/>
+		<UpBtn Position="126,1,24,22" BkgroundImg="Common/SpinUp"/>
+	</MainVolumeSpin>
+	<MainVolumeSlide MainPosition="946,133,224,21" BarPosition="0,0,224,21" ThumbPosition="0,0,21,21" Min="0" Max="15" Default="8"
+		barBkImg="Common/SimpleHorzSlideBarBk" thumbTextures="Common/SimpleHorzSlideThumb"/>
+
 </SettingInfoPage> 

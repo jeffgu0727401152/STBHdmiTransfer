@@ -66,6 +66,11 @@ void CSettingInfoPage::Create(
 	mGoModifyBtn.Create(pE3DEngine, this);
 	mGoModifyBtn.SetOnClickListener(this);
 
+	mMainVolumeSpin.Create(pE3DEngine, this);
+	mMainVolumeSpin.SetOnPositionChangeListener(this);
+	mMainVolumeSlide.Create(pE3DEngine, this, TRUE, FALSE);
+	mMainVolumeSlide.SetOnPositionChangeListener(this);
+
 	LOGMSG(DBG_LEVEL_I, "%s ---\n", __PRETTY_FUNCTION__);
 }
 
@@ -128,6 +133,12 @@ void CSettingInfoPage::OnLoadResource()
 
 	mGoModifyBtn.ParserChildNode(&rootnode, "GoModifyBtn");
 
+	mMainVolumeSpin.ParserChildNode(&rootnode, "MainVolumeSpin");
+	mMainVolumeSlide.ParserChildNode(&rootnode, "MainVolumeSlide");
+
+	mMainVolumeSpin.SetWindowVisible(FALSE);
+	mMainVolumeSlide.SetWindowVisible(FALSE);
+
 	CBaseWnd::ParserXMLNode(&rootnode);
 }
 
@@ -144,6 +155,10 @@ void CSettingInfoPage::OnWindowVisible(
 		UpdateUiFromConfig();
 		UpdateStateText();
 		AddTimer(TIMERID_UPDATESTATEUI, mUpdateTimeMS);
+		if (mMainVolumeSpin.IsWindowVisible())
+		{
+			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
+		}
 	}
 	else
 	{
@@ -191,6 +206,13 @@ void CSettingInfoPage::OnMsg(
 			{
 				LOGMSG(DBG_LEVEL_I, "%s: in setting modify Page, we ignore this request!\n", __PRETTY_FUNCTION__);
 			}
+			else if ( (gPageManager->GetCurPageType() == Page_SettingInfo) )
+			{
+				LOGMSG(DBG_LEVEL_I, "%s: show main volume setting slidebar!\n", __PRETTY_FUNCTION__);
+				mMainVolumeSpin.SetWindowVisible(TRUE);
+				mMainVolumeSlide.SetWindowVisible(TRUE);
+				gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
+			}
 			else
 			{
 				gPageManager->SetCurrentPage(Page_SettingInfo);
@@ -200,6 +222,36 @@ void CSettingInfoPage::OnMsg(
 
 	default:
 		break;
+	}
+}
+
+void CSettingInfoPage::OnSlidePositionChange(
+	CBaseWnd *pWnd,
+	int nOldPosition,
+	int nNewPosition,
+	BOOL bChangeEnd)
+{
+	if (pWnd == &mMainVolumeSlide)
+	{
+		CSimpleStringA sTmp;
+		sTmp.Format("%d", nNewPosition);
+		mMainVolumeSpin.SetWindowTextA(sTmp.GetString());
+		mMainVolumeSpin.SetPos(nNewPosition);
+
+		gKTVConfig.SetMainVolume(nNewPosition);
+		gPlayerCtrl->SetMainVolume(gKTVConfig.GetMainVolume());
+	}
+}
+
+void CSettingInfoPage::OnSpinPositionChange(
+	CBaseWnd *pWnd,
+	int nOldPosition,
+	int nNewPosition,
+	BOOL bChangeEnd)
+{
+	if (pWnd == &mMainVolumeSpin)
+	{
+		mMainVolumeSlide.SetPos(nNewPosition, TRUE, TRUE);
 	}
 }
 
@@ -297,5 +349,7 @@ void CSettingInfoPage::UpdateUiFromConfig()
 	char version_str[256];
 	snprintf(version_str, 256, "%s %s", "程序版本:",SW_VERSION);
 	mVersionText.SetWindowTextA(version_str);
+
+	mMainVolumeSpin.SetPos(gKTVConfig.GetMainVolume(), TRUE, FALSE);
 }
 
