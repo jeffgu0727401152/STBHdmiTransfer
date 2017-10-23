@@ -3,6 +3,7 @@
 #include "ImageBuffer.h"
 #include "XMLParser.h"
 #include "PtrControl.h"
+#include "GifDecoder.h"
 
 typedef struct tagANIMATIONFRAMEINFO
 {
@@ -35,27 +36,27 @@ public:
 	int GetWidth();
 	int GetHeight();
 
-	void StretchScale(
-		float fScaleX,
-		float fScaleY,
-		int nDrawMode);
 	void Stretch(
 		int nWidth,
 		int nHeight,
 		int nDrawMode);
 	void RevertRGB();
 
-	ANIMATIONFRAMEINFO* GetAnimationFrameByIndex(
-		int nIndex);
-	ANIMATIONFRAMEINFO* GetCurAnimationFrame();
-	ANIMATIONFRAMEINFO* GetNextAnimationFrame();
-	void ResetAnimationFrameIndex();
-	int GetAnimationFrameIndex();
 	int GetAnimationFrameCount();
+	int GetCurAnimationFrameIndex();
+	void ResetAnimationFrameIndex();
+	ANIMATIONFRAMEINFO* GetCurAnimationFrame();
+	ANIMATIONFRAMEINFO* DecoderNextAnimationFrame();
 
 private:
 	int mImageWidth;
 	int mImageHeight;
-	CPtrListCtrl mAnimationFrameInfoList;
-	int mAnimationFrameIndex;
+	int mStretchMode;
+	BOOL mRevertRGB;
+
+	int mAnimationFrameCount;
+	ANIMATIONFRAMEINFO mCurrentFrame;
+
+	BOOL mIsGifImage;
+	CGifDecoder mGifDecoder;
 };

@@ -36,6 +36,7 @@ void CPausePage::Create(
 		WINDOWSTATE_INVISIBLE);
 
 	mPictureWnd.Create(pE3DEngine, this);
+	mPictureWnd.SetGifWndFrameChangeListener(this, 0);
 
 	LOGMSG(DBG_LEVEL_I, "%s ---\n", __PRETTY_FUNCTION__);
 }
@@ -107,18 +108,26 @@ void CPausePage::OnTimer(
 		char cNetFile[MAX_PATH] = {0};
 		if (mPictureUrlList.GetCount() > 0)
 		{
-			mCurShowIndex = mCurShowIndex+1;
 			if(mCurShowIndex < mPictureUrlList.GetCount())
 			{
 				const char* cUrl = (const char*) mPictureUrlList.GetAt(mCurShowIndex);
 				SAFE_STRNCPY(cNetFile, cUrl, MAX_PATH);
-			}else
+				mCurShowIndex = mCurShowIndex+1;
+			}
+			else
 			{
 				mCurShowIndex = 0;
 				mLock.Unlock();
 				gPageManager->SetCurrentPage(Page_Hdmi);
 				return;
 			}
+		}
+		else
+		{
+			mCurShowIndex = 0;
+			mLock.Unlock();
+			gPageManager->SetCurrentPage(Page_Hdmi);
+			return;
 		}
 		mLock.Unlock();
 
@@ -129,12 +138,38 @@ void CPausePage::OnTimer(
 			if(strcasecmp(cNetFile + length - 4, ".gif") == 0)
 			{
 				mPictureWnd.LoadFromGifFile(cLocalFile);
+				DelTimer(TIMERID_SHOWIMG);
 			}
 			else
 			{
 				mPictureWnd.LoadFromImageFile(cLocalFile);
+				AddTimer(TIMERID_SHOWIMG, mShowTimeMS);
 			}
 		}
+		else
+		{
+			AddTimer(TIMERID_SHOWIMG, mShowTimeMS);
+		}
+	}
+}
+
+void CPausePage::OnGifWndFrameChange(
+	CImageBuffer *pImageBuffer,
+	int nCurIndex,
+	int nTotalIndex,
+	UINT64 uUserData)
+{
+	if (nTotalIndex <= 1)
+	{
+		// normal picture, not a gif
+		return;
+	}
+
+	// gif index 0 indicate the last frame has shown, return to first frame
+	if (nCurIndex == 0)
+	{
+		LOGMSG(DBG_LEVEL_I, "current index = %d, total count = %d\n",nCurIndex,nTotalIndex);
+		OnTimer(TIMERID_SHOWIMG);
 	}
 }
 
@@ -195,21 +230,7 @@ void CPausePage::PerformHttpCmd_Pause(
 	// 显示第一张图片
 	if (nCount > 0)
 	{
-		char cLocalFile[MAX_PATH];
-		if (PictureLocalDownload(cNetFile, cLocalFile))
-		{
-			int length = strlen(cNetFile);
-			if(strcasecmp(cNetFile + length - 4, ".gif") == 0)
-			{
-				mPictureWnd.LoadFromGifFile(cLocalFile);
-			}
-			else
-			{
-				mPictureWnd.LoadFromImageFile(cLocalFile);
-			}
-		}
-
-		AddTimer(TIMERID_SHOWIMG, mShowTimeMS);
+		OnTimer(TIMERID_SHOWIMG);
 		gPageManager->SetCurrentPage(Page_Pause);
 	}
 	else

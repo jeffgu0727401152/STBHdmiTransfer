@@ -3,6 +3,18 @@
 #include "BaseWnd.h"
 #include "AnimationEffect.h"
 
+class IGifWndFrameChangeListener
+{
+public:
+	virtual ~IGifWndFrameChangeListener(void) {}
+
+	virtual void OnGifWndFrameChange(
+		CImageBuffer *pImageBuffer,
+		int nCurIndex,
+		int nTotalIndex,
+		UINT64 uUserData)=0;
+};
+
 class CGifWnd: public CBaseWnd,
 	public IAnimationEffectListener
 {
@@ -46,6 +58,12 @@ public:
 	BOOL LoadFromGifBuffer(
 		CBuffer *pGifBuf);
 
-public:
+	void SetGifWndFrameChangeListener(
+		IGifWndFrameChangeListener* pGifWndFrameChangeListener,
+		UINT64 uUserData);
+
+private:
 	CAnimationEffect mAnimationEffect;
+	IGifWndFrameChangeListener* mpGifWndFrameChangeListener;
+	UINT64 mUserData;
 };

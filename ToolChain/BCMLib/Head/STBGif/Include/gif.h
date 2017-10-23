@@ -249,40 +249,9 @@ int 		Gif_FullWriteFile(Gif_Stream *, int flags, FILE *);
 
 #define	Gif_ReadFile(f)		Gif_FullReadFile((f),GIF_READ_UNCOMPRESSED,0,0)
 #define	Gif_ReadRecord(r)	Gif_FullReadRecord((r),GIF_READ_UNCOMPRESSED,0,0)
+#define	Gif_ReadCompressedRecord(r)	Gif_FullReadRecord((r),GIF_READ_COMPRESSED,0,0)
 #define Gif_CompressImage(s, i)	Gif_FullCompressImage((s),(i),0)
 #define Gif_WriteFile(s, f)	Gif_FullWriteFile((s),0,(f))
-
-
-typedef struct tagGif_DecPreviousInfo
-{
-	int x;
-	int y;
-	int w;
-	int h;
-    unsigned char* pImageBuffer;
-} Gif_DecPreviousInfo;
-
-typedef struct tagGif_DecInfo
-{
-	Gif_Stream *gfs;
-    Gif_Colormap *global;
-    unsigned int bkColor;
-    int imageCount;
-    int curImageIndex;
-    unsigned char* pImageBuffer;
-
-    uint8_t previous_disposal;
-    Gif_DecPreviousInfo previousInfo;
-}Gif_DecInfo;
-
-Gif_DecInfo *Gif_DecInit(
-	Gif_Stream *gfs);
-void Gif_DecDeinit(
-	Gif_DecInfo *pDecInfo);
-void Gif_DecReset(
-	Gif_DecInfo *pDecInfo);
-void Gif_DecProcessNextImage(
-	Gif_DecInfo *pDecInfo);
 
 /** HOOKS AND MISCELLANEOUS **/
 

@@ -3,7 +3,8 @@
 #include "BaseWnd.h"
 #include "GifWnd.h"
 
-class CPausePage: public CBaseWnd
+class CPausePage: public CBaseWnd,
+	public IGifWndFrameChangeListener
 {
 	typedef CBaseWnd CParentClass;
 
@@ -23,6 +24,14 @@ public:
 
 	virtual void OnTimer(
 		int nTimerID);
+
+	//interface
+public:
+	virtual void OnGifWndFrameChange(
+		CImageBuffer *pImageBuffer,
+		int nCurIndex,
+		int nTotalIndex,
+		UINT64 uUserData);
 
 public:
 	void PerformHttpCmd_Pause(
