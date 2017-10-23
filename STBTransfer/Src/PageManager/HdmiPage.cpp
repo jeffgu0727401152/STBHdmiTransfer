@@ -86,7 +86,7 @@ void CHdmiPage::OnWindowVisible(
 	}
 	else
 	{
-		if (mHdmiInConnected)
+		if (mHdmiInConnected && gPageManager->GetCurPageType() != Page_Pause)
 		{
 			gMultiMediaCtrl->EnableAudioLineInToLineOut(FALSE);
 			gPlayerCtrl->StopMain();
