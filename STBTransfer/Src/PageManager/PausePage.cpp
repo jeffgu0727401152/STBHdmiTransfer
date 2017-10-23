@@ -107,9 +107,18 @@ void CPausePage::OnTimer(
 		char cNetFile[MAX_PATH] = {0};
 		if (mPictureUrlList.GetCount() > 0)
 		{
-			mCurShowIndex = (mCurShowIndex+1) % mPictureUrlList.GetCount();
-			const char* cUrl = (const char*) mPictureUrlList.GetAt(mCurShowIndex);
-			SAFE_STRNCPY(cNetFile, cUrl, MAX_PATH);
+			mCurShowIndex = mCurShowIndex+1;
+			if(mCurShowIndex < mPictureUrlList.GetCount())
+			{
+				const char* cUrl = (const char*) mPictureUrlList.GetAt(mCurShowIndex);
+				SAFE_STRNCPY(cNetFile, cUrl, MAX_PATH);
+			}else
+			{
+				mCurShowIndex = 0;
+				mLock.Unlock();
+				gPageManager->SetCurrentPage(Page_Hdmi);
+				return;
+			}
 		}
 		mLock.Unlock();
 
