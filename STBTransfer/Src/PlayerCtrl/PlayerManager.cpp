@@ -19,6 +19,13 @@ void CPlayerManager::SetMainPlayerSource(
 	const char* cUrlList,
 	BOOL bLoop)
 {
+	if (mMainPlayerUrlList.GetCount() == 0 && cUrlList == NULL)
+	{
+		// already in hdmi passthrough
+		LOGMSG(DBG_LEVEL_I, "%s:%d, already in hdmi passthrough, do nothing!\n", __PRETTY_FUNCTION__, __LINE__);
+		return;
+	}
+
 	mLock.Lock();
 
 	DelArrayList(&mMainPlayerUrlList, char);
@@ -107,25 +114,29 @@ void CPlayerManager::OnMsg(
 	switch(uType)
 	{
 	case MSG_PLAYER_COMPLETE:
-		if ((PLAYCOMPLETE_REASONTYPE)lParam == PlayComplete_ReasonType_StartError)
+		if ((PLAYERINDEX)wParam == PLAYERINDEX_MAIN)
 		{
-			if ((PLAYERINDEX)wParam == PLAYERINDEX_MAIN)
+			if ((PLAYCOMPLETE_REASONTYPE)lParam == PlayComplete_ReasonType_StartError)
 			{
 				mLock.Lock();
 				mMainPlayerUrlList.DeleteAt(mMainPlayerIndex);
 				mMainPlayerIndex--;
 				mLock.Unlock();
-				SwitchMain();
 			}
-			else if ((PLAYERINDEX)wParam == PLAYERINDEX_PIP)
+			SwitchMain();
+		}
+		else if ((PLAYERINDEX)wParam == PLAYERINDEX_PIP)
+		{
+			if ((PLAYCOMPLETE_REASONTYPE)lParam == PlayComplete_ReasonType_StartError)
 			{
 				mLock.Lock();
 				mPiplayerUrlList.DeleteAt(mPipPlayerIndex);
 				mPipPlayerIndex--;
 				mLock.Unlock();
-				SwitchPip();
 			}
+			SwitchPip();
 		}
+
 		break;
 
 	default:
@@ -179,6 +190,8 @@ void CPlayerManager::SwitchMain()
 			FALSE, //passthrough
 			0);
 	}
+
+	mLock.Unlock();
 }
 
 void CPlayerManager::SwitchPip()
@@ -223,4 +236,6 @@ void CPlayerManager::SwitchPip()
 			RECTWIDTH(mPreviewRect),
 			RECTHEIGHT(mPreviewRect));
 	}
+
+	mLock.Unlock();
 }

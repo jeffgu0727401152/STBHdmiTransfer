@@ -56,7 +56,6 @@ private:
 	CGifWnd mPictureWnd;
 
 	int mShowTimeMS;
-	RECT mShowPosition;
 
 	CBaseLock mLock;
 	CPtrListCtrl mPictureUrlList;

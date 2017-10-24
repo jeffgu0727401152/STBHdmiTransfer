@@ -57,6 +57,5 @@ private:
 	int mAnimationFrameCount;
 	ANIMATIONFRAMEINFO mCurrentFrame;
 
-	BOOL mIsGifImage;
 	CGifDecoder mGifDecoder;
 };

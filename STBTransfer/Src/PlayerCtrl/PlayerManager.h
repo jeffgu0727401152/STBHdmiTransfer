@@ -14,9 +14,9 @@ public:
 		BOOL bLoop);
 
 	void SetPipPlayerSource(
-			const char* cUrlList,
-			BOOL bLoop,
-			RECT rcPreview);
+		const char* cUrlList,
+		BOOL bLoop,
+		RECT rcPreview);
 
 	virtual void OnMsg(
 		UINT32 uType,

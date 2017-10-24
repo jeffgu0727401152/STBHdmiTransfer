@@ -134,7 +134,9 @@ public:
 
 			if (clientOpenResult==TRUE)
 			{
+				LOGMSG(DBG_LEVEL_I, "%s:%d, GetClientOpenUrl get %s!\n", __PRETTY_FUNCTION__, __LINE__,sURLs.GetString());
 				gPlayerManager->SetMainPlayerSource(sURLs.GetString(), TRUE);
+				break;
 			}
 			mExitEvent.Wait(2000);
 		}
@@ -226,6 +228,7 @@ void InitUI()
 		SetDNS(gKTVConfig.GetDNS1());
 #endif
 
+		gPlayerManager->SetMainPlayerSource(NULL, FALSE);
 		gPageManager->SetCurrentPage(Page_Blank);
 
 		gGetClientOpenUrlThread.StartThread(

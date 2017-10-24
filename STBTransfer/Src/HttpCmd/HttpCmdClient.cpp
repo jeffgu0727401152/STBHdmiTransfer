@@ -57,7 +57,11 @@ BOOL CHttpCmdClient::ThreadLoop(
 		uActualResultSize = 0;
 		do
 		{
-			LOGMSG(DBG_LEVEL_I, "check online, fail count = %d\n",heartBeatLostCount);
+			if (heartBeatLostCount)
+			{
+				LOGMSG(DBG_LEVEL_I, "check online fail count = %d\n",heartBeatLostCount);
+			}
+
 			if (!PerformHttpGetCommand(
 				sURL.GetString(),
 				NULL,

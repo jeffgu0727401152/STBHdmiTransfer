@@ -238,6 +238,7 @@ void CHttpCmdServer::OnRequestResumeCmd(
 		}
 		else
 		{
+			gPlayerManager->SetMainPlayerSource(NULL, TRUE);
 			gPageManager->SetCurrentPage(Page_Blank);
 		}
 	}

@@ -14,7 +14,6 @@ CPicturePage::CPicturePage()
 	gPicturePage = this;
 
 	mShowTimeMS = 5000;
-	SetRectXY(&mShowPosition, 0, 0, LAYOUT_WIDTH, LAYOUT_HEIGHT);
 	mCurShowIndex = 0;
 	mPictureLoop = FALSE;
 }
@@ -37,7 +36,7 @@ void CPicturePage::Create(
 		WINDOWFLAG_DEFAULT,
 		WINDOWSTATE_INVISIBLE);
 
-	mPictureWnd.CreateStatic(pE3DEngine, this);
+	mPictureWnd.Create(pE3DEngine, this);
 
 	LOGMSG(DBG_LEVEL_I, "%s ---\n", __PRETTY_FUNCTION__);
 }
@@ -185,6 +184,14 @@ void CPicturePage::PerformHttpCmd_SetQRCode(
 		RECTHEIGHT(rcQRCodePosition),
 		DRAWMODE_NONE);
 
+	LOGMSG(DBG_LEVEL_I, "rcQRCodePosition=(%d,%d,%d,%d)\n",
+		rcQRCodePosition.left,
+		rcQRCodePosition.top,
+		rcQRCodePosition.right,
+		rcQRCodePosition.bottom);
+
+	mPictureWnd.SetBkgroundTexture(NULL);
+	mPictureWnd.MoveWindow(&rcQRCodePosition);
 	mPictureWnd.LoadFromImageBuffer(&sImageBuffer);
 }
 
@@ -201,8 +208,8 @@ void CPicturePage::PerformHttpCmd_SetPicture(
 	DelArrayList(&mPictureUrlList, char);
 	mCurShowIndex = 0;
 
-	mShowPosition = rcPicturePosition;
-	mPictureWnd.MoveWindow(&mShowPosition);
+	mPictureWnd.SetBkgroundTexture(NULL);
+	mPictureWnd.MoveWindow(&rcPicturePosition);
 
 	if (nSecondsPerImage < 1)
 	{
@@ -277,7 +284,7 @@ void CPicturePage::CreateQRImage(
 	int nQRImageSizeStride = BMP_LINE_WIDTH(nQRImageSize, 24);
 
 	CImageBuffer sImageBuffer;
-	sImageBuffer.CreateFromData(NULL, nQRImageSize, nQRImageSize, 24);
+	sImageBuffer.CreateFromData(NULL, nQRImageSize, nQRImageSize, 3);
 	BYTE* pRGBBuffer = (BYTE*)sImageBuffer.GetBuffer();
 
 	BYTE* pSrcLine = code->data;
@@ -313,7 +320,7 @@ void CPicturePage::CreateQRImage(
 	RECT rcCopyTo = {nMargin, nMargin, nQRImageSize+nMargin, nQRImageSize+nMargin};
 	pImageBuffer->SetByteValue(NULL, 0xFF);
 	pImageBuffer->DrawFromImageBuffer(&sImageBuffer, &rcCopyTo, NULL);
-	//pImageBuffer->SaveToBmpFile("/home/kyo/qrcode.bmp");
+	//pImageBuffer->SaveToBmpFile("/stb/config/app/qrcode.bmp");
 }
 
 BOOL CPicturePage::PictureLocalDownload(
