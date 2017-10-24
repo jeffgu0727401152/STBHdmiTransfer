@@ -354,7 +354,10 @@ public:
 
 	void RemoveMsg(
 		UINT32 uTypeMin,
-		UINT32 uTypeMax);
+		UINT32 uTypeMax,
+		UINT64 wParam=0,
+		UINT64 lParam=0,
+		UINT32 uRemoveFlag=MSG_REMOVE_FLAG_CMP_NONE);
 
 	BOOL HasMsg(
 		UINT32 uTypeMin,

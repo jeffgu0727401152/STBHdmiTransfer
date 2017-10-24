@@ -32,6 +32,11 @@ typedef struct tagBROADCASTMSG
 	UINT32 uType;
 } BROADCASTMSG;
 
+#define MSG_REMOVE_FLAG_CMP_NONE			0
+#define MSG_REMOVE_FLAG_CMP_WPARAM		1
+#define MSG_REMOVE_FLAG_CMP_LPARAM		2
+#define MSG_REMOVE_FLAG_CMP_ALLPARAM	3
+
 class CMsgQueue
 {
 public:
@@ -79,13 +84,10 @@ public:
 	void RemoveMsg(
 		IMessageOwner *pOwner,
 		UINT32 uTypeMin,
-		UINT32 uTypeMax);
-	void RemoveMsg(
-		IMessageOwner *pOwner,
-		UINT32 uTypeMin,
 		UINT32 uTypeMax,
-		UINT64 wParam,
-		UINT64 lParam);
+		UINT64 wParam=0,
+		UINT64 lParam=0,
+		UINT32 uRemoveFlag=MSG_REMOVE_FLAG_CMP_NONE);
 
 private:
 	void RemoveAllMsg();
