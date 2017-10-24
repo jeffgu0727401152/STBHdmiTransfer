@@ -6,6 +6,7 @@
 CHandWriteOperator* gHandWriteOperator=NULL;
 CPageManager* gPageManager=NULL;
 CPlayerCtrl* gPlayerCtrl=NULL;
+CPlayerManager* gPlayerManager=NULL;
 CMultiMediaCtrl* gMultiMediaCtrl=NULL;
 CHttpCmdClient* gHttpCmdClient=NULL;
 CHttpCmdServer* gHttpCmdServer=NULL;
@@ -18,6 +19,7 @@ void InitGlobalClass()
 	gHandWriteOperator = new CHandWriteOperator();
 	gPageManager = new CPageManager();
 	gPlayerCtrl = new CPlayerCtrl();
+	gPlayerManager = new CPlayerManager();
 	gMultiMediaCtrl = new CMultiMediaCtrl();
 	gHttpCmdClient = new CHttpCmdClient();
 	gHttpCmdServer = new CHttpCmdServer();
@@ -45,6 +47,7 @@ void DeInitGlobalClass()
 {
 	SAFE_DELETE(gHttpCmdClient);
 	SAFE_DELETE(gHttpCmdServer);
+	SAFE_DELETE(gPlayerManager);
 	SAFE_DELETE(gPlayerCtrl);
 	SAFE_DELETE(gMultiMediaCtrl);
 	SAFE_DELETE(gPageManager);

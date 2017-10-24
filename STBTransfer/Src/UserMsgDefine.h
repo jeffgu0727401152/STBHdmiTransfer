@@ -14,9 +14,9 @@
 #define MSG_FIRSTAUDIO 			(WNDMSG_USERBASE+0x4)
 #define MSG_FIRSTVIDEO		 	(WNDMSG_USERBASE+0x5)
 
-// wParam: not used
+// wParam: page index
 // lParam: not used
-#define MSG_PAGESWITCH_LAUNCH	(WNDMSG_USERBASE+0x6)
+#define MSG_PAGESWITCH		(WNDMSG_USERBASE+0x10)
 
 // wParam: not used
 // lParam: not used

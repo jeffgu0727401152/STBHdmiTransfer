@@ -98,6 +98,65 @@ void PrintMachineInfo()
 }
 
 
+class CGetClientOpenUrlThread : public CBaseThread,
+	public IThreadFuncInterface
+{
+public:
+	CGetClientOpenUrlThread()
+	{
+		mExitThread = FALSE;
+	}
+
+	~CGetClientOpenUrlThread(){}
+
+	// interface
+public:
+	virtual BOOL ThreadLoop(
+		UINT64 uThreadData)
+	{
+		CSimpleStringA sURLs;
+		BOOL clientOpenResult = FALSE;
+		UINT32 clientOpenUrlRequestCount = 0;
+
+		while (!mExitThread)
+		{
+			clientOpenUrlRequestCount++;
+			if(clientOpenUrlRequestCount > 3)
+			{
+				LOGMSG(DBG_LEVEL_W, "%s:%d, reach the GET_URL_RETRY_COUNT, break threadloop!\n", __PRETTY_FUNCTION__, __LINE__);
+				break;
+			}
+
+			do
+			{
+				clientOpenResult = gHttpCmdClient->ClientOpen(gKTVConfig.GetVodIP(),&sURLs);
+			} while (0);
+
+			if (clientOpenResult==TRUE)
+			{
+				gPlayerManager->SetMainPlayerSource(sURLs.GetString(), TRUE);
+			}
+			mExitEvent.Wait(2000);
+		}
+
+		return FALSE;
+	}
+
+public:
+	void Stop()
+	{
+		mExitThread = TRUE;
+		mExitEvent.Set();
+	}
+
+public:
+	CBaseLock mLock;
+	int mExitThread;
+	CBaseEvent mExitEvent;
+};
+CGetClientOpenUrlThread gGetClientOpenUrlThread;
+
+
 BOOL gMainLoopExit = FALSE;
 BOOL gInitUIComplete = FALSE;
 
@@ -141,16 +200,18 @@ void InitUI()
 	if (gProgramBootMode==Mode_Factory)
 	{
 		LOGMSG(DBG_LEVEL_I, "Mode_Factory,show hdmi page\n");
-		gPageManager->SetCurrentPage(Page_Hdmi);
+		gPageManager->SetCurrentPage(Page_Blank);
 	}
 	else if (!gKTVConfig.IsConfigFileValid())
-	{//本地没有经过认证的配置,认定为首次启动,直接进入设置页面
+	{
+		//本地没有经过认证的配置,认定为首次启动,直接进入设置页面
 		LOGMSG(DBG_LEVEL_I, "configure file not verified,show modify page\n");
 		gPageManager->SetCurrentPage(Page_SettingModify);
 	}
 	else
-	{//本地有经过认证的配置,平时正常情况走这边
-		LOGMSG(DBG_LEVEL_I, "configure file verified,set ip & show hdmi page & send open http cmd\n");
+	{
+		//本地有经过认证的配置,平时正常情况走这边
+		LOGMSG(DBG_LEVEL_I, "configure file verified,set ip & show blank page & send open http cmd\n");
 		CSimpleStringA sInterfaceName;
 		GetAvailbalEthNetworkInterface(&sInterfaceName);
 
@@ -160,13 +221,18 @@ void InitUI()
 			gKTVConfig.GetNetGate());
 
 #ifndef PC_VERSION
-// PC 机器，请不要设置 DNS，否则可能导致无法上网
-			SetDNS(gKTVConfig.GetDNS0());
-			SetDNS(gKTVConfig.GetDNS1());
+		// PC 机器，请不要设置 DNS，否则可能导致无法上网
+		SetDNS(gKTVConfig.GetDNS0());
+		SetDNS(gKTVConfig.GetDNS1());
 #endif
 
-			gPageManager->SetCurrentPage(Page_Hdmi);
-			gPageManager->mFirstLanchPage.StartGetClientOpenUrl();
+		gPageManager->SetCurrentPage(Page_Blank);
+
+		gGetClientOpenUrlThread.StartThread(
+			"GetClientOpenUrlThread",
+			&gGetClientOpenUrlThread,
+			0,
+			STACKSIZE_MIN);
 	}
 }
 
@@ -176,6 +242,9 @@ void DeInitUI()
 
 	// force sync to make database stability
 	do_syscmd(NULL, "sync");
+
+	gGetClientOpenUrlThread.Stop();
+	gGetClientOpenUrlThread.StopThread();
 
 	theBaseApp->Exit();
 	theBaseApp->FreeResource();
@@ -207,6 +276,7 @@ void NativeMainLoop()
 
 	LOGMSG(DBG_LEVEL_I, "function %s leave\n", __PRETTY_FUNCTION__);
 }
+
 
 class CMainLoopThread : public CBaseThread,
 	public IThreadFuncInterface

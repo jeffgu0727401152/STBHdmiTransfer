@@ -175,10 +175,13 @@ void CHttpCmdServer::OnRequestPauseCmd(
 			{
 				cImageUrlBuffer = ((const char*)pReqPauseCmd) + sizeof(HTTPCMDREQPAUSECMD);
 			}
-			gPausePage->PerformHttpCmd_Pause(
-				pReqPauseCmd->nSecondsPerImage,
+
+			gPicturePage->PerformHttpCmd_SetPicture(
+				cImageUrlBuffer,
 				pReqPauseCmd->rcImagePosition,
-				cImageUrlBuffer);
+				pReqPauseCmd->nSecondsPerImage,
+				FALSE);
+			gPageManager->SetCurrentPage(Page_Picture);
 		}
 	}
 	else
@@ -235,7 +238,7 @@ void CHttpCmdServer::OnRequestResumeCmd(
 		}
 		else
 		{
-			gPageManager->SetCurrentPage(Page_Hdmi);
+			gPageManager->SetCurrentPage(Page_Blank);
 		}
 	}
 	else
@@ -297,10 +300,12 @@ void CHttpCmdServer::OnRequestOpenRoomCmd(
 			{
 				cVideoUrlBuffer = ((const char*)pReqOpenRoomCmd) + sizeof(HTTPCMDREQOPENROOMCMD);
 			}
-			gOpenRoomPage->PerformHttpCmd_OpenRoom(
+
+			gPicturePage->PerformHttpCmd_SetQRCode(
 				pReqOpenRoomCmd->cQRCodeString,
-				pReqOpenRoomCmd->rcQRCodePosition,
-				cVideoUrlBuffer);
+				pReqOpenRoomCmd->rcQRCodePosition);
+			gPlayerManager->SetMainPlayerSource(cVideoUrlBuffer, TRUE);
+			gPageManager->SetCurrentPage(Page_Picture);
 		}
 	}
 	else
@@ -362,7 +367,9 @@ void CHttpCmdServer::OnRequestCloseRoomCmd(
 			{
 				cVideoUrlBuffer = ((const char*)pReqCloseRoomCmd) + sizeof(HTTPCMDREQCLOSEROOMCMD);
 			}
-			gCloseRoomPage->PerformHttpCmd_CloseRoom(cVideoUrlBuffer);
+
+			gPlayerManager->SetMainPlayerSource(cVideoUrlBuffer, TRUE);
+			gPageManager->SetCurrentPage(Page_Blank);
 		}
 	}
 	else
@@ -424,7 +431,9 @@ void CHttpCmdServer::OnRequestPayCallbackCmd(
 			{
 				cVideoUrlBuffer = ((const char*)pReqPayCallbackCmd) + sizeof(HTTPCMDREQPAYCALLBACKCMD);
 			}
-			gPayCallbackPage->PerformHttpCmd_PayCallback(cVideoUrlBuffer);
+
+			gPlayerManager->SetMainPlayerSource(cVideoUrlBuffer, FALSE);
+			gPageManager->SetCurrentPage(Page_Blank);
 		}
 	}
 	else

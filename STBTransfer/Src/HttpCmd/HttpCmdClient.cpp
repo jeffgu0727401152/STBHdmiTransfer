@@ -74,12 +74,11 @@ BOOL CHttpCmdClient::ThreadLoop(
 				heartBeatLostCount++;
 				if (heartBeatLostCount > HEART_BEAT_LOST_THRESHOLD)
 				{
-
 					PAGE_TYPE currentPage  = gPageManager->GetCurPageType();
-					if (!(Page_Hdmi ==  currentPage || Page_SettingModify == currentPage || Page_SettingInfo == currentPage))
+					if (!(Page_Blank ==  currentPage || Page_SettingModify == currentPage || Page_SettingInfo == currentPage))
 					{
-						LOGMSG(DBG_LEVEL_W, "check online failed, SetCurrentPage HDMI\n");
-						gPageManager->SetCurrentPage(Page_Hdmi);
+						LOGMSG(DBG_LEVEL_W, "check online failed, SetCurrentPage to Blank\n");
+						gPageManager->SetCurrentPage(Page_Blank);
 					}
 					heartBeatLostCount = 0;
 				}

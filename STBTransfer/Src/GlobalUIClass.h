@@ -5,12 +5,14 @@
 #include "Version.h"
 #include "./PageManager/PageManager.h"
 #include "./PlayerCtrl/PlayerCtrl.h"
+#include "./PlayerCtrl/PlayerManager.h"
 #include "./HttpCmd/HttpCmdClient.h"
 #include "./HttpCmd/HttpCmdServer.h"
 #include "./InputMethodWnd/HandWriteOperator.h"
 
 extern CPageManager* gPageManager;
 extern CPlayerCtrl* gPlayerCtrl;
+extern CPlayerManager* gPlayerManager;
 extern CMultiMediaCtrl* gMultiMediaCtrl;
 extern CHttpCmdClient* gHttpCmdClient;
 extern CHttpCmdServer* gHttpCmdServer;

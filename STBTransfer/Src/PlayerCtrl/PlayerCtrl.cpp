@@ -54,15 +54,11 @@ void CAVPlayer::OnPlayCompleteEvent(
 		LOGMSG(DBG_LEVEL_I,"OnPlayComplete, index=%d, reason=%d+++!\n",
 			ePlayerIndex, eReasonType);
 
-		if (ePlayerIndex == PLAYERINDEX_MAIN)
-		{
-			theBaseApp->AddBroadcastMsg(
-				MSG_PLAYER_COMPLETE,
-				(UINT64)ePlayerIndex,
-				(UINT64)eReasonType,
-				FALSE,
-				NULL);
-		}
+		theBaseApp->PostMsg(
+			gPlayerManager,
+			MSG_PLAYER_COMPLETE,
+			(UINT64)ePlayerIndex,
+			(UINT64)eReasonType);
 
 		LOGMSG(DBG_LEVEL_I,"OnPlayComplete ---!\n");
 	}
@@ -340,10 +336,6 @@ void CPlayerCtrl::OnFirstAudioPtsEvent(
 {
 	LOGMSG(DBG_LEVEL_I,"%s: ePlayerIndex=%d\n",
 		__PRETTY_FUNCTION__,ePlayerIndex);
-	if (ePlayerIndex == PLAYERINDEX_MAIN)
-	{
-		gHdmiPage->PostMsg(MSG_FIRSTAUDIO, 0, 0);
-	}
 }
 
 void CPlayerCtrl::OnFirstVideoPtsEvent(
@@ -367,12 +359,12 @@ void CPlayerCtrl::OnHdmiOutDisconnect()
 
 void CPlayerCtrl::OnHdmiInConnect()
 {
-	gHdmiPage->PostMsg(MSG_HDMIIN_CONNECT, 0, 0);
+	LOGMSG(DBG_LEVEL_I, "%s\n", __PRETTY_FUNCTION__);
 }
 
 void CPlayerCtrl::OnHdmiInDisconnect()
 {
-	gHdmiPage->PostMsg(MSG_HDMIIN_DISCONNECT, 0, 0);
+	LOGMSG(DBG_LEVEL_I, "%s\n", __PRETTY_FUNCTION__);
 }
 
 void CPlayerCtrl::Start()

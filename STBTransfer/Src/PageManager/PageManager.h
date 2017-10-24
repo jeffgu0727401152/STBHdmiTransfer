@@ -1,29 +1,21 @@
 #pragma once
 
-#include "HdmiPage.h"
+#include "BaseApp.h"
+#include "BlankPage.h"
 #include "SettingModifyPage.h"
 #include "SettingInfoPage.h"
-#include "PausePage.h"
-#include "CloseRoomPage.h"
-#include "FirstLaunchPage.h"
-#include "OpenRoomPage.h"
-#include "PayCallbackPage.h"
-#include "BaseApp.h"
+#include "PicturePage.h"
 
 typedef enum ePAGE_TYPE
 {
-	Page_Hdmi=0,				// HDMI 页面
+	Page_Blank=0,					// 透传页面
 	Page_SettingModify,		// 设置页面
-	Page_SettingInfo,			// 显示设置页面
-	Page_Pause,					// 暂停页面
-	Page_CloseRoom,			// 关房页面
-	Page_OpenRoom,			// 开放页面
-	Page_FirstLaunch,		// 开机页面
-	Page_PayCallback,		// 支付回调页面 
+	Page_SettingInfo,				// 显示设置页面
+	Page_Picture,						// 图片页面
 	Page_Count
 } PAGE_TYPE;
 
-class CPageManager
+class CPageManager : public IMessageOwner
 {
 public:
 	CPageManager();
@@ -39,18 +31,19 @@ public:
 
 	PAGE_TYPE GetCurPageType();
 
+	virtual void OnMsg(
+		UINT32 uType,
+		UINT64 wParam,
+		UINT64 lParam);
+
 private:
 	virtual void ShowPage();
 
 public:
-	CHdmiPage mHdmiPage;
+	CBlankPage mBlankPage;
 	CSettingModifyPage mSettingModifyPage;
 	CSettingInfoPage mSettingInfoPage;
-	CPausePage mPausePage;
-	CCloseRoomPage mCloseRoomPage;
-	COpenRoomPage mOpenRoomPage;
-	CFirstLaunchPage mFirstLanchPage;
-	CPayCallbackPage mPayCallbackPage;
+	CPicturePage mPicturePage;
 
 private:
 	PAGE_TYPE mCurPageType;

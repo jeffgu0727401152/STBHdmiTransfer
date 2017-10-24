@@ -1,16 +1,15 @@
 #pragma once
 
-#include "BaseWnd.h"
 #include "GifWnd.h"
 
-class CPausePage: public CBaseWnd,
+class CPicturePage: public CBaseWnd,
 	public IGifWndFrameChangeListener
 {
 	typedef CBaseWnd CParentClass;
 
 public:
-	CPausePage();
-	virtual ~CPausePage();
+	CPicturePage();
+	virtual ~CPicturePage();
 
 public:
 	virtual void Create(
@@ -34,10 +33,20 @@ public:
 		UINT64 uUserData);
 
 public:
-	void PerformHttpCmd_Pause(
+	void PerformHttpCmd_SetQRCode(
+		const char* cQRCodeString,
+		RECT rcQRCodePosition);
+
+	void PerformHttpCmd_SetPicture(
+		const char* cPictureUrlList,
+		RECT rcPicturePosition,
 		int nSecondsPerImage,
-		RECT rcImagePosition,
-		const char *pImageUrlBuffer);
+		BOOL bLoop);
+
+private:
+	void CreateQRImage(
+		const char* cString,
+		CImageBuffer* pImageBuffer);
 
 	BOOL PictureLocalDownload(
 		const char *cNetFile,
@@ -52,6 +61,7 @@ private:
 	CBaseLock mLock;
 	CPtrListCtrl mPictureUrlList;
 	int mCurShowIndex;
+	BOOL mPictureLoop;
 };
 
-extern CPausePage *gPausePage;
+extern CPicturePage *gPicturePage;

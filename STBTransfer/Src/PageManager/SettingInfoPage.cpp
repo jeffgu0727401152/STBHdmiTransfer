@@ -186,7 +186,7 @@ void CSettingInfoPage::OnClick(
 	}
 	else if (pWnd == &mBackBtn)
 	{
-		gPageManager->SetCurrentPage(Page_Hdmi);
+		gPageManager->SetCurrentPage(Page_Blank);
 	}
 }
 
