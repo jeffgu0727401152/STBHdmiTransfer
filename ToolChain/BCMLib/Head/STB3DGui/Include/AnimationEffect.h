@@ -46,6 +46,7 @@ public:
 		const char* cGifFileName);
 	BOOL LoadFromGifBuffer(
 		CBuffer *pGifBuf);
+	void Unload();
 
 	virtual void StartEffect();
 	virtual void StopEffect();

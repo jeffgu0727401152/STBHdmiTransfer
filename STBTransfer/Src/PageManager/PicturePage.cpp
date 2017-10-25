@@ -92,6 +92,7 @@ void CPicturePage::OnWindowVisible(
 		mLock.Unlock();
 
 		mPictureWnd.SetBkgroundTexture(NULL);
+		mPictureWnd.Unload();
 	}
 }
 
@@ -192,6 +193,7 @@ void CPicturePage::PerformHttpCmd_SetQRCode(
 		rcQRCodePosition.bottom);
 
 	mPictureWnd.SetBkgroundTexture(NULL);
+	mPictureWnd.Unload();
 	mPictureWnd.MoveWindow(&rcQRCodePosition);
 	mPictureWnd.LoadFromImageBuffer(&sImageBuffer);
 }
@@ -210,6 +212,7 @@ void CPicturePage::PerformHttpCmd_SetPicture(
 	mCurShowIndex = 0;
 
 	mPictureWnd.SetBkgroundTexture(NULL);
+	mPictureWnd.Unload();
 	mPictureWnd.MoveWindow(&rcPicturePosition);
 
 	if (nSecondsPerImage < 1)
@@ -259,6 +262,7 @@ void CPicturePage::PerformHttpCmd_SetPicture(
 	else
 	{
 		mPictureWnd.SetBkgroundTexture(NULL);
+		mPictureWnd.Unload();
 	}
 }
 

@@ -57,6 +57,7 @@ public:
 		const char* cGifFileName);
 	BOOL LoadFromGifBuffer(
 		CBuffer *pGifBuf);
+	void Unload();
 
 	void SetGifWndFrameChangeListener(
 		IGifWndFrameChangeListener* pGifWndFrameChangeListener,
