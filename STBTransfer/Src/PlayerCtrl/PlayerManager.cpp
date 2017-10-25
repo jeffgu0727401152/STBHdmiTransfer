@@ -5,6 +5,7 @@ CPlayerManager::CPlayerManager()
 {
 	mMainPlayerIndex = 0;
 	mMainPlayerLoopPlay = FALSE;
+	mIsHdmiPlaying = FALSE;
 
 	mPipPlayerIndex = 0;
 	mPipPlayerLoopPlay = FALSE;
@@ -19,13 +20,6 @@ void CPlayerManager::SetMainPlayerSource(
 	const char* cUrlList,
 	BOOL bLoop)
 {
-	if (mMainPlayerUrlList.GetCount() == 0 && cUrlList == NULL)
-	{
-		// already in hdmi passthrough
-		LOGMSG(DBG_LEVEL_I, "%s:%d, already in hdmi passthrough, do nothing!\n", __PRETTY_FUNCTION__, __LINE__);
-		return;
-	}
-
 	mLock.Lock();
 
 	DelArrayList(&mMainPlayerUrlList, char);
@@ -119,8 +113,13 @@ void CPlayerManager::OnMsg(
 			if ((PLAYCOMPLETE_REASONTYPE)lParam == PlayComplete_ReasonType_StartError)
 			{
 				mLock.Lock();
-				mMainPlayerUrlList.DeleteAt(mMainPlayerIndex);
 				mMainPlayerIndex--;
+				if (mMainPlayerIndex<0)
+				{
+					mMainPlayerIndex = 0;
+				}
+				mMainPlayerUrlList.DeleteAt(mMainPlayerIndex);
+
 				mLock.Unlock();
 			}
 			SwitchMain();
@@ -130,8 +129,12 @@ void CPlayerManager::OnMsg(
 			if ((PLAYCOMPLETE_REASONTYPE)lParam == PlayComplete_ReasonType_StartError)
 			{
 				mLock.Lock();
-				mPiplayerUrlList.DeleteAt(mPipPlayerIndex);
 				mPipPlayerIndex--;
+				if (mPipPlayerIndex<0)
+				{
+					mPipPlayerIndex = 0;
+				}
+				mPiplayerUrlList.DeleteAt(mPipPlayerIndex);
 				mLock.Unlock();
 			}
 			SwitchPip();
@@ -152,6 +155,8 @@ void CPlayerManager::SwitchMain()
 
 	if (mMainPlayerUrlList.GetCount() > 0)
 	{
+		cVideoUrl = (const char*)mMainPlayerUrlList.GetAt(mMainPlayerIndex);
+
 		if (mMainPlayerLoopPlay)
 		{
 			mMainPlayerIndex = (mMainPlayerIndex+1) % mMainPlayerUrlList.GetCount();
@@ -163,20 +168,22 @@ void CPlayerManager::SwitchMain()
 				mMainPlayerIndex ++;
 			}
 		}
-
-		cVideoUrl = (const char*)mMainPlayerUrlList.GetAt(mMainPlayerIndex);
 	}
 
 	if (cVideoUrl == NULL)
 	{
-		LOGMSG(DBG_LEVEL_I, "%s:%d, main play hdmi!\n", __PRETTY_FUNCTION__, __LINE__);
-		gPlayerCtrl->PlayMain(
-			"99999910", //SONGID_HDMIIN
-			"hdmiin://", //filepath
-			FALSE, //loopplay
-			FALSE, //passthrough
-			0);
-		gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
+		if (!mIsHdmiPlaying)
+		{
+			LOGMSG(DBG_LEVEL_I, "%s:%d, main play hdmi!\n", __PRETTY_FUNCTION__, __LINE__);
+			gPlayerCtrl->PlayMain(
+				"99999910", //SONGID_HDMIIN
+				"hdmiin://", //filepath
+				FALSE, //loopplay
+				FALSE, //passthrough
+				0);
+			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
+			mIsHdmiPlaying = TRUE;
+		}
 	}
 	else
 	{
@@ -189,6 +196,7 @@ void CPlayerManager::SwitchMain()
 			FALSE, //loopplay
 			FALSE, //passthrough
 			0);
+		mIsHdmiPlaying = FALSE;
 	}
 
 	mLock.Unlock();
@@ -203,6 +211,8 @@ void CPlayerManager::SwitchPip()
 	int nCount = mPiplayerUrlList.GetCount();
 	if (nCount > 0)
 	{
+		cVideoUrl = (const char*)mPiplayerUrlList.GetAt(mPipPlayerIndex);
+
 		if (mPipPlayerLoopPlay)
 		{
 			mPipPlayerIndex = (mPipPlayerIndex+1) % nCount;
@@ -214,8 +224,6 @@ void CPlayerManager::SwitchPip()
 				mPipPlayerIndex ++;
 			}
 		}
-
-		cVideoUrl = (const char*)mPiplayerUrlList.GetAt(mPipPlayerIndex);
 	}
 
 	if (cVideoUrl == NULL)

@@ -45,13 +45,19 @@ cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libz.*						${workspace}/Re
 
 #U盘无法接受符号连接
 if [ "$1" == "udisk" ]; then
-	echo "release is for usb disk boot!" 
+	echo "release is for usb disk copy!" 
 	cd ${workspace}/Release/Program/Lib/nexus/
 	sh ${workspace}/link2copy.sh
 	cd ${workspace}/Release/Program/Lib/common/
 	sh ${workspace}/link2copy.sh
+	cd ${workspace}/Release
+	echo "tar the Program file..."
+	tar -czf Program.tar.gz Program
 elif [ "$1" == "factory" ]; then
 	rm -r ${workspace}/Release/Private
+	cd ${workspace}/Release
+	echo "tar the file..." 
+	tar -czf Release.tar.gz *
 	echo "release is for factory preburn!" 
 else
 	rm ${workspace}/Release/STBCfg.xml

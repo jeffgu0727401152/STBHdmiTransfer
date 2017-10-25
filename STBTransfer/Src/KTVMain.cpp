@@ -202,6 +202,7 @@ void InitUI()
 	if (gProgramBootMode==Mode_Factory)
 	{
 		LOGMSG(DBG_LEVEL_I, "Mode_Factory,show hdmi page\n");
+		gPlayerManager->SetMainPlayerSource(NULL, FALSE);
 		gPageManager->SetCurrentPage(Page_Blank);
 	}
 	else if (!gKTVConfig.IsConfigFileValid())

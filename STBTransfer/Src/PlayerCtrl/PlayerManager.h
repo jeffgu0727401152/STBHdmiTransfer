@@ -33,6 +33,7 @@ private:
 	CPtrListCtrl mMainPlayerUrlList;
 	int mMainPlayerIndex;
 	BOOL mMainPlayerLoopPlay;
+	BOOL mIsHdmiPlaying;
 
 	CPtrListCtrl mPiplayerUrlList;
 	int mPipPlayerIndex;

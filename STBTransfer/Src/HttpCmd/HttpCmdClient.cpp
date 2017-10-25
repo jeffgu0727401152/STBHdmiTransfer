@@ -82,6 +82,7 @@ BOOL CHttpCmdClient::ThreadLoop(
 					if (!(Page_Blank ==  currentPage || Page_SettingModify == currentPage || Page_SettingInfo == currentPage))
 					{
 						LOGMSG(DBG_LEVEL_W, "check online failed, SetCurrentPage to Blank\n");
+						gPlayerManager->SetMainPlayerSource(NULL,FALSE);
 						gPageManager->SetCurrentPage(Page_Blank);
 					}
 					heartBeatLostCount = 0;
