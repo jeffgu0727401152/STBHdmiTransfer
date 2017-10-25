@@ -37,6 +37,7 @@ void CPicturePage::Create(
 		WINDOWSTATE_INVISIBLE);
 
 	mPictureWnd.Create(pE3DEngine, this);
+	mPictureWnd.SetGifWndFrameChangeListener(this, 0);
 
 	LOGMSG(DBG_LEVEL_I, "%s ---\n", __PRETTY_FUNCTION__);
 }
