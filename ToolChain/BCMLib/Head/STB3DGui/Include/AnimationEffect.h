@@ -48,6 +48,13 @@ public:
 		CBuffer *pGifBuf);
 	void Unload();
 
+	// nWidth==0 || nHeight==0 will cancel stretch
+	void Stretch(
+		int nWidth,
+		int nHeight,
+		int nDrawMode);
+	void RevertRGB();
+
 	virtual void StartEffect();
 	virtual void StopEffect();
 

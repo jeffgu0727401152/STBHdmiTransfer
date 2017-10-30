@@ -39,6 +39,10 @@ public:
 	virtual void OnWindowVisible(
 		BOOL bVisible);
 
+	virtual void OnWindowSizeChange(
+		RECT rcOldRelative,
+		RECT rcNewRelative);
+
 // interface
 public:
 	virtual void OnAnimationFrameChange(

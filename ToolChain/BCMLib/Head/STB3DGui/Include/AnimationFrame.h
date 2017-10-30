@@ -36,6 +36,7 @@ public:
 	int GetWidth();
 	int GetHeight();
 
+	// nWidth==0 || nHeight==0 will cancel stretch
 	void Stretch(
 		int nWidth,
 		int nHeight,
@@ -47,6 +48,9 @@ public:
 	void ResetAnimationFrameIndex();
 	ANIMATIONFRAMEINFO* GetCurAnimationFrame();
 	ANIMATIONFRAMEINFO* DecoderNextAnimationFrame();
+
+private:
+	void DecoderNextGifFrame();
 
 private:
 	int mImageWidth;
