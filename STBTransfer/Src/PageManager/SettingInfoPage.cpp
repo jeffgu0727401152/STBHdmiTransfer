@@ -186,6 +186,7 @@ void CSettingInfoPage::OnClick(
 	}
 	else if (pWnd == &mBackBtn)
 	{
+		gPlayerManager->SetMainPlayerSource(NULL, FALSE);
 		gPageManager->SetCurrentPage(Page_Blank);
 	}
 }
