@@ -135,7 +135,15 @@ public:
 			if (clientOpenResult==TRUE)
 			{
 				LOGMSG(DBG_LEVEL_I, "%s:%d, GetClientOpenUrl get %s!\n", __PRETTY_FUNCTION__, __LINE__,sURLs.GetString());
-				gPlayerManager->SetMainPlayerSource(sURLs.GetString(), TRUE);
+				if (gServerFirstCmdGet)
+				{
+					LOGMSG(DBG_LEVEL_I, "%s:%d, open room has been received, so do nothing!\n", __PRETTY_FUNCTION__, __LINE__);
+				}
+				else
+				{
+					LOGMSG(DBG_LEVEL_I, "%s:%d, GetClientOpenUrl is OK, SetMainPlayerSource\n", __PRETTY_FUNCTION__, __LINE__);
+					gPlayerManager->SetMainPlayerSource(sURLs.GetString(), TRUE);
+				}
 				break;
 			}
 			mExitEvent.Wait(2000);

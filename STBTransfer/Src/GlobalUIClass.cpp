@@ -11,6 +11,7 @@ CMultiMediaCtrl* gMultiMediaCtrl=NULL;
 CHttpCmdClient* gHttpCmdClient=NULL;
 CHttpCmdServer* gHttpCmdServer=NULL;
 BOOT_MODE gProgramBootMode = Mode_Local;
+BOOL gServerFirstCmdGet = FALSE;
 
 void InitGlobalClass()
 {

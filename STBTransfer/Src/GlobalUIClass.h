@@ -17,6 +17,7 @@ extern CMultiMediaCtrl* gMultiMediaCtrl;
 extern CHttpCmdClient* gHttpCmdClient;
 extern CHttpCmdServer* gHttpCmdServer;
 extern CHandWriteOperator* gHandWriteOperator;
+extern BOOL gServerFirstCmdGet;
 
 typedef enum eBOOT_MODE
 {

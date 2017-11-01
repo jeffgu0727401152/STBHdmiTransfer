@@ -29,8 +29,9 @@ public:
 
 	int GetFrameCount();
 	int GetCurFrameIndex();
-	void GifResetFrameIndex();
-	unsigned char* DecNextFrame();
+	void ResetGifFrameIndex();
+	unsigned char* GetGifFrameBuffer();
+	void DecNextFrame();
 	int GetDelayTimeMS();
 
 private:
