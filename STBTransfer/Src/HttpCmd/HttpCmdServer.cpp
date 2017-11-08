@@ -256,6 +256,7 @@ void CHttpCmdServer::OnRequestOpenRoomCmd(
 	HTTPCMDREQOPENROOMCMD *pReqOpenRoomCmd)
 {
 	LOGMSG(DBG_LEVEL_I, "%s:\n", __PRETTY_FUNCTION__);
+	gServerFirstCmdGet = TRUE;
 
 	CSimpleStringA sResponseStateString;
 

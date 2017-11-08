@@ -5,12 +5,6 @@
 #include "PtrControl.h"
 #include "GifDecoder.h"
 
-typedef struct tagANIMATIONFRAMEINFO
-{
-	CImageBuffer sImageBuffer;
-	int nDelayTime;
-}ANIMATIONFRAMEINFO;
-
 class CAnimationFrame
 {
 public:
@@ -46,20 +40,20 @@ public:
 	int GetAnimationFrameCount();
 	int GetCurAnimationFrameIndex();
 	void ResetAnimationFrameIndex();
-	ANIMATIONFRAMEINFO* GetCurAnimationFrame();
-	ANIMATIONFRAMEINFO* DecoderNextAnimationFrame();
+	void GetCurAnimationFrame(
+		CImageBuffer* pImageBuffer,
+		int* pnDelayTime);
+	void DecoderNextAnimationFrame();
 
 private:
-	void DecoderNextGifFrame();
+	CBaseLock mLock;
 
-private:
 	int mImageWidth;
 	int mImageHeight;
 	int mStretchMode;
 	BOOL mRevertRGB;
 
-	int mAnimationFrameCount;
-	ANIMATIONFRAMEINFO mCurrentFrame;
-
+	BOOL mIsGif;
+	CImageBuffer mImageBuffer;
 	CGifDecoder mGifDecoder;
 };
