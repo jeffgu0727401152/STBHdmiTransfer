@@ -155,6 +155,11 @@ void CSettingInfoPage::OnWindowVisible(
 		UpdateUiFromConfig();
 		UpdateStateText();
 		AddTimer(TIMERID_UPDATESTATEUI, mUpdateTimeMS);
+
+		LOGMSG(DBG_LEVEL_I, "%s: show main volume setting slidebar!\n", __PRETTY_FUNCTION__);
+		mMainVolumeSpin.SetWindowVisible(TRUE);
+		mMainVolumeSlide.SetWindowVisible(TRUE);
+		
 		if (mMainVolumeSpin.IsWindowVisible())
 		{
 			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
@@ -209,10 +214,7 @@ void CSettingInfoPage::OnMsg(
 			}
 			else if ( (gPageManager->GetCurPageType() == Page_SettingInfo) )
 			{
-				LOGMSG(DBG_LEVEL_I, "%s: show main volume setting slidebar!\n", __PRETTY_FUNCTION__);
-				mMainVolumeSpin.SetWindowVisible(TRUE);
-				mMainVolumeSlide.SetWindowVisible(TRUE);
-				gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
+				// to do
 			}
 			else
 			{
