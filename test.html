@@ -1077,7 +1077,7 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 	<div class="container">
 		<div style="padding: 80px 150px 0; height: 160px;">
 			<a class="logo" href="http://www.whiteskycn.com/"><img src="http://www.whiteskycn.com/uploadfile/2017/0725/20170725040952243.png"></a>
-			<h1 data-force="40" data-force-y="2.5">版权盒子测试 v1.0</h1>
+			<h1 data-force="40" data-force-y="2.5">版权盒子测试 v1.1</h1>
 		</div>
 	</div>
 	
@@ -1087,8 +1087,9 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 		<div id="advanced" style="margin-left: 20px;">
 
 			<div class="title title_xl">娱网项目 v1.0.1<br>
-				<input type="text" id= "input" value="192.168.4.44:8080">
-			</div>	
+				
+			</div>
+			<!--
 			<label>是否检测并遍历网段内所有可用设备</label>
 			<p class="myradio" style="margin:0 auto;">
 			    <label class="open">
@@ -1098,14 +1099,31 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 			        <input name="name" type="radio" value="close" >
 			    </label>
 			</p>
-			<div style="margin:0 auto ; margin-top: 10px" class="block__list block__list_words">
-				<div class="block__list-title"><button id="testAll">自动压力测试所有设备功能(开启)</button></div>
+			-->
+
+			<div id="iter" style="margin:0 auto ; margin-top: 10px"  class="block__list block__list_words">
+				<div class="block__list-title"  >
+					<label>目标设备IP：端口</label>	
+					<input type="text" id= "input" value="192.168.4.44:8080">
+				</div>
+				<div class="block__list-title"  >
+				<label>批量测试</label>
+					<p class="myradio" style="margin:0 auto;">
+					    <label class="open">
+					        <input name="name" type="radio" value="open" >
+					    </label>
+					    <label class="close hidden">
+					        <input name="name" type="radio" value="close" >
+					    </label>
+					</p>
+				</div>
+				<div class="block__list-title"  ><button id="testAll" >开始自动测试</button></div>
 				<ul id="advanced-1000">
 				</ul>
 			</div>
 
 			<div style="margin:0 auto; margin-top: 10px" class="block__list block__list_words">
-				<div class="block__list-title"><button type="button"  id="button1">重置接口</button></div>
+				<div class="block__list-title"><button type="button"  id="button1">重启设备</button></div>
 				<ul id="advanced-1">
 				</ul>
 			</div>
@@ -3584,7 +3602,9 @@ $("document").ready(function(){
 		window.actionTimer = null;
 		window.tmpLog = new Array();
 		window.devicesTmpLog  =  new Array();
-		document.getElementById("left_log").style.display="none"
+		document.getElementById("left_log").style.display="none";
+		$("#testAll").css("background-color","red");
+		//$("#isTestAll").css("background-color","#9370DB");
 		$('.hidden').siblings('label').find(':radio').attr('checked',true);
 	    $(".myradio input").click(function(e){
 	        var state = e.delegateTarget.defaultValue;
@@ -3609,7 +3629,7 @@ $("document").ready(function(){
 	                iclose.show();
 	                iopen.css('left',0);
 	                $(".myradio label").removeClass('disabled');
-	                document.getElementById("left_log").style.display=""
+	                document.getElementById("left_log").style.display="";
 	                action9ToCheckDevicesIP();
 	             },300);
 	        }
@@ -3629,10 +3649,38 @@ $("document").ready(function(){
 					window.devicesTmpLog  =  new Array();
 		            isNeedAllDeviceWork = false;
 		            
-		            document.getElementById("left_log").style.display="none"
+		            document.getElementById("left_log").style.display="none";
 	             },300);
 	        }
+
+	        
 	    })
+
+	    /*$("#isTestAll").click(function(){
+            //action8();
+            //
+            if(isNeedAllDeviceWork)
+            {
+            	window.arrAddr = new Array();
+	            window.UptTag = new Array();
+				window.httpSumResCount = 0;
+				window.httpUsedResCount = 0;
+				window.isNeedAllDeviceWork = false;
+				window.devicesTmpLog  =  new Array();
+	            isNeedAllDeviceWork = false;
+	            
+	            document.getElementById("left_log").style.display="none";
+	            document.getElementById("isTestAll").innerHTML  = "单台测试";
+
+	            $("#isTestAll").css("background-color","#9370DB");
+            }else{
+            	document.getElementById("left_log").style.display=""
+            	document.getElementById("isTestAll").innerHTML  = "批量测试";
+	        	action9ToCheckDevicesIP();
+
+	        	$("#isTestAll").css("background-color","#32CD99");
+            }
+        })*/
 
         $("#button1").click(function(){
             action8();
@@ -3662,7 +3710,9 @@ $("document").ready(function(){
         	{
         		window.clearInterval(window.actionTimer);
         		window.actionTimer  = null;
-        		document.getElementById("testAll").innerHTML  = "自动压力测试所有设备功能(开启)";
+        		document.getElementById("testAll").innerHTML  = "开始自动测试";
+        		//$("#testAll").css("background-color","#D9D919");
+        		$("#testAll").css("background-color","red");
         		return;
         	}
             $val = $("#input").val();
@@ -3695,7 +3745,8 @@ $("document").ready(function(){
             	}
             	CCount --;
             },1000) 
-            document.getElementById("testAll").innerHTML  = "自动压力测试所有设备功能(关闭)";
+            document.getElementById("testAll").innerHTML  = "关闭自动测试";
+            $("#testAll").css("background-color","green");
         })
         $("#input").blur(function(){
             if( isStringOK($("#input").val()))
