@@ -85,6 +85,9 @@ private:
 
 	CTexture mEditBkgroundTexture[2];
 
+	CSimpleStringA mSetCompareString;
+	CSimpleStringA mCleanCompareString;
+
 	int mCountdownTimeMS;
 	int mCountdown;
 };

@@ -136,8 +136,8 @@ void CSettingInfoPage::OnLoadResource()
 	mMainVolumeSpin.ParserChildNode(&rootnode, "MainVolumeSpin");
 	mMainVolumeSlide.ParserChildNode(&rootnode, "MainVolumeSlide");
 
-	mMainVolumeSpin.SetWindowVisible(FALSE);
-	mMainVolumeSlide.SetWindowVisible(FALSE);
+	mMainVolumeSpin.SetWindowVisible(TRUE);
+	mMainVolumeSlide.SetWindowVisible(TRUE);
 
 	CBaseWnd::ParserXMLNode(&rootnode);
 }
@@ -155,13 +155,10 @@ void CSettingInfoPage::OnWindowVisible(
 		UpdateUiFromConfig();
 		UpdateStateText();
 		AddTimer(TIMERID_UPDATESTATEUI, mUpdateTimeMS);
-
-		LOGMSG(DBG_LEVEL_I, "%s: show main volume setting slidebar!\n", __PRETTY_FUNCTION__);
-		mMainVolumeSpin.SetWindowVisible(TRUE);
-		mMainVolumeSlide.SetWindowVisible(TRUE);
 		
 		if (mMainVolumeSpin.IsWindowVisible())
 		{
+			LOGMSG(DBG_LEVEL_I, "%s: main volume setting slidebar is here,so EnableAudioLineInToLineOut!\n", __PRETTY_FUNCTION__);
 			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
 		}
 	}
@@ -208,13 +205,9 @@ void CSettingInfoPage::OnMsg(
 	case WNDBCMSG_CONTINUE_CLICK:
 		if ((int)lParam >= 5)
 		{
-			if ( (gPageManager->GetCurPageType() == Page_SettingModify) )
+			if ( (gPageManager->GetCurPageType() == Page_SettingModify) || (gPageManager->GetCurPageType() == Page_SettingInfo) )
 			{
-				LOGMSG(DBG_LEVEL_I, "%s: in setting modify Page, we ignore this request!\n", __PRETTY_FUNCTION__);
-			}
-			else if ( (gPageManager->GetCurPageType() == Page_SettingInfo) )
-			{
-				// to do
+				LOGMSG(DBG_LEVEL_I, "%s: in setting info/modify Page, we ignore this request!\n", __PRETTY_FUNCTION__);
 			}
 			else
 			{

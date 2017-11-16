@@ -12,6 +12,9 @@
 #define LAYOUT_WIDTH  1280
 #define LAYOUT_HEIGHT 720
 
+#define SPECIAL_ROOMNAME_SET_VERIFY       "SET.VERIFY"
+#define SPECIAL_ROOMNAME_CLEAN_VERIFY      "CLEAN.VERIFY"
+
 class CKTVConfig
 {
 public:

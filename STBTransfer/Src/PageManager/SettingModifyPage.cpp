@@ -12,6 +12,8 @@ CSettingModifyPage::CSettingModifyPage()
 {
 	mCountdownTimeMS = 1000;
 	mCountdown = 6;
+	mSetCompareString.Set(SPECIAL_ROOMNAME_SET_VERIFY);
+	mCleanCompareString.Set(SPECIAL_ROOMNAME_CLEAN_VERIFY);
 }
 
 CSettingModifyPage::~CSettingModifyPage()
@@ -314,13 +316,31 @@ void CSettingModifyPage::OnClick(
 				gKTVConfig.GetVodIP(),
 				gKTVConfig.GetRoomName());
 
-			if (clientVerifyResult)
+			CSimpleStringA sTmp;
+			sTmp.Set(mRoomNameEdit.GetWindowTextW());
+
+			if (sTmp.Equal(&mSetCompareString,FALSE))
+			{
+				LOGMSG(DBG_LEVEL_I, "room name is %s, so force set ISVERIFIED flag in configure!\n",mSetCompareString.GetString());
+				mStateText.SetWindowTextA("状态：设置为已认证！！！");
+				gKTVConfig.SetConfigFileValid(TRUE);
+				system("sync");
+			}
+			else if (sTmp.Equal(&mCleanCompareString,FALSE))
+			{
+				LOGMSG(DBG_LEVEL_I, "room name is %s, so force clean ISVERIFIED flag in configure!\n",mCleanCompareString.GetString());
+				mStateText.SetWindowTextA("状态：设置为未认证！！！");
+				gKTVConfig.SetConfigFileValid(FALSE);
+				system("sync");
+			}
+			else if (clientVerifyResult)
 			{
 				LOGMSG(DBG_LEVEL_I, "VerifyResult is ok, so set flag in configure & reboot!\n");
 				mStateText.SetWindowTextA("状态：认证成功！");
 
 				//在configure中设置标志，表示已经配置过一次,下次启动不再是首次开机
 				gKTVConfig.SetConfigFileValid(TRUE);
+				system("sync");
 
 				//倒数5下然后重启主板
 				mCountdown = 6;
@@ -546,7 +566,7 @@ void CSettingModifyPage::CommitSettingToConfig()
 	}
 
 	sTmp.Set(mRoomNameEdit.GetWindowTextW());
-	if(sTmp.GetLength()>0)
+	if(sTmp.GetLength()>0 && !sTmp.Equal(&mSetCompareString,FALSE) && !sTmp.Equal(&mCleanCompareString,FALSE))
 	{
 		gKTVConfig.SetRoomName(sTmp.GetString());
 	}

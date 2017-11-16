@@ -84,12 +84,15 @@ else
 		# 复制上次的 Log
 		mv $PRIVATE_PATH/Log/lighttpd.log $PRIVATE_PATH/Log/lighttpd_last.log
 		cp /stb/config/app/Log/lighttpd.log $PRIVATE_PATH/Log/lighttpd.log
+		mv /stb/config/app/Log/lighttpd.log /stb/config/app/Log/lighttpd_last.log
 
 		mv $PRIVATE_PATH/Log/STBVerify.log $PRIVATE_PATH/Log/STBVerify_Last.log
 		cp /stb/config/app/Log/STBVerify.log $PRIVATE_PATH/Log/STBVerify.log
+		mv /stb/config/app/Log/STBVerify.log /stb/config/app/Log/STBVerify_last.log
 
 		mv $PRIVATE_PATH/Log/STBCGI.log $PRIVATE_PATH/Log/STBCGI_Last.log
 		cp /stb/config/app/Log/STBCGI.log $PRIVATE_PATH/Log/STBCGI.log
+		mv /stb/config/app/Log/STBCGI.log /stb/config/app/Log/STBCGI_last.log
 
 		umount /private
 
