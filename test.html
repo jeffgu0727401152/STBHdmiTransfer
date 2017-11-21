@@ -3194,6 +3194,11 @@ function loadXMLDoc( urlaaa )
         		}
         		else
         		{
+        			if(window.singleErroTag)
+        			{
+        				return;
+        			}
+        			window.singleErroTag = true;
         			window.clearInterval(window.actionTimer);
         			window.actionTimer  = null;
         			var date = new Date();
@@ -3603,6 +3608,8 @@ $("document").ready(function(){
 		window.actionTimer = null;
 		window.tmpLog = new Array();
 		window.devicesTmpLog  =  new Array();
+
+		window.singleErroTag = false;
 		document.getElementById("left_log").style.display="none";
 		$("#testAll").css("background-color","red");
 		//$("#isTestAll").css("background-color","#9370DB");
