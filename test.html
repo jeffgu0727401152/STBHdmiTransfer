@@ -3201,6 +3201,8 @@ function loadXMLDoc( urlaaa )
         			window.singleErroTag = true;
         			window.clearInterval(window.actionTimer);
         			window.actionTimer  = null;
+        			document.getElementById("testAll").innerHTML  = "开始自动测试";
+        			$("#testAll").css("background-color","red");
         			var date = new Date();
 					var year = date.getFullYear();
 					var month = date.getMonth()+1;
