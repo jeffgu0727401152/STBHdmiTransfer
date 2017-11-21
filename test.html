@@ -3196,7 +3196,19 @@ function loadXMLDoc( urlaaa )
         		{
         			window.clearInterval(window.actionTimer);
         			window.actionTimer  = null;
-        			printAddrLog(null);
+        			var date = new Date();
+					var year = date.getFullYear();
+					var month = date.getMonth()+1;
+					var day = date.getDate();
+					var hour = date.getHours();
+					var minute = date.getMinutes();
+					var second = date.getSeconds();
+					var strRes = year + '/'+ month + '/'+ day + ' ' + hour + ':' + minute + ':' + second + "  机器出现crash错误.\n";
+					for (var i = 0; i < window.tmpLog.length; i++) {
+			        	strRes += window.tmpLog[i];
+			        }
+			        strRes += xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "\n";
+			        alert(strRes);
         		}
         	}
         }
@@ -3211,18 +3223,7 @@ function printAddrLog( addr )
 	{
 		// to do
 	}else{
-		var date = new Date();
-		var year = date.getFullYear();
-		var month = date.getMonth()+1;
-		var day = date.getDate();
-		var hour = date.getHours();
-		var minute = date.getMinutes();
-		var second = date.getSeconds();
-		var strRes = year + '/'+ month + '/'+ day + ' ' + hour + ':' + minute + ':' + second + "  机器出现crash错误.\n";
-		for (var i = 0; i < window.tmpLog.length; i++) {
-        	strRes += window.tmpLog[i];
-        }
-        alert(strRes);
+
 	}
 }
 
