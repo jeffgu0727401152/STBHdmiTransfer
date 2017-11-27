@@ -460,6 +460,86 @@ void CHttpCmdClient::OnResponseOpenRoomCmd(
 	}
 }
 
+BOOL CHttpCmdClient::SendPipPreviewCmd(
+	RECT rcPipPosition,
+	int nVideoUrlBufLength,
+	const char *cVideoUrlBuffer,
+	CSimpleStringA *pResultString)
+{
+	if (!IsConnect())
+	{
+		LOGMSG(DBG_LEVEL_I, "%s: HttpCmdServer NOT Started\n", __PRETTY_FUNCTION__);
+
+		return FALSE;
+	}
+
+	BOOL bSendOK = FALSE;
+
+	HTTPCMDREQPIPPREVIEWCMD request;
+	request.nHttpCmdVer = HTTPCMD_VER;
+	request.nRequestID = mRequestID++;
+	request.nCommandType = HTTPCMD_REQ_PIPPREVIEW;
+	request.uPrivData = (UINT64)pResultString;
+
+	request.rcPipPosition = rcPipPosition;
+	request.nVideoUrlBufLength = nVideoUrlBufLength;
+
+	UINT32 uSendBufSize = sizeof(HTTPCMDREQPIPPREVIEWCMD) + nVideoUrlBufLength;
+	BYTE *pSendBuffer = new BYTE[uSendBufSize];
+	if (!pSendBuffer)
+	{
+		return FALSE;
+	}
+
+	memcpy(pSendBuffer, &request, sizeof(HTTPCMDREQPIPPREVIEWCMD));
+	if (nVideoUrlBufLength > 0)
+	{
+		memcpy(pSendBuffer+sizeof(HTTPCMDREQPIPPREVIEWCMD), cVideoUrlBuffer, nVideoUrlBufLength);
+	}
+
+	HTTPCMDREQWITHEVENT requestWithEvent;
+	requestWithEvent.nRequestID = request.nRequestID;
+	mRequestWithEventListLock.Lock();
+	mRequestWithEventList.AddData(&requestWithEvent);
+	mRequestWithEventListLock.Unlock();
+
+	LOGMSG(DBG_LEVEL_I, "%s: req:nRequestID=%d\n", __PRETTY_FUNCTION__, request.nRequestID);
+	if (SendData(MSG_TO_SERVERSOCKET, pSendBuffer, uSendBufSize))
+	{
+		if (!requestWithEvent.complete.Wait(5000))
+		{
+			LOGMSG(DBG_LEVEL_I, "%s: wait response timeout\n", __PRETTY_FUNCTION__);
+		}
+		else
+		{
+			bSendOK = TRUE;
+		}
+	}
+	else
+	{
+		LOGMSG(DBG_LEVEL_I, "%s: SendData Failed\n", __PRETTY_FUNCTION__);
+	}
+
+	mRequestWithEventListLock.Lock();
+	mRequestWithEventList.DeleteAt(mRequestWithEventList.FindFirst(&requestWithEvent));
+	mRequestWithEventListLock.Unlock();
+
+	delete []pSendBuffer;
+
+	return bSendOK;
+}
+
+void CHttpCmdClient::OnResponsePipPreviewCmd(
+		HTTPCMDRESPIPPREVIEWCMD *pResPipPreviewCmdParam)
+{
+	CSimpleStringA *pResultString = (CSimpleStringA *)pResPipPreviewCmdParam->uPrivData;
+	if (pResPipPreviewCmdParam->uSize > 0)
+	{
+		const char *pReadBuf = ((const char *)pResPipPreviewCmdParam)+sizeof(HTTPCMDRESPIPPREVIEWCMD);
+		pResultString->Set(pReadBuf, pResPipPreviewCmdParam->uSize);
+	}
+}
+
 BOOL CHttpCmdClient::SendCloseRoomCmd(
 	int nVideoUrlBufLength,
 	const char *cVideoUrlBuffer,

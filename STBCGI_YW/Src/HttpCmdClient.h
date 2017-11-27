@@ -74,6 +74,12 @@ public:
 		const char *cVideoUrlBuffer,
 		CSimpleStringA *pResultString);
 
+	BOOL SendPipPreviewCmd(
+		RECT rcPipPosition,
+		int nVideoUrlBufLength,
+		const char *cVideoUrlBuffer,
+		CSimpleStringA *pResultString);
+
 private:
 	void OnResponseCheckStatusCmd(
 		HTTPCMDRESCHECKSTATUSCMD *pResCheckStatusCmdParam);
@@ -92,6 +98,9 @@ private:
 		HTTPCMDRESCLOSEROOMCMD *pResCloseRoomCmdParam);
 	void OnResponsePayCallbackCmd(
 		HTTPCMDRESPAYCALLBACKCMD *pResPayCallbackCmdParam);
+
+	void OnResponsePipPreviewCmd(
+		HTTPCMDRESPIPPREVIEWCMD *pResPipPreviewCmdParam);
 
 private:
 	CBaseLock mRequestWithEventListLock;

@@ -60,6 +60,10 @@ private:
 		int nSocketFD,
 		HTTPCMDREQCHECKSTATUSCMD *pReqCheckStatusCmd);
 
+	void OnRequestPipPreviewCmd(
+		int nSocketFD,
+		HTTPCMDREQPIPPREVIEWCMD *pReqPipPreviewCmd);
+
 private:
 	CBaseLock mOperatorLock;
 };

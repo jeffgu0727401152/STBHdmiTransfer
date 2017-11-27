@@ -49,10 +49,14 @@ void ProcessCommand(
 	 * Warning: About the cCmdType if you  want to add a new num ,you should check if the num is large than 9 ,
 	 * you should put the big action num before the short string num to make the case run in right logic.
 	 */
-
-	if (strncasecmp(cCmdType, "action=11", 9) == 0)
+	if (strcmp(cCmdType, "test") == 0)
 	{
-		// 关房回调
+		sResultString.Set("this is just for test");
+		SendResponseString(&sResultString);
+	}
+	else if (strncasecmp(cCmdType, "action=11", 9) == 0)
+	{
+		// 关房
 		const char* cVideoUrlBuffer = NULL;
 		for (int i = 1; i < pArgList->GetCount(); i++)
 		{
@@ -78,9 +82,48 @@ void ProcessCommand(
 
 		SendResponseString(&sResultString);
 	}
-	else if (strcmp(cCmdType, "test") == 0)
+	else if (strncasecmp(cCmdType, "action=10", 9) == 0)
 	{
-		sResultString.Set("this is just for test");
+		// 画中画
+		const char* cVideoUrlBuffer = NULL;
+		int left = 943;
+		int top = 340;
+		int width = 186;
+		int height= 186;
+		RECT rcPipPosition = {left,top,left+width,top+height};
+		for (int i = 1; i < pArgList->GetCount(); i++)
+		{
+			const char* cArg = (const char*)pArgList->GetAt(i);
+			if (!cArg)
+			{
+				continue;
+			}
+
+			if (strncasecmp(cArg, "video_url=", 10) == 0)
+			{
+				cVideoUrlBuffer = cArg + 10;
+			}
+			else if (strncasecmp(cArg, "position=", 9) == 0)
+			{
+				if( '\0' == *(cArg + 9))
+				{
+					LOGMSG(DBG_LEVEL_I, "Position string is empty , use {943,340,186,186} as default temporarily\n");
+				}else
+				{
+					ParserRectFromString(cArg + 9, &rcPipPosition);
+				}
+			}
+		}
+
+		if (!gHttpCmdClient.SendPipPreviewCmd(
+			rcPipPosition,
+			cVideoUrlBuffer?strlen(cVideoUrlBuffer)+1:0,
+			cVideoUrlBuffer,
+			&sResultString))
+		{
+			GenerateErrorString(&sResultString);
+		}
+
 		SendResponseString(&sResultString);
 	}
 	else if (strncasecmp(cCmdType, "action=9", 8) == 0)

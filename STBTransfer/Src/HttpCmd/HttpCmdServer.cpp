@@ -70,6 +70,10 @@ void CHttpCmdServer::OnServerReceiveTCPData(
 		OnRequestCheckStatusCmd(nSocketFD, (HTTPCMDREQCHECKSTATUSCMD *)phdr);
 		break;
 
+	case HTTPCMD_REQ_PIPPREVIEW:
+		OnRequestPipPreviewCmd(nSocketFD,(HTTPCMDREQPIPPREVIEWCMD *)phdr);
+		break;
+
 	default:
 		break;
 	}
@@ -246,6 +250,71 @@ void CHttpCmdServer::OnRequestResumeCmd(
 	{
 		response.uSize = 0;
 		SendData(nSocketFD, &response, sizeof(HTTPCMDRESRESUMECMD));
+	}
+
+	mOperatorLock.Unlock();
+}
+
+void CHttpCmdServer::OnRequestPipPreviewCmd(
+	int nSocketFD,
+	HTTPCMDREQPIPPREVIEWCMD *pReqPipPreviewCmd)
+{
+	LOGMSG(DBG_LEVEL_I, "%s:\n", __PRETTY_FUNCTION__);
+
+	CSimpleStringA sResponseStateString;
+
+	Json::Value resultJson;
+	resultJson["code"] = Json::Value("0");
+	resultJson["codemsg"] = Json::Value("请求成功");
+	Json::FastWriter fast_writer;
+	sResponseStateString.Set(fast_writer.write(resultJson).c_str());
+
+	mOperatorLock.Lock();
+
+	HTTPCMDRESPIPPREVIEWCMD response;
+	response.nHttpCmdVer = HTTPCMD_VER;
+	response.nRequestID = pReqPipPreviewCmd->nRequestID;
+	response.nCommandType = HTTPCMD_RES_PIPPREVIEW;
+	response.uPrivData = pReqPipPreviewCmd->uPrivData;
+	response.uSize = sResponseStateString.GetLength();
+
+	UINT32 uSendBufSize = sizeof(HTTPCMDRESPIPPREVIEWCMD) + response.uSize;
+	BYTE *pSendBuffer = new BYTE[uSendBufSize];
+	if (pSendBuffer)
+	{
+		int nBufPos = 0;
+
+		memcpy(pSendBuffer+nBufPos, &response, sizeof(HTTPCMDRESPIPPREVIEWCMD));
+		nBufPos += sizeof(HTTPCMDRESPIPPREVIEWCMD);
+
+		memcpy(pSendBuffer+nBufPos, sResponseStateString.GetString(), response.uSize);
+		nBufPos += response.uSize;
+		SendData(nSocketFD, pSendBuffer, uSendBufSize);
+
+		delete []pSendBuffer;
+
+		if ( (gPageManager->GetCurPageType() == Page_SettingModify) ||
+			 (gPageManager->GetCurPageType() == Page_SettingInfo) )
+		{
+			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, we ignore this request!\n", __PRETTY_FUNCTION__);
+		}
+		else
+		{
+			const char* cVideoUrlBuffer = NULL;
+			if (pReqPipPreviewCmd->nVideoUrlBufLength)
+			{
+				cVideoUrlBuffer = ((const char*)pReqPipPreviewCmd) + sizeof(HTTPCMDREQPIPPREVIEWCMD);
+			}
+
+			gPlayerManager->SetMainPlayerSource(NULL, FALSE);
+			gPlayerManager->SetPipPlayerSource(cVideoUrlBuffer, FALSE, pReqPipPreviewCmd->rcPipPosition);
+			gPageManager->SetCurrentPage(Page_Blank);
+		}
+	}
+	else
+	{
+		response.uSize = 0;
+		SendData(nSocketFD, &response, sizeof(HTTPCMDRESPIPPREVIEWCMD));
 	}
 
 	mOperatorLock.Unlock();
