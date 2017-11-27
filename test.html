@@ -1023,7 +1023,27 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 			#advanced-8 li:hover i {
 				opacity: 1;
 			}
+		#advanced-9 {}
+			#advanced-9 li {
+				position: relative;
+			}
 
+			#advanced-9 i {
+				-webkit-transition: opacity .2s;
+				transition: opacity .2s;
+				opacity: 0;
+				display: block;
+				cursor: pointer;
+				color: #c00;
+				top: 10px;
+				right: 40px;
+				position: absolute;
+				font-style: normal;
+			}
+
+			#advanced-9 li:hover i {
+				opacity: 1;
+			}
 		#advanced {}
 			#advanced button {
 				color: #fff;
@@ -1204,9 +1224,26 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 					</li>
 				</ul>
 			</div>
+			<div style="margin:0 auto; margin-top: 10px" class="block__list block__list_words">
+				<div class="block__list-title"><button type="button"  id="button8">画中画</button><input type="text" id="img_in_img_input" value="" style="width:100px; height:15px;"></div>
+				<ul id="advanced-7">
+					<li draggable="false" class="" style="">
+						<a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv" onclick="">视频3</a>
+						<i class="js-remove">✖</i>
+					</li>
+					<li style="">
+						<a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/V_20170912_112713_vHDR_Auto.mp4" onclick="">视频1</a>
+						<i class="js-remove">✖</i>
+					</li>
+					<li draggable="false" class="" style="">
+						<a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/qianyan_test.mkv " onclick="">视频2</a>
+						<i class="js-remove">✖</i>
+					</li>
+				</ul>
+			</div>
 			<div style="margin:0 auto ; margin-top: 10px" class="block__list block__list_words">
 				<div class="block__list-title"><button type="button"  id="button6">状态检测</button></div>
-				<ul id="advanced-7">
+				<ul id="advanced-8">
 				</ul>
 			</div>
 
@@ -1215,7 +1252,7 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 
 			<div style="margin:0 auto; margin-top: 10px" class="block__list block__list_words" id = "right">
 				<div class="block__list-title">测试用地址</div>
-				<ul id="advanced-8">
+				<ul id="advanced-9">
 					<li style="">
 						<a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/2012081210371.jpg" onclick="">图片1</a>
 						<i class="js-remove">✖</i>
@@ -2954,6 +2991,10 @@ d.prop("selected",!1):m=c;f?a.$watch(f,function(a,c){e.$set("value",a);a!==c&&m.
 		name: 'advanced',
 		pull: false,
 		put: true
+	},{
+		name: 'advanced',
+		pull: false,
+		put: true
 	},
 	{
 		name: 'advanced',
@@ -3523,6 +3564,57 @@ function action1()
     }
 }
 
+function action10()
+{
+	$val = $("#input").val();
+    $img_in_img_input = $("#img_in_img_input").val();
+    var childArr = document.getElementById("advanced-7").getElementsByTagName("li");
+    
+    var final = "&position="+ $img_in_img_input ;
+    if(window.isNeedAllDeviceWork)
+	{
+        if(httpUsedResCount > 0)
+        {
+        	document.getElementById("myReturnCodeDiv").innerHTML = "action = 10 test begin\n";
+        	for (var i = 0; i < window.arrAddr.length; i++) {
+        		if(window.UptTag[i])
+	            {
+		            var strOri =   window.arrAddr[i] +"/client/api?action=10&video_url=";
+		            for (var j =  0; j < childArr.length; j++) {
+		            	if(j>0)
+		            	{
+		            		strOri += ",";
+		            	}
+		            	var aa =childArr[j].getElementsByTagName("a");
+		            	strOri += aa[0].href;
+		            }
+		            loadXMLDoc(strOri+final);
+		        }else{
+	            	//document.getElementById("myReturnCodeDiv").innerHTML += "uptTag is off\n";
+	            }
+            }
+        }
+    	else
+    	{
+    		action9ToCheckDevicesIP();
+    	}
+    }
+    else
+    {
+    	document.getElementById("myReturnCodeDiv").innerHTML = "action = 10 test begin\n";
+    	var strOri =   "http://" + $val  +"/client/api?action=10&video_url=";
+        for (var i =  0; i < childArr.length; i++) {
+        	if(i>0)
+        	{
+        		strOri += ",";
+        	}
+        	var aa =childArr[i].getElementsByTagName("a");
+        	strOri += aa[0].href;
+        }
+        loadXMLDoc(strOri+final);
+    }
+}
+
 function  action9()
 {
 	if(window.isNeedAllDeviceWork)
@@ -3713,6 +3805,9 @@ $("document").ready(function(){
         })
         $("#button7").click(function(){
             action11();
+        })
+        $("#button8").click(function(){
+            action10();
         })
         $("#testAll").click(function(){
         	var time = 1;
