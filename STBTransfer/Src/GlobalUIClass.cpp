@@ -12,6 +12,7 @@ CHttpCmdClient* gHttpCmdClient=NULL;
 CHttpCmdServer* gHttpCmdServer=NULL;
 BOOT_MODE gProgramBootMode = Mode_Local;
 BOOL gServerFirstCmdGet = FALSE;
+PLTFORMAT gInitPltFormat = (PLTFORMAT)2;
 
 void InitGlobalClass()
 {

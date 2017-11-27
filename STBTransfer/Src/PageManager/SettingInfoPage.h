@@ -5,12 +5,14 @@
 #include "PopupWnd.h"
 #include "BaseSpin.h"
 #include "BaseSlide.h"
+#include "BaseComboBox.h"
 
 
 class CSettingInfoPage : public CBaseWnd,
 	public IClickEventListener,
 	public ISlidePositionChangeEventListener,
-	public ISpinPositionChangeEventListener
+	public ISpinPositionChangeEventListener,
+	public IComboBoxSelectListener
 {
 public:
 	CSettingInfoPage();
@@ -56,6 +58,11 @@ public:
 		int nNewPosition,
 		BOOL bChangeEnd);
 
+	virtual void OnComboBoxSelectItem(
+		CBaseWnd* pWnd,
+		int nItemIndex,
+		COMBOITEM *pItem);
+
 private:
 	CBaseWnd mStateText;
 	CBaseButton mGoModifyBtn;
@@ -91,6 +98,12 @@ private:
 	// 音量
 	CBaseSpin mMainVolumeSpin;
 	CBaseSlide mMainVolumeSlide;
+	// 视频显示格式
+	CBaseWnd mVideoFormatText;
+	CBaseWnd mVideoTipText;
+	//CBaseButton mVideoFormatBtn[3];
+	//CRadioButtonGroup mVideoFormatBtnGroup;
+	CBaseComboBox mVideoFormatComboBox;
 
 	int mUpdateTimeMS;
 };

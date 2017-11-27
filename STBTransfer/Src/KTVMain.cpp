@@ -336,6 +336,9 @@ void NativeStart(
 	// 必须先初始化 bcm driver，否则 opengl 无法创建
 	gPlayerCtrl->Start();
 
+	gInitPltFormat = gKTVConfig.GetPLTFormat();
+	gPlayerCtrl->SetPLTFormat((PLTFORMAT)gInitPltFormat);
+
 	if (gProgramBootMode==Mode_Factory)
 	{
 		LOGMSG(DBG_LEVEL_I, "Mode_Factory,SetMainVolume MAIN_VOLUME_MAX(15)!\n");

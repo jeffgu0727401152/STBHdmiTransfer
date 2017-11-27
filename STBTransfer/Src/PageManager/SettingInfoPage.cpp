@@ -71,6 +71,15 @@ void CSettingInfoPage::Create(
 	mMainVolumeSlide.Create(pE3DEngine, this, TRUE, FALSE);
 	mMainVolumeSlide.SetOnPositionChangeListener(this);
 
+	mVideoFormatText.CreateStatic(pE3DEngine,this);
+	mVideoTipText.CreateStatic(pE3DEngine,this);
+	/*for ( int i = 0; i < 3; i++ )
+	{
+		mVideoFormatBtn[i].Create(pE3DEngine, this, BUTTONTYPE_RADIO);
+		mVideoFormatBtn[i].SetOnClickListener(this);
+		mVideoFormatBtnGroup.AddToGroup(&(mVideoFormatBtn[i]));
+	}*/
+	mVideoFormatComboBox.Create(pE3DEngine, this);
 	LOGMSG(DBG_LEVEL_I, "%s ---\n", __PRETTY_FUNCTION__);
 }
 
@@ -101,8 +110,12 @@ void CSettingInfoPage::OnLoadResource()
 		return;
 	}
 
-	mStateText.ParserChildNode(&rootnode, "StateText");
+	CBaseWnd::ParserXMLNode(&rootnode);
 
+	mVideoFormatText.ParserChildNode(&rootnode,"VideoFormatText");
+	mVideoTipText.ParserChildNode(&rootnode,"VideoTipText");
+
+	mStateText.ParserChildNode(&rootnode, "StateText");
 	mBackBtn.ParserChildNode(&rootnode, "BackBtn");
 
     mTitleStbSettingsWnd.ParserChildNode(&rootnode, "TitleStbSettingsWnd");
@@ -136,10 +149,26 @@ void CSettingInfoPage::OnLoadResource()
 	mMainVolumeSpin.ParserChildNode(&rootnode, "MainVolumeSpin");
 	mMainVolumeSlide.ParserChildNode(&rootnode, "MainVolumeSlide");
 
+	//LoadResource VideoFormatBtn XML
+	/*CSimpleStringA sTmpString;
+	for ( int i = 0; i < 3; i++ )
+	{
+		sTmpString.Format("VideoFormatBtn%d", i);
+		mVideoFormatBtn[i].ParserChildNode(&rootnode, sTmpString.GetString());
+	}
+	//gPlayerCtrl->SetPLTFormat((PLTFORMAT)gKTVConfig.GetPLTFormat());
+	mVideoFormatBtnGroup.SetSelectButton(&(mVideoFormatBtn[gKTVConfig.GetPLTFormat()]));*/
+
+	mVideoFormatComboBox.ParserChildNode(&rootnode, "VideoFormatComboBox");
+	mVideoFormatComboBox.AddComboItem("1080P",	0, 0);
+	mVideoFormatComboBox.AddComboItem("1080I",	1, 1);
+	mVideoFormatComboBox.AddComboItem("720P",	2, 2);
+	mVideoFormatComboBox.SetSelectIndex((PLTFORMAT)gKTVConfig.GetPLTFormat(),FALSE);
+	mVideoFormatComboBox.SetComboBoxSelectListener(this);
+
 	mMainVolumeSpin.SetWindowVisible(TRUE);
 	mMainVolumeSlide.SetWindowVisible(TRUE);
-
-	CBaseWnd::ParserXMLNode(&rootnode);
+	mVideoTipText.SetWindowVisible(FALSE);
 }
 
 void CSettingInfoPage::OnWindowVisible(
@@ -190,6 +219,32 @@ void CSettingInfoPage::OnClick(
 	{
 		gPlayerManager->SetMainPlayerSource(NULL, FALSE);
 		gPageManager->SetCurrentPage(Page_Blank);
+	}
+	/*else
+	{
+		for ( int i = 0; i < 3; i++ )
+		{
+			if (pWnd == &(mVideoFormatBtn[i]))
+			{
+				gKTVConfig.SetPLTFormat((PLTFORMAT)i);
+				gPlayerCtrl->SetPLTFormat((PLTFORMAT)i);
+				return;
+			}
+		}
+	}
+	*/
+}
+
+void CSettingInfoPage::OnComboBoxSelectItem(
+	CBaseWnd* pWnd,
+	int nItemIndex,
+	COMBOITEM *pItem)
+{
+	if (pWnd == &mVideoFormatComboBox)
+	{
+		gKTVConfig.SetPLTFormat((PLTFORMAT)nItemIndex);
+		LOGMSG(DBG_LEVEL_I, "%s: gInitPltFormat=%d, nItemIndex=%d!\n", __PRETTY_FUNCTION__,gInitPltFormat,nItemIndex);
+		mVideoTipText.SetWindowVisible(((PLTFORMAT)nItemIndex)==gInitPltFormat ? FALSE : TRUE);
 	}
 }
 

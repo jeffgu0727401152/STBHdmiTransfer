@@ -47,5 +47,28 @@
 	</MainVolumeSpin>
 	<MainVolumeSlide MainPosition="946,133,224,21" BarPosition="0,0,224,21" ThumbPosition="0,0,21,21" Min="0" Max="15" Default="8"
 		barBkImg="Common/SimpleHorzSlideBarBk" thumbTextures="Common/SimpleHorzSlideThumb"/>
+	<VideoFormatText Position="775,320,128,24" FontText="输出分辨率" FontSize="18" FontColor="0xFF0872BC" FontDirect="0x0000000A"/>
+	<VideoTipText Position="775,290,320,24" FontText="输出分辨率有更改,重启后生效！" FontSize="18" FontColor="0xFFA15CD9" FontDirect="0x0000000A"/>
+	<VideoFormatComboBox Position="900,320,270,32">
+		<TitleBtn
+			Position="0,0,270,32"
+			FontRect="0,0,270,32"
+			FontSize="20"
+			FontColor="0xFFFFFFFF"
+			BkgroundImg="Common/ComboTitleBtn"/>
+		<ComboWnd
+			FontColor="0xFFFFFFFF"
+			FontSize="20"
+			BkgroundImg="Common/ComboBkGround"
+			XOffset="5"
+			YOffset="5"
+			ItemBkImage="Common/ComboItemBkGround"
+			SelectedItemBkImage="Common/ComboSelectedItemBkGround"
+			ItemHeight="32"/>
+	</VideoFormatComboBox>
+	<!-- <VideoFormatBtn0 Position="900,320,64,32" FontText="1080P" FontSize="16" BkgroundImg="Common/CommonBtn"/>
+	<VideoFormatBtn1 Position="1000,320,64,32" FontText="1080I" FontSize="16" BkgroundImg="Common/CommonBtn"/>
+	<VideoFormatBtn2 Position="1100,320,64,32" FontText="720P" FontSize="16" BkgroundImg="Common/CommonBtn"/> -->
+
 
 </SettingInfoPage> 
