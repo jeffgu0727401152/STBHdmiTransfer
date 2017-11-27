@@ -84,6 +84,10 @@ void CHttpCmdClient::OnClientReceiveTCPData(
 				OnResponsePayCallbackCmd((HTTPCMDRESPAYCALLBACKCMD *)phdr);
 				break;
 
+			case HTTPCMD_RES_PIPPREVIEW:
+				OnResponsePipPreviewCmd((HTTPCMDRESPIPPREVIEWCMD *)phdr);
+				break;
+
 			default:
 				break;
 			}
