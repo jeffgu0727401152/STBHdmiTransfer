@@ -69,6 +69,24 @@ void CPlayerManager::SetPipPlayerSource(
 	mPipPlayerLoopPlay = bLoop;
 	mPreviewRect = rcPreview;
 
+	switch(gInitPltFormat)
+	{
+	case PLTFORMAT_1080P_E:
+	case PLTFORMAT_1080i_E:
+		LOGMSG(DBG_LEVEL_I, "%s: g_InitPltFormat is 1080p/i, use the mPreviewRect/2*3 !\n", __PRETTY_FUNCTION__);
+		mPreviewRect.bottom = mPreviewRect.bottom/2*3;
+		mPreviewRect.left = mPreviewRect.left/2*3;
+		mPreviewRect.top = mPreviewRect.top/2*3;
+		mPreviewRect.right = mPreviewRect.right/2*3;
+		break;
+	case PLTFORMAT_720P_E:
+		LOGMSG(DBG_LEVEL_I, "%s: g_InitPltFormat is 720p, use the raw mPreviewRect!\n", __PRETTY_FUNCTION__);
+		break;
+	default:
+		LOGMSG(DBG_LEVEL_I, "%s: g_InitPltFormat is not in 0,1,2, use the raw mPreviewRect!\n", __PRETTY_FUNCTION__);
+		break;
+	}
+
 	CPtrArrayCtrl sUrlList;
 	const char *cDevString = DevideStringByCharListA(
 		cUrlList,
