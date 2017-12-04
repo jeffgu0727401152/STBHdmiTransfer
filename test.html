@@ -1225,7 +1225,7 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 				</ul>
 			</div>
 			<div style="margin:0 auto; margin-top: 10px" class="block__list block__list_words">
-				<div class="block__list-title"><button type="button"  id="button8">画中画</button><input type="text" id="img_in_img_input" value="" style="width:100px; height:15px;"></div>
+				<div class="block__list-title"><button type="button"  id="button8">画中画</button><input type="text" id="img_in_img_input" value="0,0,800,480" style="width:100px; height:15px;"></div>
 				<ul id="advanced-7">
 					<li draggable="false" class="" style="">
 						<a href="http://booth-media.oss-cn-shanghai.aliyuncs.com/download_test/youchang.mkv" onclick="">视频3</a>
@@ -2923,7 +2923,14 @@ d.prop("selected",!1):m=c;f?a.$watch(f,function(a,c){e.$set("value",a);a!==c&&m.
 </script>
 	<script >
 		
-		
+function colorMe(key)
+{
+	html = document.getElementById("devicesLog").innerHTML
+	var key = key.split('|');
+	for (var i=0; i<key.length; i++) 
+	html = html.replace(key[i],"<font style='color:red'>" + key[i]+ "</font>","gi")
+	document.getElementById("devicesLog").innerHTML=html
+}		
 
 (function () {
 	'use strict';
@@ -3188,7 +3195,7 @@ function loadXMLDoc( urlaaa )
 		        	{
 		        		window.devicesTmpLog[devicesNum].shift();
 		        	}
-		        	var newlog = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "\n" + xmlhttp.responseText + "\n";
+		        	var newlog = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "<br>" + xmlhttp.responseText + "<br>";
 		        	window.devicesTmpLog[devicesNum].push(newlog);
         		}
         		else
@@ -3197,7 +3204,7 @@ function loadXMLDoc( urlaaa )
 		        	{
 		        		window.tmpLog.shift();
 		        	}
-		        	var newlog = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "\n" + xmlhttp.responseText + "\n";
+		        	var newlog = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "<br>" + xmlhttp.responseText + "<br>";
 		        	window.tmpLog.push(newlog);
 		            document.getElementById("myReturnCodeDiv").innerHTML += (newlog);
 		        }
@@ -3206,15 +3213,15 @@ function loadXMLDoc( urlaaa )
         	{
         		if(window.isNeedAllDeviceWork)
         		{
-        			document.getElementById("myReturnCodeDiv").innerHTML +="device" + devicesNum + "stop\n";
+        			document.getElementById("myReturnCodeDiv").innerHTML +="device" + devicesNum + "stop" + "<br>";
 	    			if( window.UptTag[devicesNum] == false)
 	    			{
 	    				return;
 	    			}
         			window.UptTag[devicesNum] = false;
 
-        			console.log(xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9));
-        			var content = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "\n" + xmlhttp.responseText + "\n";
+        			//console.log(xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9));
+        			var content = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "<br>" + xmlhttp.responseText + "<br>";
 				    var nameF = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+".html";
 				    var fso, f, s ; 
 					var ForReading = 1; 
@@ -3225,13 +3232,15 @@ function loadXMLDoc( urlaaa )
 					var hour = date.getHours();
 					var minute = date.getMinutes();
 					var second = date.getSeconds();
-					var strRes ="\n" + year + '/'+ month + '/'+ day + ' ' + hour + ':' + minute + ':' + second + "  机器出现crash错误.\n";
+					var strRes =year + '/'+ month + '/'+ day + ' ' + hour + ':' + minute + ':' + second + "机器出现crash错误." + "<br>";
 
 					for (var i = 0; i < window.devicesTmpLog[devicesNum].length; i++) {
 			        	strRes += window.devicesTmpLog[devicesNum][i];
 			        }
 
-					document.getElementById("devicesLog").innerHTML += (strRes + content);
+			        strRes += content;
+
+					document.getElementById("devicesLog").innerHTML += ("<br>" + "<font style='color:red'>" + strRes + "</font>");
         		}
         		else
         		{
@@ -3251,11 +3260,11 @@ function loadXMLDoc( urlaaa )
 					var hour = date.getHours();
 					var minute = date.getMinutes();
 					var second = date.getSeconds();
-					var strRes = year + '/'+ month + '/'+ day + ' ' + hour + ':' + minute + ':' + second + "  机器出现crash错误.\n";
+					var strRes ="<br>" + year + '/'+ month + '/'+ day + ' ' + hour + ':' + minute + ':' + second + "  机器出现crash错误."+ "<br>";
 					for (var i = 0; i < window.tmpLog.length; i++) {
 			        	strRes += window.tmpLog[i];
 			        }
-			        strRes += xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "\n";
+			        strRes += xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf("action=")+9)+ "<br>";
 			        alert(strRes);
         		}
         	}
@@ -3314,13 +3323,12 @@ function loadXMLDocAndInitArry(urlaaa)
         	window.UptTag.push(true);
         	window.devicesTmpLog.push(new Array());
         	
-            document.getElementById("devicesLog").innerHTML += ("\n" + httpUsedResCount + ":" + aft +":8080" + "---" + xmlhttp.responseText );
+            document.getElementById("devicesLog").innerHTML += ("<br>" + "<font style='color:green'>" + httpUsedResCount + ":" + aft +":8080" + "---" + xmlhttp.responseText + "<br>" );
         }
         if(window.httpSumResCount == 200)
         {
-        	console.log("Done\n");
         	$("body").mLoading('hide');
-        	document.getElementById("devicesLog").innerHTML += "\n check over!";
+        	document.getElementById("devicesLog").innerHTML += "<font style='color:green'>" + " check over!" + "<br>";
         }
     }
     xmlhttp.open("GET", urlaaa,true);
@@ -3705,8 +3713,8 @@ $("document").ready(function(){
 
 		window.singleErroTag = false;
 		document.getElementById("left_log").style.display="none";
-		$("#testAll").css("background-color","red");
-		//$("#isTestAll").css("background-color","#9370DB");
+		$("#testAll").css("background-color","green");
+		$("#button1").css("background-color","#EE00EE");
 		$('.hidden').siblings('label').find(':radio').attr('checked',true);
 	    $(".myradio input").click(function(e){
 	        var state = e.delegateTarget.defaultValue;
@@ -3733,7 +3741,10 @@ $("document").ready(function(){
 	                $(".myradio label").removeClass('disabled');
 	                document.getElementById("left_log").style.display="";
 	                window.singleErroTag = false;
+	                $('#input').attr('disabled',true);
 	                action9ToCheckDevicesIP();
+
+	                
 	             },300);
 	        }
 
@@ -3753,10 +3764,9 @@ $("document").ready(function(){
 		            isNeedAllDeviceWork = false;
 		            
 		            document.getElementById("left_log").style.display="none";
+		            $('#input').attr('disabled',false);
 	             },300);
 	        }
-
-	        
 	    })
 
 	    /*$("#isTestAll").click(function(){
@@ -3818,7 +3828,7 @@ $("document").ready(function(){
         		window.actionTimer  = null;
         		document.getElementById("testAll").innerHTML  = "开始自动测试";
         		//$("#testAll").css("background-color","#D9D919");
-        		$("#testAll").css("background-color","red");
+        		$("#testAll").css("background-color","green");
         		return;
         	}
             $val = $("#input").val();
@@ -3844,7 +3854,7 @@ $("document").ready(function(){
             		//array[times]();
             		//times = (times+1) % array.length;
             		array[Math.ceil(Math.random()*(array.length ))-1]();
-            		CCount = 1+ Math.ceil(Math.random()*(14));
+            		CCount = 8+ Math.ceil(Math.random()*(7));
             	}
             	else
             	{
@@ -3853,7 +3863,7 @@ $("document").ready(function(){
             	CCount --;
             },1000) 
             document.getElementById("testAll").innerHTML  = "关闭自动测试";
-            $("#testAll").css("background-color","green");
+            $("#testAll").css("background-color","#CD5555");
         })
         $("#input").blur(function(){
             if( isStringOK($("#input").val()))
