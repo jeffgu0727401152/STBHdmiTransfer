@@ -3296,6 +3296,8 @@ function sleep(numberMillis) {
 
 function loadXMLDocAndInitArry(urlaaa)
 {
+	window.httpSumResCount = 0;
+	window.httpUsedResCount = 0;
 	var xmlhttp;
     if (window.XMLHttpRequest)
     {
@@ -3309,29 +3311,46 @@ function loadXMLDocAndInitArry(urlaaa)
     }
     xmlhttp.onreadystatechange=function()
     {
-    	if(xmlhttp.readyState == 4)
-    	{
-    		window.httpSumResCount ++;
-    		//document.getElementById("myReturnCodeDiv").innerHTML = "please wait net devices index return for a while...\n";
-    	}
-        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    	try{
+	    	/*if(xmlhttp.readyState == 4)
+	    	{
+	    		window.httpSumResCount ++;
+	    		//document.getElementById("myReturnCodeDiv").innerHTML = "please wait net devices index return for a while...\n";
+	    	}*/
+	        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	        {
+	        	window.httpSumResCount ++;
+	        	//console.log( "readyState"+ window.httpSumResCount + "<br>");
+	        	window.httpUsedResCount ++;
+	        	var aft = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf(":"));
+	        	//console.log(aft);
+	        	window.arrAddr.push(aft+":8080");
+	        	window.UptTag.push(true);
+	        	window.devicesTmpLog.push(new Array());
+	        	
+	            document.getElementById("devicesLog").innerHTML += ("<br>" + "<font style='color:green'>" + httpUsedResCount + ":" + aft +":8080" + "---" + xmlhttp.responseText + "<br>" );
+	            if(window.httpSumResCount == 250)
+		        {
+		        	$("body").mLoading('hide');
+		        	document.getElementById("devicesLog").innerHTML += "<font style='color:green'>" + " check over!" + "<br>";
+		        }
+	        }
+        }catch(e){}
+    }
+    xmlhttp.open("GET", urlaaa,true);
+
+    xmlhttp.timeout = 10000;
+	xmlhttp.ontimeout = function(){
+	    window.httpSumResCount++;
+	    //console.log( " time out"+ window.httpSumResCount + "<br>");
+	    if(window.httpSumResCount == 250)
         {
-        	window.httpUsedResCount ++;
-        	var aft = xmlhttp._url.substr(0,xmlhttp._url.lastIndexOf(":"));
-        	//console.log(aft);
-        	window.arrAddr.push(aft+":8080");
-        	window.UptTag.push(true);
-        	window.devicesTmpLog.push(new Array());
-        	
-            document.getElementById("devicesLog").innerHTML += ("<br>" + "<font style='color:green'>" + httpUsedResCount + ":" + aft +":8080" + "---" + xmlhttp.responseText + "<br>" );
-        }
-        if(window.httpSumResCount == 200)
-        {
+
         	$("body").mLoading('hide');
         	document.getElementById("devicesLog").innerHTML += "<font style='color:green'>" + " check over!" + "<br>";
         }
-    }
-    xmlhttp.open("GET", urlaaa,true);
+	}
+
     xmlhttp.send();
 }
 
