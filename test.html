@@ -3294,6 +3294,14 @@ function sleep(numberMillis) {
 	} 
 }
 
+function checkOver()
+{
+	window.wtTag = true;
+	$("body").mLoading('hide');
+	document.getElementById("devicesLog").innerHTML += "<font style='color:green'>" + " check over!" + "<br>";
+	document.getElementById("devicesLog").innerHTML += "<br>"+ "sum device count:" + window.httpUsedResCount + "<br>";
+}
+
 function loadXMLDocAndInitArry(urlaaa)
 {
 	window.httpSumResCount = 0;
@@ -3331,9 +3339,7 @@ function loadXMLDocAndInitArry(urlaaa)
             document.getElementById("devicesLog").innerHTML += ("<br>" + "<font style='color:green'>" + httpUsedResCount + ":" + aft +":8080" + "---" + xmlhttp.responseText + "<br>" );
             if(window.httpSumResCount == 250 && window.wtTag == false)
 	        {
-	        	window.wtTag = true;
-	        	$("body").mLoading('hide');
-	        	document.getElementById("devicesLog").innerHTML += "<font style='color:green'>" + " check over!" + "<br>";
+	        	checkOver();
 	        }
         }
     }
@@ -3342,9 +3348,7 @@ function loadXMLDocAndInitArry(urlaaa)
 	window.setTimeout(function(){
 		if(window.wtTag == false)
 	    {
-	    	window.wtTag = true;
-	    	$("body").mLoading('hide');
-	        document.getElementById("devicesLog").innerHTML += "<font style='color:green'>" + " check over!" + "<br>";
+	    	checkOver();
 	    }
 	},10000); 
     
@@ -3793,6 +3797,7 @@ $("document").ready(function(){
 		            
 		            document.getElementById("left_log").style.display="none";
 		            $('#input').attr('disabled',false);
+		            document.getElementById("devicesLog").innerHTML = "";
 	             },300);
 	        }
 	    })
