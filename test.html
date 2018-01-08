@@ -1158,15 +1158,15 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 				<div class="block__list-title"><button type="button"  id="button3">支付回调</button></div>
 				<ul id="advanced-3">
 					<li style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv1.mp4" onclick="">192.168.50.253视频1</a>
+						<a href="/stb/usb/sda1/1.mp4" onclick="">本地视频1</a>
 						<i class="js-remove">✖</i>
 					</li>
 					<li style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv2.mkv" onclick="">192.168.50.253视频2</a>
+						<a href="/stb/usb/sda1/2.mkv" onclick="">本地视频2</a>
 						<i class="js-remove">✖</i>
 					</li>
 					<li style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv3.mkv" onclick="">192.168.50.253视频3</a>
+						<a href="/stb/usb/sda1/3.mkv" onclick="">本地视频3</a>
 						<i class="js-remove">✖</i>
 					</li>
 				</ul>
@@ -1176,15 +1176,15 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 				<div class="block__list-title"><button type="button"  id="button7">关房</button></div>
 				<ul id="advanced-4">
 					<li style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv2.mkv" onclick="">192.168.50.253视频2</a>
+						<a href="/stb/usb/sda1/2.mkv" onclick="">本地视频2</a>
 						<i class="js-remove">✖</i>
 					</li>
 					<li draggable="false" class="" style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv1.mp4" onclick="">192.168.50.253视频1</a>
+						<a href="/stb/usb/sda1/1.mp4" onclick="">本地视频1</a>
 						<i class="js-remove">✖</i>
 					</li>
 					<li draggable="false" class="" style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv3.mkv" onclick="">192.168.50.253视频3</a>
+						<a href="/stb/usb/sda1/3.mkv" onclick="">本地视频3</a>
 						<i class="js-remove">✖</i>
 					</li>
 				</ul>
@@ -1211,15 +1211,15 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 				<div class="block__list-title"><button type="button"  id="button5">开房</button><input type="text" id="open_input" value="" style="width:100px; height:15px;"></div>
 				<ul id="advanced-6">
 					<li draggable="false" class="" style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv3.mkv" onclick="">192.168.50.253视频3</a>
+						<a href="/stb/usb/sda1/3.mkv" onclick="">本地视频3</a>
 						<i class="js-remove">✖</i>
 					</li>
 					<li style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv1.mp4" onclick="">192.168.50.253视频1</a>
+						<a href="/stb/usb/sda1/1.mp4" onclick="">本地视频1</a>
 						<i class="js-remove">✖</i>
 					</li>
 					<li draggable="false" class="" style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv2.mkv" onclick="">192.168.50.253视频2</a>
+						<a href="/stb/usb/sda1/2.mkv" onclick="">本地视频2</a>
 						<i class="js-remove">✖</i>
 					</li>
 				</ul>
@@ -1228,15 +1228,15 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 				<div class="block__list-title"><button type="button"  id="button8">画中画</button><input type="text" id="img_in_img_input" value="0,0,800,480" style="width:100px; height:15px;"></div>
 				<ul id="advanced-7">
 					<li draggable="false" class="" style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv3.mkv" onclick="">192.168.50.253视频3</a>
+						<a href="/stb/usb/sda1/3.mkv" onclick="">本地视频3</a>
 						<i class="js-remove">✖</i>
 					</li>
 					<li style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv2.mkv" onclick="">192.168.50.253视频2</a>
+						<a href="/stb/usb/sda1/2.mkv" onclick="">本地视频2</a>
 						<i class="js-remove">✖</i>
 					</li>
 					<li draggable="false" class="" style="">
-						<a href="http://192.168.50.253/yuwang_test/res/mv1.mp4" onclick="">192.168.50.253视频1</a>
+						<a href="/stb/usb/sda1/1.mp4" onclick="">本地视频1</a>
 						<i class="js-remove">✖</i>
 					</li>
 				</ul>
@@ -3155,6 +3155,14 @@ function isStringOK(str)//True 没有全角，False有全角
     return true;
 }
 
+function cutFileUrlTag(urlaaa)
+{
+	var reg = new RegExp("file://","g");
+	urlaaa = urlaaa.replace(reg,"");
+
+	console.log(urlaaa);
+}
+
 function loadXMLDoc( urlaaa )
 {
 	//console.log("loadXMLDoc: "+ urlaaa);
@@ -3270,9 +3278,15 @@ function loadXMLDoc( urlaaa )
         	}
         }
     }
+//hello
+    var reg = new RegExp("file://","g");
+	urlaaa = urlaaa.replace(reg,"");
+
     xmlhttp.open("GET", urlaaa,true);
     xmlhttp.send();
 }
+
+
 
 function printAddrLog( addr )
 {
@@ -3887,7 +3901,7 @@ $("document").ready(function(){
             		//array[times]();
             		//times = (times+1) % array.length;
             		array[Math.ceil(Math.random()*(array.length ))-1]();
-            		CCount = 8+ Math.ceil(Math.random()*(7));
+            		CCount = 15+ Math.ceil(Math.random()*(5));
             	}
             	else
             	{
