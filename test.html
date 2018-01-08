@@ -3900,8 +3900,16 @@ $("document").ready(function(){
             		/* normal order mode :*/
             		//array[times]();
             		//times = (times+1) % array.length;
-            		array[Math.ceil(Math.random()*(array.length ))-1]();
-            		CCount = 15+ Math.ceil(Math.random()*(5));
+            		var rd = Math.ceil(Math.random()*(array.length ))-1;
+            		if(2 == rd)
+            		{
+            			array[rd]();
+            			CCount = 60;//15+ Math.ceil(Math.random()*(5));
+            		}else{
+            			array[rd]();
+            			CCount = 15+ Math.ceil(Math.random()*(5));
+            		}
+            		
             	}
             	else
             	{
