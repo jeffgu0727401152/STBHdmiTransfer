@@ -163,6 +163,7 @@ void CSettingInfoPage::OnLoadResource()
 	mVideoFormatComboBox.AddComboItem("1080P",	0, 0);
 	mVideoFormatComboBox.AddComboItem("1080I",	1, 1);
 	mVideoFormatComboBox.AddComboItem("720P",	2, 2);
+	mVideoFormatComboBox.AddComboItem("NTSL",	3, 3);
 	mVideoFormatComboBox.SetSelectIndex((PLTFORMAT)gKTVConfig.GetPLTFormat(),FALSE);
 	mVideoFormatComboBox.SetComboBoxSelectListener(this);
 
