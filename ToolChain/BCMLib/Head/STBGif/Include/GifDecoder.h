@@ -1,16 +1,23 @@
 #pragma once
 
-#include "gif.h"
+#include "gif_lib.h"
 
 
-typedef struct tagGif_DecPreviousInfo
+typedef struct tagGIFBUFINFO
+{
+	unsigned char *pBuffer;
+	int nBufLen;
+	int nBufPos;
+	int nGifStartPos;
+} GIFBUFINFO;
+
+typedef struct tagGIFRECT
 {
 	int x;
 	int y;
 	int w;
 	int h;
-    unsigned char* pImageBuffer;
-} Gif_DecPreviousInfo;
+} GIFRECT;
 
 class CGifDecoder
 {
@@ -35,6 +42,7 @@ public:
 	int GetDelayTimeMS();
 
 private:
+	void Gif_Statistics();
 	void Gif_DecCopyBuf(
 		unsigned char* pSrcBuffer,
 		int srcPixelsPerLine,
@@ -52,18 +60,18 @@ private:
 		int w,
 		int h,
 		int color);
-	void Gif_DecFromImage(
-		Gif_Image *pImage);
+	void Gif_DecFromImage();
 
 private:
-    Gif_Stream* mGifStream;
+	GifFileType* mpGifFile;
+	GIFBUFINFO mGifBufInfo;
 
-    Gif_Colormap *mpGlobalColormap;
-    unsigned int mBackColor;
+	bool mTransparentBackground;
+    int mTotalImageCount;
     int mCurImageIndex;
     unsigned char* mpCurImageBuffer;
+    unsigned char* mpPrevImageBuffer;
+    int mPrevDisposal;
+    GIFRECT mPrevRect;
     int mCurDelayMS;
-
-    uint8_t mPreviousDisposal;
-    Gif_DecPreviousInfo mPreviousInfo;
 };

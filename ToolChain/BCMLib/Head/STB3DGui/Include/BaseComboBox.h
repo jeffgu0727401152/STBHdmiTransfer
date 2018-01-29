@@ -82,6 +82,10 @@ public:
 		const char* cDescripeText,
 		UINT64 uUserData,
 		int nIndex=-1);
+	void GetComboItemInfo(
+		int nIndex,
+		CSimpleStringA* pDescripeText,
+		UINT64 *puUserData);
 
 	void DeleteItem(
 		int nIndex);

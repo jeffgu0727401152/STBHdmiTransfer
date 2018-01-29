@@ -60,13 +60,6 @@ public:
 		UINT64 uUsedTime);
 
 public:
-	void SetSlidePosition(
-		RECT rcSlide,
-		RECT rcBar,
-		RECT rcThumb,
-		RECT rcHeadBtn,
-		RECT rcTailBtn);
-
 	void SetMinMax(
 		int nMin,
 		int nMax);
@@ -92,6 +85,11 @@ public:
 		ISlidePositionChangeEventListener *pOnPositionChangeListener);
 
 private:
+	void SetSlidePosition(
+		RECT rcBar,
+		RECT rcThumb,
+		RECT rcHeadBtn,
+		RECT rcTailBtn);
 	void GetThumbRectByPos(
 		POINT ptBar,
 		RECT *prcThumb,

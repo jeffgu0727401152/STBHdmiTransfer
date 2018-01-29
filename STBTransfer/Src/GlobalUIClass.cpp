@@ -41,8 +41,6 @@ void InitGlobalClass()
 		gProgramBootMode = Mode_Local;
 		LOGMSG(DBG_LEVEL_W, "mount remote failed, so boot is from local!!!\n");
 	}
-
-
 }
 
 void DeInitGlobalClass()
