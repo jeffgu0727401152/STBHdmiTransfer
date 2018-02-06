@@ -753,7 +753,14 @@ void CMultiMediaCtrl::EnableAudioLineInToLineOut(
 	if (mpMultiMediaInterface)
 	{
 		LOGMSG(DBG_LEVEL_I, "EnableAudioLineInToLineOut bEnable=%d\n", bEnable);
-		mpMultiMediaInterface->EnableAudioLineInToLineOut(bEnable);
+		if (bEnable)
+		{
+			mpMultiMediaInterface->I2SLineInToLineOutStart();
+		}
+		else
+		{
+			mpMultiMediaInterface->I2SLineInToLineOutStop();
+		}
 	}
 	mMultiMediaCtrlLock.Unlock();
 }

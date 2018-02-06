@@ -35,3 +35,12 @@ private:
 	uint mTextureID;
 	TEXTURE_FREE_FUNC mFreeFunction;
 };
+
+#ifdef PC_VERSION
+//#define DETECT_E3DTEXTURE_LEAK
+#endif
+
+#ifdef DETECT_E3DTEXTURE_LEAK
+APIEXPORT void DeleteAllE3DTexture();
+APIEXPORT void DumpUnFreeE3DTexture();
+#endif

@@ -133,6 +133,16 @@ void BoundRect(
 	RECT *prcDst,
 	const RECT *prcSrc,
 	const RECT *prcBound);
+
+// -1 : 不在多边形内
+// 0: 在边界
+// 1: 在多边形内
+int IsPointInPolySides(
+	int x,
+	int y,
+	POINT* ptPolySides,
+	int nCount);
+
 // cRectString: format(x,y,w,h)
 BOOL ParserRectFromString(
 	const char *cRectString,

@@ -43,6 +43,8 @@ public:
 public:
 	CE3DCommand* GetE3DEngine();
 	void InitE3D(
+		BOOL isSecondOpenGL,
+		BOOL bTransparentBlend,
 		int nWidth,
 		int nHeight,
 		int nUIWidth,

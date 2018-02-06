@@ -204,7 +204,7 @@ void CKTVConfig::SetPLTFormat(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("PLTFORMAT", mPLTFormat);
+		rootnode.AddIntAttribute("PLTFORMAT", mPLTFormat);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -228,7 +228,7 @@ void CKTVConfig::SetMainVolume(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("MAINVOLUME", mMainVolume);
+		rootnode.AddIntAttribute("MAINVOLUME", mMainVolume);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -252,7 +252,7 @@ void CKTVConfig::SetPcmVolume(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("PCMVOLUME", mPcmVolume);
+		rootnode.AddIntAttribute("PCMVOLUME", mPcmVolume);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -276,7 +276,7 @@ void CKTVConfig::SetMicVolume(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("MICVOLUME", mMicVolume);
+		rootnode.AddIntAttribute("MICVOLUME", mMicVolume);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -305,7 +305,7 @@ void CKTVConfig::SetStbIP(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("STBIP", mStbIP);
+		rootnode.AddStringAttribute("STBIP", mStbIP);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -339,7 +339,7 @@ void CKTVConfig::SetNetGate(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("NETGATE", mNetGate);
+		rootnode.AddStringAttribute("NETGATE", mNetGate);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -368,7 +368,7 @@ void CKTVConfig::SetNetMask(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("NETMASK", mNetMask);
+		rootnode.AddStringAttribute("NETMASK", mNetMask);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -398,7 +398,7 @@ void CKTVConfig::SetDNS0(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("DNS0", mDNS0);
+		rootnode.AddStringAttribute("DNS0", mDNS0);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -427,7 +427,7 @@ void CKTVConfig::SetDNS1(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("DNS1", mDNS1);
+		rootnode.AddStringAttribute("DNS1", mDNS1);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -457,7 +457,7 @@ void CKTVConfig::SetServerIP(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("SERVERIP", mServerIP);
+		rootnode.AddStringAttribute("SERVERIP", mServerIP);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -486,7 +486,7 @@ void CKTVConfig::SetVodIP(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("VODIP", mVodIP);
+		rootnode.AddStringAttribute("VODIP", mVodIP);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -515,7 +515,7 @@ void CKTVConfig::SetRoomName(
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("ROOMNAME", mRoomName);
+		rootnode.AddStringAttribute("ROOMNAME", mRoomName);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -532,7 +532,7 @@ void CKTVConfig::SetServerPort(int port)
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("SERVERPORT", mServerPort);
+		rootnode.AddIntAttribute("SERVERPORT", mServerPort);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }
@@ -549,7 +549,7 @@ void CKTVConfig::SetConfigFileValid(BOOL valid)
 	{
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
-		rootnode.AddAttribute("ISVERIFIED", mIsVerified);
+		rootnode.AddIntAttribute("ISVERIFIED", mIsVerified);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }

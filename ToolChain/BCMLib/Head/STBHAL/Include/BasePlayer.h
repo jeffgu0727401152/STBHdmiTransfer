@@ -45,6 +45,8 @@ public:
 		mTopOfUI = FALSE;
 		SetRectXY(&mDisplayRect, 0, 0, 0, 0);
 
+		mpMediaProbeInfo = NULL;
+
 		mSongID[0] = '\0';
 		mOEMID[0] = '\0';
 
@@ -119,14 +121,65 @@ public:
 		mPlayerLock.Unlock();
 	}
 
-	virtual void Start()
+	virtual void GetProbeInfoByBuffer(
+		const BYTE* pProbeBuffer,
+		int nBufLength,
+		MEDIAPROBEINFO *pProbeInfo)
 	{
+		HalPlayer_GetProbeInfo(pProbeBuffer, nBufLength, pProbeInfo);
+	}
+
+	virtual void SetProbeInfo(
+		MEDIAPROBEINFO *pProbeInfo)
+	{
+		mPlayerLock.Lock();
+
+		if (mpMediaProbeInfo)
+		{
+			delete mpMediaProbeInfo;
+			mpMediaProbeInfo = NULL;
+		}
+
+		mpMediaProbeInfo = new MEDIAPROBEINFO;
+		if (mpMediaProbeInfo)
+		{
+			memcpy(mpMediaProbeInfo, pProbeInfo, sizeof(MEDIAPROBEINFO));
+		}
+
+		mPlayerLock.Unlock();
+	}
+
+	virtual void WritePushBuffer(
+		const BYTE* pBuffer,
+		int nBufLength)
+	{
+		mPlayerLock.Lock();
+
+		HalPlayer_WritePushBuffer(pBuffer, nBufLength);
+
+		mPlayerLock.Unlock();
+	}
+
+	virtual void FlushPushBuffer()
+	{
+		mPlayerLock.Lock();
+
+		HalPlayer_FlushPushBuffer();
+
+		mPlayerLock.Unlock();
+	}
+
+	virtual BOOL Start()
+	{
+		BOOL bStartOK = FALSE;
+
 		mPlayerLock.Lock();
 
 		Stop();
 
 		mForceStop = FALSE;
-		if (HalPlayer_Start())
+		bStartOK = HalPlayer_Start();
+		if (bStartOK)
 		{
 			mPlayerState = PLAYER_STATE_PLAYING;
 		}
@@ -136,6 +189,8 @@ public:
 		}
 
 		mPlayerLock.Unlock();
+
+		return bStartOK;
 	}
 
 	virtual void Stop()
@@ -229,11 +284,6 @@ public:
 		return mForceStop;
 	}
 
-	virtual BOOL IsNetworkEdition()
-	{
-		return mNetworkEdition;
-	}
-
 	virtual PLAYERINDEX GetPlayerIndex()
 	{
 		return mPlayerIndex;
@@ -249,16 +299,6 @@ public:
 		return mPassThrough;
 	}
 
-	virtual HTTPSTREAMCALLBACKTYPE GetHttpStreamCallbackType()
-	{
-		return mHttpStreamCallbackType;
-	}
-
-	virtual BOOL IsForceUseSTBStream()
-	{
-		return mForceUseSTBStream;
-	}
-
 	virtual const char* GetSongID()
 	{
 		return mSongID;
@@ -267,11 +307,6 @@ public:
 	virtual const char* GetFileName()
 	{
 		return mFileName;
-	}
-
-	virtual const char* GetOEMID()
-	{
-		return mOEMID;
 	}
 
 	virtual BOOL IsNeedShow()
@@ -402,6 +437,23 @@ protected:
 	{
 	}
 
+	virtual void HalPlayer_GetProbeInfo(
+		const BYTE *pProbeBuffer,
+		int nBufLength,
+		MEDIAPROBEINFO *pProbeInfo)
+	{
+	}
+
+	virtual void HalPlayer_WritePushBuffer(
+		const BYTE* pBuffer,
+		int nBufLength)
+	{
+	}
+
+	virtual void HalPlayer_FlushPushBuffer()
+	{
+	}
+
 	virtual BOOL HalPlayer_Start()
 	{
 		return FALSE;
@@ -447,7 +499,7 @@ protected:
 		const char* cSaveToFileName)
 	{}
 
-private:
+protected:
 	CBaseLock mPlayerLock;
 	int  mPlayerState;
 	BOOL mForceStop;
@@ -465,6 +517,8 @@ private:
 	BOOL mNeedShow;
 	BOOL mTopOfUI;
 	RECT mDisplayRect;
+
+	MEDIAPROBEINFO* mpMediaProbeInfo;
 
 	IAVPlayEventListener *mpPlayEventListener;
 
@@ -536,6 +590,8 @@ public:
 	virtual void OnDeInit(){}
 
 public:
+	virtual BOOL GetAECardVersion(
+		CSimpleStringA *pVersion){return FALSE;}
 	virtual void ProcessCommand(
 		const char* pAECmd){}
 };

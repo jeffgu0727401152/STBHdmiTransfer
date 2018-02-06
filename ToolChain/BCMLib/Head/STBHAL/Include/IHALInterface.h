@@ -42,6 +42,23 @@ typedef enum eHTTPSTREAMCALLBACKTYPE
 	HTTPSTREAMCALLBACKTYPE_ALWAYS, // 下载每个block后回报
 } HTTPSTREAMCALLBACKTYPE;
 
+#define AUDIO_STREAM_MAXCOUNT 	20
+typedef struct tagMEDIAPROBEINFO
+{
+	unsigned int 		mediaType;
+	unsigned int	 	videoPid;
+	unsigned int 		videoCodec;
+	unsigned int 		videoWidth;
+	unsigned int 		videoHeight;
+	unsigned int 		videoBitrate;
+	unsigned int	 	audioCount;
+	unsigned int	 	audioPid[AUDIO_STREAM_MAXCOUNT];
+	unsigned int		audioCodec[AUDIO_STREAM_MAXCOUNT];
+	unsigned int		audioSampleRate[AUDIO_STREAM_MAXCOUNT];
+	unsigned int		audioSampleSize[AUDIO_STREAM_MAXCOUNT];
+	unsigned int		audioBitrate[AUDIO_STREAM_MAXCOUNT];
+} MEDIAPROBEINFO;
+
 class IAVPlayEventListener
 {
 public:
@@ -87,7 +104,19 @@ public:
 		BOOL bPassThrough,
 		const char* cSongID,
 		const char* cFileName)=0;
-	virtual void Start()=0;
+
+	virtual void GetProbeInfoByBuffer(
+		const BYTE* pProbeBuffer,
+		int nBufLength,
+		MEDIAPROBEINFO *pProbeInfo)=0;
+	virtual void SetProbeInfo(
+		MEDIAPROBEINFO *pProbeInfo)=0;
+	virtual void WritePushBuffer(
+		const BYTE* pBuffer,
+		int nBufLength)=0;
+	virtual void FlushPushBuffer()=0;
+
+	virtual BOOL Start()=0;
 	virtual void Stop()=0;
 	virtual void Pause()=0;
 	virtual void Resume()=0;
@@ -98,9 +127,7 @@ public:
 	virtual int GetPositionMS()=0;
 	virtual int GetDurationMS()=0;
 	virtual int GetPlayerState()=0;
-	virtual HTTPSTREAMCALLBACKTYPE GetHttpStreamCallbackType()=0;
 	virtual BOOL IsForceStop()=0;
-	virtual BOOL IsNetworkEdition()=0;
 	virtual PLAYERINDEX GetPlayerIndex()=0;
 
 	virtual BOOL IsLoopPlay()=0;
@@ -283,6 +310,12 @@ void DeleteCloudInterface(
 
 
 
+typedef struct tagUSBAUDIOINPUTDEV
+{
+	UINT32 uCardID;
+	char id[1024];
+	char name[1024];
+} USBAUDIOINPUTDEV;
 
 typedef enum eVIDEORECORD_QUALITYTYPE
 {
@@ -330,6 +363,14 @@ public:
 		UINT64 uUserData)=0;
 };
 
+typedef enum eUPLOAD_STOPREASON
+{
+	UPLOAD_STOPREASON_BY_NONE = 0,
+	UPLOAD_STOPREASON_BY_USER,
+	UPLOAD_STOPREASON_BY_MAXSIZE,
+	UPLOAD_STOPREASON_BY_CONNECTION
+} UPLOAD_STOPREASON;
+
 class IUploadProgressListener
 {
 public:
@@ -337,8 +378,12 @@ public:
 
 	virtual int OnUploadProgress(
 		UINT64 uUserData,
+		int nTotalUploadBytes,
+		int nDroppedBytes,
 		int nSizeToUpload,
-		float fSpeed)=0;
+		float fSpeed,
+		BOOL bStopped,
+		UPLOAD_STOPREASON eStopReason)=0;
 };
 
 class ILiveBroadcastEventCallbackListener
@@ -349,6 +394,17 @@ public:
 	virtual void OnLiveBroadcastEventCallback(
 		UINT64 uUserData,
 		LIVEBROADCAST_EVENTTYPE eEventType)=0;
+};
+
+class IVideoRecordBufferCallbackListener
+{
+public:
+	virtual ~IVideoRecordBufferCallbackListener(void) {}
+
+	virtual void OnVideoRecordBufferCallback(
+		UINT64 uUserData,
+		BYTE* pBuffer,
+		int nLength)=0;
 };
 
 class IMultiMediaInterface
@@ -417,22 +473,53 @@ public:
 		int *defvalue)=0;
 	virtual BOOL CameraSetGain(
 		int value)=0;
-	virtual void CameraInitColorKey(
+	virtual void CameraColorKeyInit(
 		int nWidth,
 		int nHeight)=0;
-		virtual void CameraDeInitColorKey()=0;
-	virtual void CameraEnableColorKey(
+		virtual void CameraColorKeyDeInit()=0;
+	virtual void CameraColorKeyEnable(
 		BOOL bEnable)=0;
 	virtual void CameraColorKeyLearning(
 		int nColorKeyDetectFrames,
 		ICameraColorKeyCallbackListener* pCameraColorKeyCallbackListener,
 		UINT64 uUserData)=0;
-
-	virtual void EnableAudioInput(
+	virtual void CameraDecoratorInit(
+		const char *faceCascadeFilename)=0;
+	virtual void CameraDecoratorDeinit()=0;
+	virtual void CameraDecoratorEnable(
 		BOOL bEnable)=0;
+	virtual void CameraDecoratorSetting(
+		unsigned char* pDecoratorBuffer,
+		int nDecoratorBufWidth,
+		int nDecoratorBufHeight,
+		int nFaceLeft,
+		int nFaceTop,
+		int nFaceWidth,
+		int nFaceHeight)=0;
 
-	virtual void EnableAudioLineInToLineOut(
-		BOOL bEnable)=0;
+	virtual void I2SAudioInputInit()=0;
+	virtual void I2SAudioInputDeInit()=0;
+	virtual void I2SAudioInputStart()=0;
+	virtual void I2SAudioInputStop()=0;
+	virtual BOOL IsI2SAudioInputStarted()=0;
+	virtual void I2SLineInToLineOutStart()=0;
+	virtual void I2SLineInToLineOutStop()=0;
+
+	virtual void USBAudioInputDevEnum(
+		USBAUDIOINPUTDEV* pDevArray,
+		UINT32* pnDevCount)=0;
+	virtual void USBAudioInputInit(
+		void** ppUsbAudioDevHandle,
+		UINT32 uCardID,
+		int nChannelCount,
+		int nSampleRate)=0;
+	virtual void USBAudioInputDeInit(
+		void* pUsbAudioDevHandle)=0;
+	virtual void USBAudioInputStart(
+		void* pUsbAudioDevHandle)=0;
+	virtual void USBAudioInputStop(
+		void* pUsbAudioDevHandle)=0;
+	virtual BOOL IsUSBAudioInputStarted()=0;
 
 	virtual void EnableHdmiIn(
 		BOOL bEnable)=0;
@@ -442,6 +529,9 @@ public:
 
 	// recorder
 public:
+	virtual void SetRecordStereo(
+		BOOL bUseStereo)=0;
+
 	virtual CLOUD_USER_RESPONSE_RESULT StartAudioRecord(
 		IUploadProgressListener* pUploadProgressListener,
 		UINT64 uUploadProgressUserData,
@@ -473,7 +563,9 @@ public:
 		ILiveBroadcastEventCallbackListener* pLiveBroadcastEventCallbackListener,
 		UINT64 uLiveBroadcastEventUserData,
 		const char* cWrapFormat,
-		const char* cBroadcastUrl)=0;
+		const char* cBroadcastUrl,
+		IVideoRecordBufferCallbackListener* pVideoRecordBufferCallbackListener,
+		UINT64 uVideoRecordBufferUserData)=0;
 	virtual void StopVideoRecord(
 		int* pnMediaID)=0;
 };
@@ -527,6 +619,9 @@ public:
 
 	// EQ control
 public:
+	virtual BOOL GetAECardVersion(
+		CSimpleStringA *pVersion)=0;
+
 	virtual void ProcessCommand(
 		const char* pAECmd)=0;
 };
@@ -541,6 +636,7 @@ typedef enum eSCORECHANNELMODE
 	SCORECHANNELMODE_MONO,
 	SCORECHANNELMODE_LEFT,
 	SCORECHANNELMODE_RIGHT,
+	SCORECHANNELMODE_STEREO,
 } SCORECHANNELMODE;
 
 typedef struct tagSCOREINDICATOR
@@ -567,6 +663,7 @@ public:
 
 	virtual void OnScoreMatchEvent(
 		SCORE_MATCH_TYPE eMatchType,
+		int nPitchOffset,
 		UINT64 uUserData)=0;
 };
 
@@ -580,13 +677,17 @@ public:
 		UINT64 uUserData,
 		const char* cCacheDir,
 		int nSampleRate,
-		SCORECHANNELMODE eChannelMode)=0;
+		SCORECHANNELMODE eChannelMode,
+		int nErrorThreshold,
+		int nMicSilentThreshold)=0;
 	virtual void OnDeInit()=0;
 
 public:
 	// 加载歌曲评分资料
 	virtual BOOL PrepareScore(
-		const char* cSongID)=0;
+		const char* cSongID,
+		BOOL bUseUsbScore,
+		void* pUsbAudioDevHandle)=0;
 	// 获取评分资料信息
 	virtual void GetNoteLevelRange(
 		int* pnMin,
@@ -597,7 +698,8 @@ public:
 		int* pnCount)=0;
 	// 评分
 	virtual void StartScore()=0;
-	virtual void StopScore()=0;
+	virtual void StopScore(
+		void* pUsbAudioDevHandle)=0;
 	virtual void PauseScore()=0;
 	virtual void ResumeScore()=0;
 	virtual void SetOriginalSingerMode(
@@ -608,6 +710,12 @@ public:
 		BOOL* pbHit)=0;
 	virtual void GetCurrentScore(
 		int* pnScore)=0;
+	virtual void GetLastScoreDetail(
+		int* pnTimbreScore,
+		int* pnTuneScore,
+		int* pnRhythmScore,
+		int* pnMelodyScore,
+		int* pnStabilityScore)=0;
 	virtual void GetRanking(
 		int nScore,
 		int* pnRanking,
@@ -615,9 +723,52 @@ public:
 	virtual void GetSongMaxScore(
 		CSimpleStringA* pMaxScoreOwner,
 		int* pnMaxScore)=0;
+	virtual void GetScoreTime(
+		int *pScoreTime)=0;
 };
 
 IScoreInterface* CreateScoreInterface();
 void DeleteScoreInterface(
 		IScoreInterface* pScoreInterface);
+
+
+typedef enum eIOTYPE
+{
+	IOTYPE_NONE=0,
+	IOTYPE_IR,
+	IOTYPE_FP,
+	IOTYPE_HS,
+	IOTYPE_LED,
+	IOTYPE_SATA
+} IOTYPE;
+
+class IIONotifyListener
+{
+public:
+	virtual ~IIONotifyListener(void) {}
+
+	virtual void OnIONotify(
+		IOTYPE eIOType,
+		int nID,
+		int nState,
+		UINT64 uUserData)=0;
+};
+
+class IIOInterface
+{
+public:
+	virtual ~IIOInterface(void) {}
+
+	virtual BOOL OnInit(
+		IIONotifyListener* pIONotifyListener,
+		UINT64 uUserData)=0;
+	virtual void OnDeInit()=0;
+
+public:
+	virtual BOOL IsHeadsetPlugged()=0;
+};
+
+IIOInterface* CreateIOInterface();
+void DeleteIOInterface(
+	IIOInterface* pIOInterface);
 

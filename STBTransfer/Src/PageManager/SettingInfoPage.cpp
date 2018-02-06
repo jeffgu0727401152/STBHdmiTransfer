@@ -244,9 +244,13 @@ void CSettingInfoPage::OnComboBoxSelectItem(
 	if (pWnd == &mVideoFormatComboBox)
 	{
 		gKTVConfig.SetPLTFormat((PLTFORMAT)nItemIndex);
+#if 1
+		gPlayerCtrl->SetPLTFormat((PLTFORMAT)nItemIndex);
+#else
 		LOGMSG(DBG_LEVEL_I, "%s: gInitPltFormat=%d, nItemIndex=%d!\n", __PRETTY_FUNCTION__,gInitPltFormat,nItemIndex);
 		mVideoTipText.SetWindowVisible(((PLTFORMAT)nItemIndex)==gInitPltFormat ? FALSE : TRUE);
 		system("sync");
+#endif
 	}
 }
 

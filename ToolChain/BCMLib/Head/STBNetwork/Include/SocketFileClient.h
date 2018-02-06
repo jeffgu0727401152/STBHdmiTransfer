@@ -33,7 +33,7 @@ public:
 
 	// interface:
 public:
-	virtual void OnClientReceiveTCPData(
+	virtual void OnClientReceiveData(
 		UINT64 uUserData,
 		int nSocketFD,
 		const void *pBuffer,

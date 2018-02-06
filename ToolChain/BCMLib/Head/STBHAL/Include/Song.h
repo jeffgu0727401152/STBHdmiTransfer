@@ -42,6 +42,7 @@
 #define SONGID_RECORD_END	99999900
 
 #define SONGID_HDMIIN				99999910
+#define SONGID_P2P					99999911
 
 #define SONG_FILE_TYPE ".mov;.mkv;.mpg;.mp4;.avi;.wmv;.3gp;.ts;.m2ts;.mp3;.wav;.vob;.dat;.T4AF"
 

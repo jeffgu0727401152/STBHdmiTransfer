@@ -8,19 +8,22 @@
 #ifndef SOCKETINTERFACE_H_
 #define SOCKETINTERFACE_H_
 
-#include "types.h"
-#include "PtrControl.h"
-#include "SimpleString.h"
-#include "Buffer.h"
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <arpa/inet.h>
+#include "types.h"
+#include "PtrControl.h"
+#include "SimpleString.h"
+#include "Buffer.h"
+#include "udt.h"
+
+#define RECV_POLL_TIMEOUT	500
 
 #define UDP_MAX_SIZE	1400
 
-#define MSG_TO_ALLSOCKET			(-1)
-#define MSG_TO_OTHERSOCKET			(-2)
+#define MSG_TO_ALLCLIENTSOCKET		(-1)
+#define MSG_TO_OTHERCLIENTSOCKET	(-2)
 #define MSG_TO_SERVERSOCKET			(-3)
 
 
@@ -29,7 +32,7 @@ class IClientSocketListener
 public:
 	virtual ~IClientSocketListener(void) {}
 
-	virtual void OnClientReceiveTCPData(
+	virtual void OnClientReceiveData(
 		UINT64 uUserData,
 		int nSocketFD,
 		const void *pBuffer,
@@ -47,7 +50,7 @@ class IServerSocketListener
 public:
 	virtual ~IServerSocketListener(void) {}
 
-	virtual void OnServerReceiveTCPData(
+	virtual void OnServerReceiveData(
 		UINT64 uUserData,
 		int nSocketFD,
 		const void *pBuffer,
@@ -157,12 +160,14 @@ void SetSocketMatchCode(
 	UINT32 uMatchCode);
 UINT32 GetSocketMatchCode();
 
-BOOL RecvTCPPacket(
+BOOL RecvPacket(
 	int nSocketFD,
+	BOOL bUDTSocket,
 	BOOL bUseMatchCode,
 	SOCKETPACKET *pPacket);
-BOOL RecvTCPRaw(
+BOOL RecvRaw(
 	int nSocketFD,
+	BOOL bUDTSocket,
 	CBuffer *pBuffer);
 
 BOOL RecvUDPPacket(
@@ -182,12 +187,19 @@ void FreePacketBuffer(
 
 BOOL SendPacket(
 	int nSocketFD,
-	BOOL bUDPSocket,
-	UINT16 uBroadcastPort,
+	BOOL bUDTSocket,
 	SOCKETPACKET *pPacket);
 BOOL SendRaw(
 	int nSocketFD,
-	BOOL bUDPSocket,
+	BOOL bUDTSocket,
+	CBuffer *pBuffer);
+
+BOOL SendUDPPacket(
+	int nSocketFD,
+	UINT16 uBroadcastPort,
+	SOCKETPACKET *pPacket);
+BOOL SendUDPRaw(
+	int nSocketFD,
 	UINT16 uBroadcastPort,
 	CBuffer *pBuffer);
 

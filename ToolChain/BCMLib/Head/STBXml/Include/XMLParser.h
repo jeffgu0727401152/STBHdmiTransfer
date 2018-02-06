@@ -59,6 +59,9 @@ public:
 	BOOL GetAttrByteValue(
 		const char *attrName,
 		void *pValue);
+	BOOL GetAttrBooleanValue(
+		const char *attrName,
+		void *pValue);
 	BOOL GetAttrUInt16Value(
 		const char *attrName,
 		void *pValue);
@@ -68,13 +71,22 @@ public:
 	BOOL GetAttrUInt64Value(
 		const char *attrName,
 		void *pValue);
+	BOOL GetAttrDoubleValue(
+		const char *attrName,
+		void *pValue);
 
-	BOOL AddAttribute(
+	BOOL AddStringAttribute(
 		const char* attrName,
 		const char* cValue);
-	BOOL AddAttribute(
+	BOOL AddBooleanAttribute(
+		const char* attrName,
+		bool bValue);
+	BOOL AddIntAttribute(
 		const char* attrName,
 		int nValue);
+	BOOL AddDoubleAttribute(
+		const char* attrName,
+		double fValue);
 
 private:
 	friend class XMLParser;

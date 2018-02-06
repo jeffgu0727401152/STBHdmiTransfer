@@ -309,6 +309,7 @@ CMainLoopThread gMainLoopThread;
 
 
 void NativeStart(
+	IOSDInterface *pOSDInterface,
 	int nDispWidth,
 	int nDispHeight)
 {
@@ -336,9 +337,6 @@ void NativeStart(
 	// 必须先初始化 bcm driver，否则 opengl 无法创建
 	gPlayerCtrl->Start();
 
-	gInitPltFormat = gKTVConfig.GetPLTFormat();
-	gPlayerCtrl->SetPLTFormat((PLTFORMAT)gInitPltFormat);
-
 	if (gProgramBootMode==Mode_Factory)
 	{
 		LOGMSG(DBG_LEVEL_I, "Mode_Factory,SetMainVolume MAIN_VOLUME_MAX(15)!\n");
@@ -353,7 +351,20 @@ void NativeStart(
 	gHttpCmdClient->Start(gKTVConfig.GetServerIP(), gKTVConfig.GetServerPort());
 	gHttpCmdServer->Create(HTTPCMD_SOCKETPORT, FALSE, "HttpCmd_ServerSocket");
 
-	theBaseApp->InitE3D(nDispWidth, nDispHeight, LAYOUT_WIDTH, LAYOUT_HEIGHT);
+	gInitPltFormat = gKTVConfig.GetPLTFormat();
+	gPlayerCtrl->SetPLTFormat((PLTFORMAT)gInitPltFormat);
+
+	pOSDInterface->OSDHWInit();
+	pOSDInterface->OSDEGLInit(
+		gKTVConfig.GetDisplayWidth(),
+		gKTVConfig.GetDisplayHeight());
+	theBaseApp->InitE3D(
+		TRUE,
+		TRUE,
+		nDispWidth,
+		nDispHeight,
+		LAYOUT_WIDTH,
+		LAYOUT_HEIGHT);
 
 	gMainLoopThread.StartThread(
 		"MainLoopThread",
@@ -362,11 +373,13 @@ void NativeStart(
 		STACKSIZE_HEAVY);
 }
 
-void NativeOnStep()
+void NativeOnStep(
+	IOSDInterface *pOSDInterface)
 {
 	UINT64 uTime1 = GetTickCountUS();
 
 	theBaseApp->GetE3DEngine()->Refresh();
+	pOSDInterface->OSDHWRefreshWithEgl(TRUE);
 
 	UINT64 uTime2 = GetTickCountUS();
 
@@ -378,10 +391,12 @@ void NativeOnStep()
 	theBaseApp->GetE3DEngine()->ProcessCommands(uProcessTime);
 }
 
-void NativeStop()
+void NativeStop(
+	IOSDInterface *pOSDInterface)
 {
 	theBaseApp->GetE3DEngine()->ProcessCommands(0);
-	NativeOnStep();
+	NativeOnStep(pOSDInterface);
+	pOSDInterface->OSDHWDeinit();
 
 	gMainLoopThread.StopThread();
 
@@ -396,6 +411,7 @@ void NativeStop()
 	DeInitGlobalClass();
 	DeInitBaseApp();
 }
+
 
 int main()
 {
@@ -421,17 +437,22 @@ int main()
 	LOGMSG(DBG_LEVEL_I, "cProgramFolder=%s, cConfigFileName=%s\n", cProgramFolder, cConfigFileName);
 	gKTVConfig.LoadConfig(cConfigFileName);
 
+	IOSDInterface *pOSDInterface = CreateOSDInterface();
+	if (pOSDInterface)
 	{
 		NativeStart(
+			pOSDInterface,
 			gKTVConfig.GetDisplayWidth(),
 			gKTVConfig.GetDisplayHeight());
 
 		while (!gMainLoopExit)
 		{
-			NativeOnStep();
+			NativeOnStep(pOSDInterface);
 		}
 
-		NativeStop();
+		NativeStop(pOSDInterface);
+
+		DeleteOSDInterface(pOSDInterface);
 	}
 
 	UnregisterSigHandler();
