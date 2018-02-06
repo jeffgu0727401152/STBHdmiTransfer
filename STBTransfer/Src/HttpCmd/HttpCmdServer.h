@@ -28,7 +28,7 @@ public:
 
 	// interface:
 public:
-	virtual void OnServerReceiveTCPData(
+	virtual void OnServerReceiveData(
 		UINT64 uUserData,
 		int nSocketFD,
 		const void *pBuffer,

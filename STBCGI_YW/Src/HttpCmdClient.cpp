@@ -30,7 +30,7 @@ BOOL CHttpCmdClient::Create(
 		cSocketThreadName);
 }
 
-void CHttpCmdClient::OnClientReceiveTCPData(
+void CHttpCmdClient::OnClientReceiveData(
 	UINT64 uUserData,
 	int nSocketFD,
 	const void *pBuffer,

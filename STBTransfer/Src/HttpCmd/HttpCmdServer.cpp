@@ -27,12 +27,13 @@ BOOL CHttpCmdServer::Create(
 		cSocketThreadName);
 }
 
-void CHttpCmdServer::OnServerReceiveTCPData(
+void CHttpCmdServer::OnServerReceiveData(
 	UINT64 uUserData,
 	int nSocketFD,
 	const void *pBuffer,
 	int nBufLen)
 {
+	LOGMSG(DBG_LEVEL_I, "[CHttpCmdServer::OnServerReceiveTCPData] bufferlenth%d\n", nBufLen);
 	HTTPCMDHEADER *phdr = (HTTPCMDHEADER *)pBuffer;
 	if (phdr->nHttpCmdVer != HTTPCMD_VER)
 	{
