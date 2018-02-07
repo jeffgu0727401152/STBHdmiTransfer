@@ -704,6 +704,10 @@ void CMultiMediaCtrl::Start()
 {
 	mMultiMediaCtrlLock.Lock();
 	mpMultiMediaInterface = CreateMultiMediaInterface();
+	if(mpMultiMediaInterface)
+	{
+		mpMultiMediaInterface->I2SAudioInputInit();
+	}
 	EnableHdmiIn(TRUE);
 	MuteHdmiInputAudio(TRUE);
 	mMultiMediaCtrlLock.Unlock();
@@ -716,6 +720,7 @@ void CMultiMediaCtrl::Stop()
 
 	if (mpMultiMediaInterface)
 	{
+		mpMultiMediaInterface->I2SAudioInputDeInit();
 		DeleteMultiMediaInterface(mpMultiMediaInterface);
 		mpMultiMediaInterface = NULL;
 	}
