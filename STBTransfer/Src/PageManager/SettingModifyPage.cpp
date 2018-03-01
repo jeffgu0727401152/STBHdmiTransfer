@@ -447,10 +447,10 @@ bool CSettingModifyPage::PromptInvalidEditContent()
 		mServerIpEdit.SetFontColor(COLOR_INPUT_NORMAL);
 
 	sTmp.Set(mVodIpEdit.GetWindowTextW());
-	if(sTmp.GetLength()>0 && !IsValidIPAddr4(sTmp.GetString()))
-		mVodIpEdit.SetFontColor(COLOR_INPUT_WRONG);
-	else
-		mVodIpEdit.SetFontColor(COLOR_INPUT_NORMAL);
+	// if(sTmp.GetLength()>0 && !IsValidIPAddr4(sTmp.GetString()))
+	// 	mVodIpEdit.SetFontColor(COLOR_INPUT_WRONG);
+	// else
+	// 	mVodIpEdit.SetFontColor(COLOR_INPUT_NORMAL);
 
 	if (mStbIpEdit.GetFontColor() == COLOR_INPUT_WRONG ||
 			mNetGateEdit.GetFontColor() == COLOR_INPUT_WRONG ||
