@@ -40,6 +40,7 @@ void CSettingInfoPage::Create(
     mTitleNetworkSettingsWnd.CreateStatic(pE3DEngine,this);
 	mTitleConnectSettingsWnd.CreateStatic(pE3DEngine,this);
 	mTitleRoomInfoSettingsWnd.CreateStatic(pE3DEngine,this);
+	mTitleCVBSOffsetWnd.CreateStatic(pE3DEngine,this);
 
 	mStbIpPromptWnd.CreateStatic(pE3DEngine,this);
 	mStbMacTextPromptWnd.CreateStatic(pE3DEngine,this);
@@ -70,6 +71,15 @@ void CSettingInfoPage::Create(
 	mMainVolumeSpin.SetOnPositionChangeListener(this);
 	mMainVolumeSlide.Create(pE3DEngine, this, TRUE, FALSE);
 	mMainVolumeSlide.SetOnPositionChangeListener(this);
+
+	mCVBSLeftOffsetSpin.Create(pE3DEngine, this);
+	mCVBSLeftOffsetSpin.SetOnPositionChangeListener(this);
+	mCVBSRightOffsetSpin.Create(pE3DEngine, this);
+	mCVBSRightOffsetSpin.SetOnPositionChangeListener(this);
+	mCVBSTopOffsetSpin.Create(pE3DEngine, this);
+	mCVBSTopOffsetSpin.SetOnPositionChangeListener(this);
+	mCVBSBottomOffsetSpin.Create(pE3DEngine, this);
+	mCVBSBottomOffsetSpin.SetOnPositionChangeListener(this);
 
 	mVideoFormatText.CreateStatic(pE3DEngine,this);
 	mVideoTipText.CreateStatic(pE3DEngine,this);
@@ -122,6 +132,7 @@ void CSettingInfoPage::OnLoadResource()
 	mTitleNetworkSettingsWnd.ParserChildNode(&rootnode, "TitleNetworkSettingsWnd");
 	mTitleConnectSettingsWnd.ParserChildNode(&rootnode, "TitleConnectSettingsWnd");
 	mTitleRoomInfoSettingsWnd.ParserChildNode(&rootnode, "TitleRoomInfoSettingsWnd");
+	mTitleCVBSOffsetWnd.ParserChildNode(&rootnode, "TitleCVBSOffsetWnd");
 
 	mStbIpPromptWnd.ParserChildNode(&rootnode, "StbIpPromptWnd");
 	mStbMacTextPromptWnd.ParserChildNode(&rootnode, "StbMacTextPromptWnd");
@@ -149,6 +160,11 @@ void CSettingInfoPage::OnLoadResource()
 	mMainVolumeSpin.ParserChildNode(&rootnode, "MainVolumeSpin");
 	mMainVolumeSlide.ParserChildNode(&rootnode, "MainVolumeSlide");
 
+	mCVBSLeftOffsetSpin.ParserChildNode(&rootnode, "CVBSLeftOffsetSpin");
+	mCVBSRightOffsetSpin.ParserChildNode(&rootnode, "CVBSRightOffsetSpin");
+	mCVBSTopOffsetSpin.ParserChildNode(&rootnode, "CVBSTopOffsetSpin");
+	mCVBSBottomOffsetSpin.ParserChildNode(&rootnode, "CVBSBottomOffsetSpin");
+	
 	//LoadResource VideoFormatBtn XML
 	/*CSimpleStringA sTmpString;
 	for ( int i = 0; i < 3; i++ )
@@ -164,8 +180,17 @@ void CSettingInfoPage::OnLoadResource()
 	mVideoFormatComboBox.AddComboItem("1080I",	1, 1);
 	mVideoFormatComboBox.AddComboItem("720P",	2, 2);
 	mVideoFormatComboBox.AddComboItem("NTSL",	3, 3);
-	mVideoFormatComboBox.SetSelectIndex((PLTFORMAT)gKTVConfig.GetPLTFormat(),FALSE);
+	mVideoFormatComboBox.SetSelectIndex(0,  FALSE);
 	mVideoFormatComboBox.SetComboBoxSelectListener(this);
+
+	mCVBSLeftOffsetSpin.SetPos(gKTVConfig.GetCVBSLeftOffset(), TRUE, FALSE);
+	mCVBSRightOffsetSpin.SetPos(gKTVConfig.GetCVBSRightOffset(), TRUE, FALSE);
+	mCVBSTopOffsetSpin.SetPos(gKTVConfig.GetCVBSTopOffset(), TRUE, FALSE);
+	mCVBSBottomOffsetSpin.SetPos(gKTVConfig.GetCVBSBottomOffset(), TRUE, FALSE);
+	printf("[CSettingInfoPage::OnLoadResource] %d;%d;%d;%d\n",gKTVConfig.GetCVBSLeftOffset(),gKTVConfig.GetCVBSRightOffset(),gKTVConfig.GetCVBSTopOffset(),gKTVConfig.GetCVBSBottomOffset());
+
+	mVideoFormatComboBox.SetSelectIndex((PLTFORMAT)gKTVConfig.GetPLTFormat(),FALSE);
+	gPlayerCtrl->SetPLTFormat(gKTVConfig.GetPLTFormat());
 
 	mMainVolumeSpin.SetWindowVisible(TRUE);
 	mMainVolumeSlide.SetWindowVisible(TRUE);
@@ -308,7 +333,66 @@ void CSettingInfoPage::OnSpinPositionChange(
 {
 	if (pWnd == &mMainVolumeSpin)
 	{
-		mMainVolumeSlide.SetPos(nNewPosition, TRUE, TRUE);
+		mMainVolumeSlide.SetPos(nNewPosition, TRUE, FALSE);
+	}
+	else if(pWnd == &mCVBSLeftOffsetSpin)
+	{
+		CSimpleStringA sTmp;
+		sTmp.Format("%d", nNewPosition);
+		mCVBSLeftOffsetSpin.SetWindowTextA(sTmp.GetString());
+		mCVBSLeftOffsetSpin.SetPos(nNewPosition);
+
+		gKTVConfig.SetCVBSLeftOffset(nNewPosition);
+		gPlayerCtrl->SetCVBSOffset(
+			gKTVConfig.GetCVBSLeftOffset(),
+			gKTVConfig.GetCVBSRightOffset(),
+			gKTVConfig.GetCVBSTopOffset(),
+			gKTVConfig.GetCVBSBottomOffset());
+		//todo
+	}
+	else if(pWnd == &mCVBSRightOffsetSpin)
+	{
+		CSimpleStringA sTmp;
+		sTmp.Format("%d", nNewPosition);
+		mCVBSRightOffsetSpin.SetWindowTextA(sTmp.GetString());
+		mCVBSRightOffsetSpin.SetPos(nNewPosition);
+
+		gKTVConfig.SetCVBSRightOffset(nNewPosition);
+		gPlayerCtrl->SetCVBSOffset(
+			gKTVConfig.GetCVBSLeftOffset(),
+			gKTVConfig.GetCVBSRightOffset(),
+			gKTVConfig.GetCVBSTopOffset(),
+			gKTVConfig.GetCVBSBottomOffset());
+		//
+	}
+	else if(pWnd == &mCVBSTopOffsetSpin)
+	{
+		CSimpleStringA sTmp;
+		sTmp.Format("%d", nNewPosition);
+		mCVBSTopOffsetSpin.SetWindowTextA(sTmp.GetString());
+		mCVBSTopOffsetSpin.SetPos(nNewPosition);
+
+		gKTVConfig.SetCVBSTopOffset(nNewPosition);
+		gPlayerCtrl->SetCVBSOffset(
+			gKTVConfig.GetCVBSLeftOffset(),
+			gKTVConfig.GetCVBSRightOffset(),
+			gKTVConfig.GetCVBSTopOffset(),
+			gKTVConfig.GetCVBSBottomOffset());
+		//
+	}else if(pWnd == &mCVBSBottomOffsetSpin)
+	{
+		CSimpleStringA sTmp;
+		sTmp.Format("%d", nNewPosition);
+		mCVBSBottomOffsetSpin.SetWindowTextA(sTmp.GetString());
+		mCVBSBottomOffsetSpin.SetPos(nNewPosition);
+
+		gKTVConfig.SetCVBSBottomOffset(nNewPosition);
+		gPlayerCtrl->SetCVBSOffset(
+			gKTVConfig.GetCVBSLeftOffset(),
+			gKTVConfig.GetCVBSRightOffset(),
+			gKTVConfig.GetCVBSTopOffset(),
+			gKTVConfig.GetCVBSBottomOffset());
+		//
 	}
 }
 

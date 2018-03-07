@@ -61,7 +61,7 @@ typedef char           D_BOOL;
 #define D_SCREEN_OSD_HEIGHT   (720)
 
 #define D_SCREEN_CVBS_WIDTH    (720)
-#define D_SCREEN_CVBS_HEIGHT   (576)
+#define D_SCREEN_CVBS_HEIGHT   (480)
 
 #ifndef D_SUCCESS
 #define D_SUCCESS    (0)

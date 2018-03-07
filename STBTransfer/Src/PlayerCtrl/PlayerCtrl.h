@@ -165,6 +165,11 @@ public:
 		BOOL bMute);
 	void SetPLTFormat(
 		PLTFORMAT ePLTFormat);
+	void SetCVBSOffset(
+		int leftOffset,
+		int rightOffset,
+		int topOffset,
+		int bottomOffset);
 
 private:
 	BOOL mInitialized;
@@ -179,6 +184,11 @@ private:
 	int mPcmVolume;
 	int mMicVolume;
 	PLTFORMAT mPLTFormat;
+
+	int mCVBSLeftOffset;
+	int mCVBSRightOffset;
+	int mCVBSTopOffset;
+	int mCVBSBottomOffset;
 };
 
 

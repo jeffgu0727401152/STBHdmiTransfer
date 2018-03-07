@@ -72,6 +72,7 @@ private:
 	CBaseWnd mTitleNetworkSettingsWnd;
 	CBaseWnd mTitleConnectSettingsWnd;
 	CBaseWnd mTitleRoomInfoSettingsWnd;
+	CBaseWnd mTitleCVBSOffsetWnd;
 
 	CBaseWnd mStbIpPromptWnd;
 	CBaseWnd mStbMacTextPromptWnd;
@@ -104,6 +105,11 @@ private:
 	//CBaseButton mVideoFormatBtn[3];
 	//CRadioButtonGroup mVideoFormatBtnGroup;
 	CBaseComboBox mVideoFormatComboBox;
+
+	CBaseSpin mCVBSLeftOffsetSpin;
+	CBaseSpin mCVBSRightOffsetSpin;
+	CBaseSpin mCVBSTopOffsetSpin;
+	CBaseSpin mCVBSBottomOffsetSpin;
 
 	int mUpdateTimeMS;
 };

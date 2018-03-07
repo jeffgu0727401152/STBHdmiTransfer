@@ -69,7 +69,7 @@ void CPlayerManager::SetPipPlayerSource(
 	mPipPlayerLoopPlay = bLoop;
 	mPreviewRect = rcPreview;
 
-	switch(gInitPltFormat)
+	switch(gKTVConfig.GetPLTFormat())
 	{
 	case PLTFORMAT_1080P_E:
 	case PLTFORMAT_1080i_E:

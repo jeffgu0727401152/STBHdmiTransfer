@@ -49,6 +49,37 @@
 		barBkImg="Common/SimpleHorzSlideBarBk" thumbTextures="Common/SimpleHorzSlideThumb"/>
 	<VideoFormatText Position="775,320,128,24" FontText="输出分辨率" FontSize="18" FontColor="0xFF0872BC" FontDirect="0x0000000A"/>
 	<VideoTipText Position="775,290,320,24" FontText="输出分辨率有更改,重启后生效！" FontSize="18" FontColor="0xFFA15CD9" FontDirect="0x0000000A"/>
+
+	<TitleCVBSOffsetWnd Position="775,420,128,24" FontText="边距修正" FontSize="18" FontColor="0xFF0872BC" FontDirect="0x0000000A"/>
+
+	<CVBSLeftOffsetSpin Position="893,460,214,24" Min="0" Max="50" Default="0">
+		<PromptWnd Position="0,0,64,24" FontText="左边距" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+		<DownBtn Position="64,1,24,22" BkgroundImg="Common/SpinDown"/>
+		<ValueWnd Position="88,1,38,22"/>
+		<UpBtn Position="126,1,24,22" BkgroundImg="Common/SpinUp"/>
+	</CVBSLeftOffsetSpin>
+
+	<CVBSRightOffsetSpin Position="893,500,214,24" Min="0" Max="50" Default="0">
+		<PromptWnd Position="0,0,64,24" FontText="右边距" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+		<DownBtn Position="64,1,24,22" BkgroundImg="Common/SpinDown"/>
+		<ValueWnd Position="88,1,38,22"/>
+		<UpBtn Position="126,1,24,22" BkgroundImg="Common/SpinUp"/>
+	</CVBSRightOffsetSpin>
+
+	<CVBSTopOffsetSpin Position="893,540,214,24" Min="0" Max="50" Default="0">
+		<PromptWnd Position="0,0,64,24" FontText="上边距" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+		<DownBtn Position="64,1,24,22" BkgroundImg="Common/SpinDown"/>
+		<ValueWnd Position="88,1,38,22"/>
+		<UpBtn Position="126,1,24,22" BkgroundImg="Common/SpinUp"/>
+	</CVBSTopOffsetSpin>
+
+	<CVBSBottomOffsetSpin Position="893,580,214,24" Min="0" Max="50" Default="0">
+		<PromptWnd Position="0,0,64,24" FontText="下边距" FontSize="18" FontColor="0xFFDDDBDB" FontDirect="0x0000000A"/>
+		<DownBtn Position="64,1,24,22" BkgroundImg="Common/SpinDown"/>
+		<ValueWnd Position="88,1,38,22"/>
+		<UpBtn Position="126,1,24,22" BkgroundImg="Common/SpinUp"/>
+	</CVBSBottomOffsetSpin>
+
 	<VideoFormatComboBox Position="900,320,270,32">
 		<TitleBtn
 			Position="0,0,270,32"

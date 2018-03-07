@@ -298,6 +298,11 @@ CPlayerCtrl::CPlayerCtrl():
 	mMicVolume = (MIC_VOLUME_MAX+1)/2;
 	mPLTFormat = PLTFORMAT_1080P_E;
 
+	mCVBSLeftOffset = 0;
+	mCVBSRightOffset = 0;
+	mCVBSTopOffset = 0;
+	mCVBSBottomOffset = 0;
+
 	mpPlayerCtrlInterface = NULL;
 }
 
@@ -606,6 +611,56 @@ void CPlayerCtrl::SetMainVolume(
 		{
 			mpPlayerCtrlInterface->SetMainVolume(nVolume);
 		}
+	}
+}
+
+void CPlayerCtrl::SetCVBSOffset(
+		int leftOffset,
+		int rightOffset,
+		int topOffset,
+		int bottomOffset)
+{
+	if (leftOffset > 50)
+	{
+		leftOffset = 50;
+	}else if (leftOffset < 0)
+	{
+		leftOffset = 0;
+	}
+	if (rightOffset > 50)
+	{
+		rightOffset = 50;
+	}else if (rightOffset < 0)
+	{
+		rightOffset = 0;
+	}
+	if (topOffset > 50)
+	{
+		topOffset = 50;
+	}else if (topOffset < 0)
+	{
+		topOffset = 0;
+	}
+	if (bottomOffset > 50)
+	{
+		bottomOffset = 50;
+	}else if (bottomOffset < 0)
+	{
+		bottomOffset = 0;
+	}
+
+	mCVBSLeftOffset = leftOffset;
+	mCVBSRightOffset = rightOffset;
+	mCVBSTopOffset = topOffset;
+	mCVBSBottomOffset =  bottomOffset;
+
+	if (mpPlayerCtrlInterface)
+	{
+		mpPlayerCtrlInterface->SetCVBSOffset(
+		leftOffset,
+		topOffset,
+		rightOffset,
+		bottomOffset);
 	}
 }
 

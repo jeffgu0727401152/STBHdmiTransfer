@@ -339,6 +339,28 @@ D_INT32 WSD_AL_PLT_SetOuputParam(WSD_PORT_E Port, WSD_OUTPUT_PARAM_T *pParam);
 
 
 /******************************************************************
+函数原型: WSD_AL_PLT_SetCVBSOffset
+
+功能描述: 设置CVBS显示边界偏移
+
+参    数: 
+    nLeftOffset(in): CVBS 左边界偏移
+    nTopOffset(in): CVBS 上边界偏移
+    nRightOffset(in): CVBS 右边界偏移
+    nBottomOffset(in): CVBS 下边界偏移
+
+返 回 值:  
+    D_SUCCESS: 成功
+    D_FAILURE: 失败
+******************************************************************/
+D_INT32 WSD_AL_PLT_SetCVBSOffset(
+	int nLeftOffset,
+	int nTopOffset,
+	int nRightOffset,
+	int nBottomOffset);
+
+
+/******************************************************************
 函数原型: WSD_AL_PLT_EnterStandby
 
 功能描述: 系统待机处理函数

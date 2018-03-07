@@ -18,7 +18,6 @@ extern CHttpCmdClient* gHttpCmdClient;
 extern CHttpCmdServer* gHttpCmdServer;
 extern CHandWriteOperator* gHandWriteOperator;
 extern BOOL gServerFirstCmdGet;
-extern PLTFORMAT gInitPltFormat;
 
 typedef enum eBOOT_MODE
 {

@@ -173,9 +173,9 @@ public:
 	{
 		BOOL bStartOK = FALSE;
 
-		mPlayerLock.Lock();
-
 		Stop();
+
+		mPlayerLock.Lock();
 
 		mForceStop = FALSE;
 		bStartOK = HalPlayer_Start();

@@ -27,6 +27,11 @@ CKTVConfig::CKTVConfig()
 	mPcmVolume = (PCM_VOLUME_MAX+1)/2;
 	mMicVolume = (MIC_VOLUME_MAX+1)/2;
 
+	mCVBSLeftOffset = 0;//cvbs左边距
+	mCVBSRightOffset = 0;//...
+	mCVBSTopOffset = 0;//...
+	mCVBSBottomOffset = 0;//...
+
 	mStbIP[0] = '\0';
 	mMacAddr[0] = '\0';
 	mNetGate[0] = '\0';
@@ -91,6 +96,18 @@ void CKTVConfig::LoadConfig(
 
 	rootnode.GetAttrUInt32Value("MAINVOLUME", &mMainVolume);
 	LOGMSG(DBG_LEVEL_I, "main volume is %d!!\n", mMainVolume);
+
+	rootnode.GetAttrUInt32Value("SCREENCVBSLEFTOFFSET", &mCVBSLeftOffset);
+	LOGMSG(DBG_LEVEL_I, "left cvbs offset is %d!!\n", mCVBSLeftOffset);
+
+	rootnode.GetAttrUInt32Value("SCREENCVBSRIGHTOFFSET", &mCVBSRightOffset);
+	LOGMSG(DBG_LEVEL_I, "right cvbs offset is %d!!\n", mCVBSRightOffset);
+
+	rootnode.GetAttrUInt32Value("SCREENCVBSTOPOFFSET", &mCVBSTopOffset);
+	LOGMSG(DBG_LEVEL_I, "top cvbs offset is %d!!\n", mCVBSTopOffset);
+
+	rootnode.GetAttrUInt32Value("SCREENCVBSBOTTOMOFFSET", &mCVBSBottomOffset);
+	LOGMSG(DBG_LEVEL_I, "bottom cvbs offset is %d!!\n", mCVBSBottomOffset);
 
 	rootnode.GetAttrUInt32Value("PCMVOLUME", &mPcmVolume);
 	LOGMSG(DBG_LEVEL_I, "pcm volume is %d!!\n", mPcmVolume);
@@ -229,6 +246,98 @@ void CKTVConfig::SetMainVolume(
 		XMLNode rootnode;
 		mKTVConfigParser.GetNode("STBCfg", &rootnode);
 		rootnode.AddIntAttribute("MAINVOLUME", mMainVolume);
+		mKTVConfigParser.SaveToFile(mConfigFileName);
+	}
+}
+
+int CKTVConfig::GetCVBSLeftOffset()
+{
+	return mCVBSLeftOffset;
+}
+void CKTVConfig::SetCVBSLeftOffset(
+	int offset)
+{
+	if (offset == mCVBSLeftOffset)
+	{
+		return;
+	}
+
+	mCVBSLeftOffset = offset;
+
+	if (!mMonkeyMode)
+	{
+		XMLNode rootnode;
+		mKTVConfigParser.GetNode("STBCfg", &rootnode);
+		rootnode.AddIntAttribute("SCREENCVBSLEFTOFFSET", mCVBSLeftOffset);
+		mKTVConfigParser.SaveToFile(mConfigFileName);
+	}
+}
+
+int CKTVConfig::GetCVBSRightOffset()
+{
+	return mCVBSRightOffset;
+}
+void CKTVConfig::SetCVBSRightOffset(
+	int offset)
+{
+	if (offset == mCVBSRightOffset)
+	{
+		return;
+	}
+
+	mCVBSRightOffset = offset;
+
+	if (!mMonkeyMode)
+	{
+		XMLNode rootnode;
+		mKTVConfigParser.GetNode("STBCfg", &rootnode);
+		rootnode.AddIntAttribute("SCREENCVBSRIGHTOFFSET", mCVBSRightOffset);
+		mKTVConfigParser.SaveToFile(mConfigFileName);
+	}
+}
+
+int CKTVConfig::GetCVBSTopOffset()
+{
+	return mCVBSTopOffset;
+}
+void CKTVConfig::SetCVBSTopOffset(
+	int offset)
+{
+	if (offset == mCVBSTopOffset)
+	{
+		return;
+	}
+
+	mCVBSTopOffset = offset;
+
+	if (!mMonkeyMode)
+	{
+		XMLNode rootnode;
+		mKTVConfigParser.GetNode("STBCfg", &rootnode);
+		rootnode.AddIntAttribute("SCREENCVBSTOPOFFSET", mCVBSTopOffset);
+		mKTVConfigParser.SaveToFile(mConfigFileName);
+	}
+}
+
+int CKTVConfig::GetCVBSBottomOffset()
+{
+	return mCVBSBottomOffset;
+}
+void CKTVConfig::SetCVBSBottomOffset(
+	int offset)
+{
+	if (offset == mCVBSBottomOffset)
+	{
+		return;
+	}
+
+	mCVBSBottomOffset = offset;
+
+	if (!mMonkeyMode)
+	{
+		XMLNode rootnode;
+		mKTVConfigParser.GetNode("STBCfg", &rootnode);
+		rootnode.AddIntAttribute("SCREENCVBSBOTTOMOFFSET", mCVBSBottomOffset);
 		mKTVConfigParser.SaveToFile(mConfigFileName);
 	}
 }

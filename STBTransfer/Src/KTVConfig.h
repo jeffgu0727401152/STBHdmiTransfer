@@ -40,8 +40,24 @@ public:
 	void SetPLTFormat(
 		PLTFORMAT ePLTFormat);
 	int GetMainVolume();
-	void SetMainVolume(
-		int nVolume);
+	void SetMainVolume(int nVolume);
+
+	int GetCVBSLeftOffset();
+	void SetCVBSLeftOffset(
+		int offset);
+
+	int GetCVBSRightOffset();
+	void SetCVBSRightOffset(
+		int offset);
+
+	int GetCVBSTopOffset();
+	void SetCVBSTopOffset(
+		int offset);
+
+	int GetCVBSBottomOffset();
+	void SetCVBSBottomOffset(
+		int offset);
+
 	int GetPcmVolume();
 	void SetPcmVolume(
 		int nVolume);
@@ -95,6 +111,11 @@ private:
 	int mMainVolume;//默认主音量
 	int mPcmVolume;//默认音频音量
 	int mMicVolume;//默认麦克风音量
+
+	int mCVBSLeftOffset;//cvbs左边距
+	int mCVBSRightOffset;//...
+	int mCVBSTopOffset;//...
+	int mCVBSBottomOffset;//...
 
 	char mStbIP[16];//本机IP
 	char mMacAddr[13];//本机mac地址

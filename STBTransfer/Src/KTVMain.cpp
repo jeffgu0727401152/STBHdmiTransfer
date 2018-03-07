@@ -351,9 +351,6 @@ void NativeStart(
 	gHttpCmdClient->Start(gKTVConfig.GetServerIP(), gKTVConfig.GetServerPort());
 	gHttpCmdServer->Create(HTTPCMD_SOCKETPORT, FALSE, "HttpCmd_ServerSocket");
 
-	gInitPltFormat = gKTVConfig.GetPLTFormat();
-	gPlayerCtrl->SetPLTFormat((PLTFORMAT)gInitPltFormat);
-
 	pOSDInterface->OSDHWInit();
 	pOSDInterface->OSDEGLInit(
 		gKTVConfig.GetDisplayWidth(),

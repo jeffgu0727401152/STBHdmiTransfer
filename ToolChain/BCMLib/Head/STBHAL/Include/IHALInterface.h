@@ -216,6 +216,11 @@ public:
 		BOOL bAccompany)=0;
 	virtual void SetPLTFormat(
 		PLTFORMAT ePLTFormat)=0;
+	virtual void SetCVBSOffset(
+		int nLeftOffset,
+		int nTopOffset,
+		int nRightOffset,
+		int nBottomOffset)=0;
 };
 
 IPlayerCtrlInterface* CreatePlayerCtrlInterface();
