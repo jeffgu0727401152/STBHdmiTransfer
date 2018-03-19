@@ -9,12 +9,18 @@ export PATH=$PATH:$APP_PATH
 chmod 777 $APP_PATH/STBTransfer
 chmod 777 $APP_PATH/STBCGI_YW
 chmod 777 $APP_PATH/lighttpd/sbin/lighttpd
+chmod 777 $APP_PATH/ntpclient
+
+cd $APP_PATH
+
+SERVERIP=$(cat /stb/config/app/serverip.dat)
+./ntpclient -s -h $SERVERIP &
 
 killall lighttpd
 $APP_PATH/lighttpd/sbin/lighttpd -f $APP_PATH/lighttpd/lighttpd.conf -m $APP_PATH/lighttpd/lib
 
 killall udhcpc
-cd $APP_PATH
+
 chmod 777 nexus
 nexus ./STBTransfer
 

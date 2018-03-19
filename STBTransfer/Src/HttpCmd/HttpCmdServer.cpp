@@ -33,13 +33,16 @@ void CHttpCmdServer::OnServerReceiveData(
 	const void *pBuffer,
 	int nBufLen)
 {
-	LOGMSG(DBG_LEVEL_I, "[CHttpCmdServer::OnServerReceiveTCPData] bufferlenth%d\n", nBufLen);
+	LOGMSG(DBG_LEVEL_I, "[CHttpCmdServer::OnServerReceiveData] bufferlenth:%d\n", nBufLen);
 	HTTPCMDHEADER *phdr = (HTTPCMDHEADER *)pBuffer;
 	if (phdr->nHttpCmdVer != HTTPCMD_VER)
 	{
 		LOGMSG(DBG_LEVEL_I, "%s: Data Provider Version NOT MATCH\n", __PRETTY_FUNCTION__);
 		return;
 	}
+
+	LOGMSG(DBG_LEVEL_I, "[CHttpCmdServer::OnServerReceiveData] nHttpCmdVer:%d  nCommandType:%d nRequestID:%d\n",
+		phdr->nHttpCmdVer, phdr->nCommandType, phdr->nRequestID);
 
 	switch (phdr->nCommandType)
 	{
