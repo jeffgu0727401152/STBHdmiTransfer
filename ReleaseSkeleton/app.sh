@@ -53,9 +53,9 @@ if [ $FILENUM -gt 0 ]; then
 	echo "app folder has data, run directly"
 else
 	# 挂载远程可执行文件目录
+	echo "try mount remote server Program to tmpapp folder..."
 	mkdir /tmpapp
 	mount -t nfs -o nolock -o ro $SERVERIP:/root/STBVerify/Program /tmpapp
-
 	if [ $? -eq 0 ]; then
 		# 从网络磁盘启动
 		echo "run from network..."
@@ -65,6 +65,7 @@ else
 		mkdir /app
 		cp -arf /tmpapp/* /app/
 		umount /tmpapp
+		echo "copy remote server Program to app folder done!"
 
 		mkdir /private
 		mount -t nfs -o nolock -o rw $SERVERIP:/root/STBVerify/Private /private
@@ -95,6 +96,7 @@ else
 		mv /stb/config/app/Log/STBCGI.log /stb/config/app/Log/STBCGI_last.log
 
 		umount /private
+		echo "copy local log to remote server Private folder done!"
 
 	else
 		# 从本地执行
@@ -111,6 +113,7 @@ else
 	fi
 fi
 
+echo "prepare program and log done! exec /app/ktv.sh..."
 chmod 777 /app/ktv.sh
 /app/ktv.sh | tee -a /stb/config/app/Log/STBVerify.log
 
