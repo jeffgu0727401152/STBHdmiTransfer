@@ -141,7 +141,7 @@ BOOL CHttpCmdClient::ThreadLoop(
 
 		mIsServerOnline = bIsOnline;
 
-		mExitEvent.Wait(5000);
+		mExitEvent.Wait(10000);
 	}
 
 	return FALSE;
