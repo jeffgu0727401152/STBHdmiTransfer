@@ -49,3 +49,9 @@
 // wParam: not used
 // lParam: not used
 #define DBTYPE_CHANGED_MSG (WNDMSG_USERBASE+0x90)
+
+// wParam: not used
+// lParam: not used
+#define MSG_DOWNLOAD_COMPLETE (WNDMSG_USERBASE+0x95)
+
+
