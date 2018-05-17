@@ -32,7 +32,7 @@ void DownloadTask::Stop()
 BOOL DownloadTask::ThreadLoop(
 		UINT64 uThreadData)
 {
-
+	gDownloadManager->mDownloadList.clear();
 	gDownloadManager->mStartPlay = false;
 
 	char* splitHead = (char*)netURLs;
