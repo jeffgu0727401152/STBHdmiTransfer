@@ -10,7 +10,6 @@ CPlayerManager* gPlayerManager=NULL;
 CMultiMediaCtrl* gMultiMediaCtrl=NULL;
 CHttpCmdClient* gHttpCmdClient=NULL;
 CHttpCmdServer* gHttpCmdServer=NULL;
-DownloadManager* gDownloadManager=NULL;
 BOOT_MODE gProgramBootMode = Mode_Local;
 BOOL gServerFirstCmdGet = FALSE;
 PLTFORMAT gInitPltFormat = (PLTFORMAT)2;
@@ -26,9 +25,6 @@ void InitGlobalClass()
 	gMultiMediaCtrl = new CMultiMediaCtrl();
 	gHttpCmdClient = new CHttpCmdClient();
 	gHttpCmdServer = new CHttpCmdServer();
-	gDownloadManager = new DownloadManager();
-	
-	gDownloadManager->setDownloadLocation("/stb/config/download");
 
 	if (IsFileExist("/factoryflag.txt"))
 	{

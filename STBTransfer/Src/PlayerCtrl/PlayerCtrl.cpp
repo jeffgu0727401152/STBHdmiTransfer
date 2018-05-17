@@ -60,12 +60,6 @@ void CAVPlayer::OnPlayCompleteEvent(
 			(UINT64)ePlayerIndex,
 			(UINT64)eReasonType);
 
-		theBaseApp->PostMsg(
-					gDownloadManager,
-					MSG_PLAYER_COMPLETE,
-					(UINT64)ePlayerIndex,
-					(UINT64)eReasonType);
-
 		LOGMSG(DBG_LEVEL_I,"OnPlayComplete ---!\n");
 	}
 }

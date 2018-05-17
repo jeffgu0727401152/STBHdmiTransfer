@@ -9,7 +9,6 @@
 #include "./HttpCmd/HttpCmdClient.h"
 #include "./HttpCmd/HttpCmdServer.h"
 #include "./InputMethodWnd/HandWriteOperator.h"
-#include "./LocalCacheDownloadCtrl/LocalCacheDownloadCtrl.h"
 
 extern CPageManager* gPageManager;
 extern CPlayerCtrl* gPlayerCtrl;
@@ -18,7 +17,6 @@ extern CMultiMediaCtrl* gMultiMediaCtrl;
 extern CHttpCmdClient* gHttpCmdClient;
 extern CHttpCmdServer* gHttpCmdServer;
 extern CHandWriteOperator* gHandWriteOperator;
-extern DownloadManager* gDownloadManager;
 extern BOOL gServerFirstCmdGet;
 
 typedef enum eBOOT_MODE
