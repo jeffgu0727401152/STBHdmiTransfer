@@ -20,17 +20,17 @@
 
 #directory=$(cd `dirname $0`; pwd)
 directory=`pwd`
-echo directory=$directory
+echo "directory=${directory}"
 
 #network
 # 关闭自动获取IP的udhcpc
 killall udhcpc
 
 # 从文件获得地址信息
-SERVERIP=$(cat /stb/config/app/serverip.dat)
-DEVICEIP=$(cat /stb/config/app/deviceip.dat)
-MASK=$(cat /stb/config/app/mask.dat)
-GATEWAY=$(cat /stb/config/app/gateway.dat)
+SERVERIP=$(cat ${directory}/serverip.dat)
+DEVICEIP=$(cat ${directory}/deviceip.dat)
+MASK=$(cat ${directory}/mask.dat)
+GATEWAY=$(cat ${directory}/gateway.dat)
 echo "remote server ip = " ${SERVERIP}
 echo "local device ip = " ${DEVICEIP}
 echo "local mask = " ${MASK}
@@ -42,10 +42,19 @@ ifconfig eth0 ${DEVICEIP} netmask ${MASK}
 route add default gw ${GATEWAY}
 ifconfig lo up
 hostname STBVod
-ifconfig
 
+ifconfig
 # 等待5秒,等待网络稳定
 sleep 5
+
+# 不存在则建立本地日志目录
+if [ ! -d "${directory}/Log" ]; then
+	mkdir ${directory}/Log
+fi
+# 不存在则建立保存最新程序的目录
+if [ ! -d "${directory}/Latest" ]; then
+	mkdir ${directory}/Latest
+fi
 
 # 判断 /app 目录下是否存在数据
 FILENUM=$(ls /app -lR | grep "^-" | wc -l)
@@ -53,68 +62,95 @@ if [ $FILENUM -gt 0 ]; then
 	echo "app folder has data, run directly"
 else
 	# 挂载远程可执行文件目录
-	echo "try mount remote server Program to tmpapp folder..."
-	mkdir /tmpapp
-	mount -t nfs -o nolock -o ro $SERVERIP:/root/STBVerify/Program /tmpapp
+	echo "try mount remote server Program to /program folder..."
+	mkdir /program
+	mount -t nfs -o nolock -o ro $SERVERIP:/root/STBVerify/Program /program
 	if [ $? -eq 0 ]; then
-		# 从网络磁盘启动
+		# 从网络获取过最新的信息启动
 		echo "run from network..."
 		touch /networkflag.txt
 
-		# 网络启动必须copy,防止网络问题导致程序卡死
-		mkdir /app
-		cp -arf /tmpapp/* /app/
-		umount /tmpapp
-		echo "copy remote server Program to app folder done!"
+		#获取网络program的版本与本地的版本,使用echo是为了去除字串中多余的空格,为后续的字符串比较做准备
+		if [ -f "/program/version.dat" ]; then
+			SERVER_VER=$(echo $(cat /program/version.dat))
+		else
+			SERVER_VER="unknown"
+		fi
+		echo "server program version is ${SERVER_VER}"
 
-		mkdir /private
-		mount -t nfs -o nolock -o rw $SERVERIP:/root/STBVerify/Private /private
+		if [ -f "${directory}/Latest/version.dat" ]; then
+			LOCAL_VER=$(echo $(cat /stb/config/app/Latest/version.dat))
+		else
+			LOCAL_VER="unknown"
+		fi
+		echo "local program version is ${LOCAL_VER}"
 
-		# get private folder
-		MAC=`LANG=C ifconfig eth0 | awk '/HWaddr/{ print $5 }' | sed ''s/://g''`
-		PRIVATE_PATH=/private/$MAC
-		echo PRIVATE_PATH=$PRIVATE_PATH
+		# 如果服务器上没有version.dat则无法更新
+		if [ "$SERVER_VER" != "unknown" ] && [ "$SERVER_VER" != "$LOCAL_VER" ];then
+			echo "SERVER_VER != LOCAL_VER, copy update.sh and exec it"
+			cp /program/update.sh /update.sh
+			chmod 777 /update.sh
+			/update.sh
+		fi
 
-		mkdir $PRIVATE_PATH
-		chmod 777 $PRIVATE_PATH
-		mkdir $PRIVATE_PATH/Log
-		chmod 777 $PRIVATE_PATH/Log
-
-		mkdir /stb/config/app/Log
-
-		# 复制上次的 Log
-		mv $PRIVATE_PATH/Log/lighttpd.log $PRIVATE_PATH/Log/lighttpd_last.log
-		cp /stb/config/app/Log/lighttpd.log $PRIVATE_PATH/Log/lighttpd.log
-		mv /stb/config/app/Log/lighttpd.log /stb/config/app/Log/lighttpd_last.log
-
-		mv $PRIVATE_PATH/Log/STBVerify.log $PRIVATE_PATH/Log/STBVerify_Last.log
-		cp /stb/config/app/Log/STBVerify.log $PRIVATE_PATH/Log/STBVerify.log
-		mv /stb/config/app/Log/STBVerify.log /stb/config/app/Log/STBVerify_last.log
-
-		mv $PRIVATE_PATH/Log/STBCGI.log $PRIVATE_PATH/Log/STBCGI_Last.log
-		cp /stb/config/app/Log/STBCGI.log $PRIVATE_PATH/Log/STBCGI.log
-		mv /stb/config/app/Log/STBCGI.log /stb/config/app/Log/STBCGI_last.log
-
-		umount /private
-		echo "copy local log to remote server Private folder done!"
-
+		umount /program
+		echo "check remote server Program done!"
 	else
-		# 从本地执行
+		# 没有挂载成功远程目录,所以算是从本地执行
 		echo "run from local..."
-		
-		mkdir /stb/config/app/Log
-		
-		mv /stb/config/app/Log/lighttpd.log /stb/config/app/Log/lighttpd_last.log
-		mv /stb/config/app/Log/STBVerify.log /stb/config/app/Log/STBVerify_last.log
-		mv /stb/config/app/Log/STBCGI.log /stb/config/app/Log/STBCGI_last.log
-
-		ln -s ${directory}/Program /app
-		ln -s ${directory}/Private /private
 	fi
 fi
 
+# 准备日志文件
+# 程序执行过程中的log都保存在不带last结尾的日志文件中
+# 所以在程序实际执行之前,将上次的log重命名为last结尾的文件
+echo "try mount remote server Private to /private folder..."
+mkdir /private
+mount -t nfs -o nolock -o rw $SERVERIP:/root/STBVerify/Private /private
+if [ $? -eq 0 ] && [ -f "/private/uploadlog.dat" ]; then
+	echo "server need log, upload log to server"
+	# 获取本设备在服务器上保存日志的目录
+	MAC=`LANG=C ifconfig eth0 | awk '/HWaddr/{ print $5 }' | sed ''s/://g''`
+	REMOTE_PRIVATE_PATH=/private/$MAC
+	echo "REMOTE_PRIVATE_PATH=${REMOTE_PRIVATE_PATH}"
+
+	mkdir $REMOTE_PRIVATE_PATH
+	chmod 777 $REMOTE_PRIVATE_PATH
+	mkdir $REMOTE_PRIVATE_PATH/Log
+	chmod 777 $REMOTE_PRIVATE_PATH/Log
+
+	# 复制上次的 Log
+	mv $REMOTE_PRIVATE_PATH/Log/lighttpd.log $REMOTE_PRIVATE_PATH/Log/lighttpd_last.log
+	cp ${directory}/Log/lighttpd.log $REMOTE_PRIVATE_PATH/Log/lighttpd.log
+	mv ${directory}/Log/lighttpd.log ${directory}/Log/lighttpd_last.log
+
+	mv $REMOTE_PRIVATE_PATH/Log/STBVerify.log $REMOTE_PRIVATE_PATH/Log/STBVerify_Last.log
+	cp ${directory}/Log/STBVerify.log $REMOTE_PRIVATE_PATH/Log/STBVerify.log
+	mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last.log
+
+	mv $REMOTE_PRIVATE_PATH/Log/STBCGI.log $REMOTE_PRIVATE_PATH/Log/STBCGI_Last.log
+	cp ${directory}/Log/STBCGI.log $REMOTE_PRIVATE_PATH/Log/STBCGI.log
+	mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last.log
+	echo "copy local log to remote server Private folder done!"
+	umount /private
+else
+	mv ${directory}/Log/lighttpd.log /${directory}/Log/lighttpd_last.log
+	mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last.log
+	mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last.log
+fi
+
+# 判断版权盒上除了出厂预装的版本外,是否存在从服务器下载的新版
+if [ -f "${directory}/Latest/ktv.sh" ]; then
+	ln -s ${directory}/Latest /app
+else
+	ln -s ${directory}/Program /app
+fi
+
+echo "/app folder has" $(ls /app)
+
+# 实际开始执行程序
 echo "prepare program and log done! exec /app/ktv.sh..."
 chmod 777 /app/ktv.sh
-/app/ktv.sh | tee -a /stb/config/app/Log/STBVerify.log
+/app/ktv.sh | tee -a ${directory}/Log/STBVerify.log
 
 #reboot

@@ -62,5 +62,12 @@ elif [ "$1" == "factory" ]; then
 else
 	rm ${workspace}/Release/STBCfg.xml
 	rm ${workspace}/Release/app.sh
-	echo "release is for normal network mount boot!" 
+
+	SW_VER_LINE=$(cat ${workspace}/STBTransfer/Src/Version.h | grep "SW_VERSION")
+	SW_VER=${SW_VER_LINE#*\"}
+	SW_VER=${SW_VER%\"*}
+	echo "version is "${SW_VER}
+
+	echo ${SW_VER} > ${workspace}/Release/Program/version.dat
+	echo "release is for normal network mount update!" 
 fi
