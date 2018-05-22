@@ -174,7 +174,7 @@ void CHttpCmdServer::OnRequestPauseCmd(
 		if ( (gPageManager->GetCurPageType() == Page_SettingModify) ||
 			 (gPageManager->GetCurPageType() == Page_SettingInfo) )
 		{
-			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, we ignore this request!\n", __PRETTY_FUNCTION__);
+			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, skip this request!\n", __PRETTY_FUNCTION__);
 		}
 		else
 		{
@@ -242,11 +242,11 @@ void CHttpCmdServer::OnRequestResumeCmd(
 		if ( (gPageManager->GetCurPageType() == Page_SettingModify) ||
 			 (gPageManager->GetCurPageType() == Page_SettingInfo) )
 		{
-			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, we ignore this request!\n", __PRETTY_FUNCTION__);
+			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, skip this request!\n", __PRETTY_FUNCTION__);
 		}
 		else
 		{
-			gPlayerManager->SetMainPlayerSource(NULL, TRUE);
+			gPlayerManager->SetMainPlayerSource(NULL, FALSE);
 			gPageManager->SetCurrentPage(Page_Blank);
 		}
 	}
@@ -300,7 +300,7 @@ void CHttpCmdServer::OnRequestPipPreviewCmd(
 		if ( (gPageManager->GetCurPageType() == Page_SettingModify) ||
 			 (gPageManager->GetCurPageType() == Page_SettingInfo) )
 		{
-			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, we ignore this request!\n", __PRETTY_FUNCTION__);
+			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, skip this request!\n", __PRETTY_FUNCTION__);
 		}
 		else
 		{
@@ -366,7 +366,7 @@ void CHttpCmdServer::OnRequestOpenRoomCmd(
 		if ( (gPageManager->GetCurPageType() == Page_SettingModify) ||
 			 (gPageManager->GetCurPageType() == Page_SettingInfo) )
 		{
-			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, we ignore this request!\n", __PRETTY_FUNCTION__);
+			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, skip this request!\n", __PRETTY_FUNCTION__);
 		}
 		else
 		{
@@ -379,8 +379,11 @@ void CHttpCmdServer::OnRequestOpenRoomCmd(
 			gPicturePage->PerformHttpCmd_SetQRCode(
 				pReqOpenRoomCmd->cQRCodeString,
 				pReqOpenRoomCmd->rcQRCodePosition);
+
 			gPlayerManager->SetMainPlayerSource(cVideoUrlBuffer, TRUE);
 			gPageManager->SetCurrentPage(Page_Picture);
+
+			gDownloadManager->StartDownload(cVideoUrlBuffer);
 		}
 	}
 	else
@@ -433,7 +436,7 @@ void CHttpCmdServer::OnRequestCloseRoomCmd(
 		if ( (gPageManager->GetCurPageType() == Page_SettingModify) ||
 			 (gPageManager->GetCurPageType() == Page_SettingInfo) )
 		{
-			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, we ignore this request!\n", __PRETTY_FUNCTION__);
+			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, skip this request!\n", __PRETTY_FUNCTION__);
 		}
 		else
 		{
@@ -497,7 +500,7 @@ void CHttpCmdServer::OnRequestPayCallbackCmd(
 		if ( (gPageManager->GetCurPageType() == Page_SettingModify) ||
 			 (gPageManager->GetCurPageType() == Page_SettingInfo) )
 		{
-			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, we ignore this request!\n", __PRETTY_FUNCTION__);
+			LOGMSG(DBG_LEVEL_I, "%s: in setting Page, skip this request!\n", __PRETTY_FUNCTION__);
 		}
 		else
 		{

@@ -6,14 +6,15 @@
 #include "IHALInterface.h"
 
 #define RESOURCE_FOLDER				"Images"
-#define FONTS_FOLDER					"Fonts"
-#define LOG_FOLDER						"Log"
+#define FONTS_FOLDER				"Fonts"
+#define LOG_FOLDER					"Log"
+#define DOWNLOAD_FOLDER				"/stb/config/app/Download"
 
 #define LAYOUT_WIDTH  1280
 #define LAYOUT_HEIGHT 720
 
 #define SPECIAL_ROOMNAME_SET_VERIFY       "SET.VERIFY"
-#define SPECIAL_ROOMNAME_CLEAN_VERIFY      "CLEAN.VERIFY"
+#define SPECIAL_ROOMNAME_CLEAN_VERIFY     "CLEAN.VERIFY"
 
 class CKTVConfig
 {
@@ -91,6 +92,8 @@ public:
 	void SetConfigFileValid(BOOL valid);
 	BOOL IsConfigFileValid();
 
+	int GetDownloadSpeedLimit();
+
 private:
 	XMLParser mKTVConfigParser;
 	char mConfigFileName[MAX_PATH];
@@ -132,6 +135,8 @@ private:
 	BOOL mForceUseSTBStream;
 
 	BOOL mIsVerified;
+
+	int mDownloadSpeedLimit;
 };
 
 extern CKTVConfig gKTVConfig;

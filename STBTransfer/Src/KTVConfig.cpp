@@ -44,6 +44,8 @@ CKTVConfig::CKTVConfig()
 
 	mServerPort = 8080;
 
+	mDownloadSpeedLimit = 0;
+
 	mForceUseSTBStream = TRUE;
 	mIsVerified = FALSE;
 }
@@ -147,6 +149,10 @@ void CKTVConfig::LoadConfig(
 
 	rootnode.GetAttrUInt32Value("ISVERIFIED", &mIsVerified);
 	LOGMSG(DBG_LEVEL_I, "config file vaild is %s!!\n", mIsVerified?"TRUE":"FALSE");
+
+	rootnode.GetAttrUInt32Value("DOWNLOADSPEEDLIMIT", &mDownloadSpeedLimit);
+	LOGMSG(DBG_LEVEL_I, "config file download speed limit is %d!!\n", mDownloadSpeedLimit);
+
 
 	// 初始化随机数
 	if (mMonkeyMode)
@@ -666,4 +672,9 @@ void CKTVConfig::SetConfigFileValid(BOOL valid)
 BOOL CKTVConfig::IsConfigFileValid()
 {
 	return mIsVerified;
+}
+
+int CKTVConfig::GetDownloadSpeedLimit()
+{
+	return mDownloadSpeedLimit;
 }
