@@ -50,6 +50,7 @@ void DownloadManager::OnNetFileCopyProgress(
 		float fCurSpeedKBPS,
 		UINT64 *puLimitSpeedBPS)
 {
+	//const char* url = (const char*)uUserData;
 	if (gKTVConfig.GetDownloadSpeedLimit() > 0) {
 		*puLimitSpeedBPS = gKTVConfig.GetDownloadSpeedLimit();
 	}
@@ -73,17 +74,28 @@ void DownloadManager::StartDownload(const char* urls)
 		NULL,
 		FALSE);
 
-	const char* cVideoPath = NULL;
+	const char* cVideoFileName = NULL;
 	for (int i=0; i < sArcList.GetCount(); i++)
 	{
-		cVideoPath = (const char*)sArcList.GetAt(i);
-		int ret = mDownloadTask->GetDownloadList().FindFirst(cVideoPath,FindUrlByPath);
+		cVideoFileName = (const char*)sArcList.GetAt(i);
+		std::string fileNameStr = cVideoFileName;
+		std::string suffixStr = fileNameStr.substr(fileNameStr.find_last_of('.') + 1);
+
+		if (suffixStr.compare("tmp")==0 || suffixStr.compare("size")==0)
+		{
+			continue;
+		}
+
+		int ret = mDownloadTask->GetDownloadList().FindFirst(cVideoFileName,FindUrlByPath);
 		if (ret<0)
 		{
 			char cDeletePath[MAX_PATH];
-			CombinePathName(cDeletePath, mDownloadLocation, cVideoPath);
+			char cDeleteSizePath[MAX_PATH];
+			sprintf(cDeletePath, "%s/%s", mDownloadLocation, cVideoFileName);
+			sprintf(cDeleteSizePath, "%s/%s.size", mDownloadLocation, cVideoFileName);
 			LOGMSG(DBG_LEVEL_I, "%s not found in new download list, remove it\n",cDeletePath);
 			remove(cDeletePath);
+			remove(cDeleteSizePath);
 		}
 	}
 
@@ -127,6 +139,54 @@ BOOL DownloadManager::GetStoragePathByUrl(char* path,const char* url)
 			mDownloadLocation,
 			name);
 	return TRUE;
+}
+
+BOOL DownloadManager::IsLocalCacheAvailable(const char* url)
+{
+	char fileName[PATH_MAX];
+	char storagePath[PATH_MAX];
+	char sizeFilePath[PATH_MAX];
+	GetFileShortName(fileName,url);
+	sprintf(storagePath, "%s/%s",
+			mDownloadLocation,
+			fileName);
+	sprintf(sizeFilePath, "%s/%s.size",
+			mDownloadLocation,
+			fileName);
+
+	if (IsFileExist(storagePath)==FALSE || IsDir(storagePath)==TRUE )
+	{
+		return FALSE;
+	}
+
+	if (IsFileExist(sizeFilePath)==FALSE || IsDir(sizeFilePath)==TRUE )
+	{
+		return FALSE;
+	}
+
+	FILE* fp = fopen(storagePath, "rb");
+	if (fp)
+	{
+		UINT64 fileSize = FileSize(fp);
+	    fclose(fp);
+
+	    FILE* sfp = fopen(sizeFilePath, "rb");
+		if (sfp)
+		{
+			char fileBuf[256];
+			memset(fileBuf,0,sizeof(fileBuf));
+			FileRead(sfp, (void *)fileBuf, sizeof(fileBuf));
+			fclose(sfp);
+			UINT64 requireSize = atoi(fileBuf);
+			LOGMSG(DBG_LEVEL_I, "requireSize=%llu, fileSize=%llu\n",requireSize,fileSize);
+			if (requireSize==fileSize)
+			{
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
 }
 
 void DownloadManager::RemoveTmpFile()

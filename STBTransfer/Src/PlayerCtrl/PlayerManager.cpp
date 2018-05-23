@@ -210,16 +210,10 @@ void CPlayerManager::SwitchMain()
 		LOGMSG(DBG_LEVEL_I, "%s:%d, main Play video: %s!\n", __PRETTY_FUNCTION__, __LINE__, cVideoUrl);
 		BOOL cacheFound = FALSE;
 		char cStoragePath[PATH_MAX];
-		if (strncmp("http", cVideoUrl, 4) == 0) {
+		if (strncmp("http", cVideoUrl, 4)==0 && gDownloadManager->IsLocalCacheAvailable(cVideoUrl)==TRUE) {
 			gDownloadManager->GetStoragePathByUrl(cStoragePath,cVideoUrl);
-			if(IsFileExist(cStoragePath) == TRUE)
-			{
-				if (IsDir(cStoragePath) != TRUE)
-				{
-					LOGMSG(DBG_LEVEL_I, "%s:%d, main Play video found cache: %s!\n", __PRETTY_FUNCTION__, __LINE__, cStoragePath);
-					cacheFound = TRUE;
-				}
-			}
+			LOGMSG(DBG_LEVEL_I, "%s:%d, main Play video found cache: %s\n", __PRETTY_FUNCTION__, __LINE__, cStoragePath);
+			cacheFound = TRUE;
 		}
 
 		gPlayerCtrl->PlayMain(

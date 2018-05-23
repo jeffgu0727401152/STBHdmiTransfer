@@ -30,6 +30,7 @@ public:
 public: 
 	void StartDownload(const char* urls);
 	BOOL GetStoragePathByUrl(char* path,const char* url);
+	BOOL IsLocalCacheAvailable(const char* url);
 
 private:
 	void SetDownloadLocation(const char* location);

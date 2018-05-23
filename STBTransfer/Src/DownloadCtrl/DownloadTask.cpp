@@ -88,22 +88,33 @@ BOOL DownloadTask::ThreadLoop(UINT64 uThreadData)
 
 		if (cVideoUrl && cVideoUrl[0])
 		{
-			char storagePath[MAX_PATH];
-			gDownloadManager->GetStoragePathByUrl(storagePath,cVideoUrl);
-
-			if (IsFileExist(storagePath)==TRUE && IsDir(storagePath)==FALSE)
+			if (gDownloadManager->IsLocalCacheAvailable(cVideoUrl)==TRUE)
 			{
-				LOGMSG(DBG_LEVEL_W, "%s is exist\n",storagePath);
+				LOGMSG(DBG_LEVEL_W, "%s cache is exist, will not download again!\n",cVideoUrl);
 				continue;
 			}
 
-			LOGMSG(DBG_LEVEL_I, "%s download begin\n",cVideoUrl);
-			BOOL ret = HttpFileCopyFromServer(&mHttpFileClient,cVideoUrl,storagePath,0,gDownloadManager,0);
+			char storagePath[MAX_PATH];
+			gDownloadManager->GetStoragePathByUrl(storagePath,cVideoUrl);
+
+			LOGMSG(DBG_LEVEL_I, "%s download begin to %s\n",cVideoUrl,storagePath);
+			BOOL ret = HttpFileCopyFromServer(&mHttpFileClient,cVideoUrl,storagePath,0,gDownloadManager,(UINT64)cVideoUrl);
 			if (ret!=TRUE)
 			{
 				LOGMSG(DBG_LEVEL_W, "%s download failed\n",cVideoUrl);
 				continue;
 			}
+			do_syscmd(NULL, "sync");
+
+			FILE* fp = fopen(storagePath, "rb");
+			if (fp)
+			{
+				UINT64 size = FileSize(fp);
+			    do_syscmd(NULL, "echo %llu > %s.size", size, storagePath);
+			    do_syscmd(NULL, "sync");
+			    fclose(fp);
+			}
+
 			LOGMSG(DBG_LEVEL_I, "%s download success\n",cVideoUrl);
 		}
 	}
