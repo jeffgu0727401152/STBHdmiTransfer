@@ -9,6 +9,9 @@
 #define FONTS_FOLDER				"Fonts"
 #define LOG_FOLDER					"Log"
 #define DOWNLOAD_FOLDER				"/stb/config/app/Download"
+#define UPDATE_FOLDER				"/stb/config/app/Update"
+#define LATEST_FOLDER				"/stb/config/app/Latest"
+#define VERSION_MAX_LINE_LENGTH (256)
 
 #define LAYOUT_WIDTH  1280
 #define LAYOUT_HEIGHT 720

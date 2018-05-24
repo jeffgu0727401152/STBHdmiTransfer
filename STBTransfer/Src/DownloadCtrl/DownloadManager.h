@@ -10,7 +10,6 @@
 #include "HttpFileClient.h"
 #include "types.h"
 #include "BaseApp.h"
-#include <vector>
 
 class DownloadTask;
 
@@ -20,6 +19,7 @@ public:
 	DownloadManager();
 	virtual ~DownloadManager();
 
+	// interface
 	virtual void OnNetFileCopyProgress(
 		UINT64 uUserData,
 		UINT64 uHasCopySize,

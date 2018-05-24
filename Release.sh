@@ -59,30 +59,24 @@ elif [ "$1" == "factory" ]; then
 	echo "tar the file..." 
 	tar -czf Release.tar.gz *
 	echo "release is for factory preburn!" 
-elif [ "$1" == "server" ]; then
+else
+	echo "release is for server update!" 
 	rm ${workspace}/Release/STBCfg.xml
 	rm ${workspace}/Release/app.sh
+
+	cd ${workspace}/Release
+	echo "tar the Program file..."
+	tar -czf Program.tar.gz Program
 
 	SW_VER_LINE=$(cat ${workspace}/STBTransfer/Src/Version.h | grep "SW_VERSION")
 	SW_VER=${SW_VER_LINE#*\"}
 	SW_VER=${SW_VER%\"*}
 	echo "version is "${SW_VER}
-	
-	echo "release is for usb disk copy!" 
-	cd ${workspace}/Release/Program/Lib/nexus/
-	sh ${workspace}/link2copy.sh
-	cd ${workspace}/Release/Program/Lib/common/
-	sh ${workspace}/link2copy.sh
-	cd ${workspace}/Release
-	echo "tar the Program file..."
-	tar -czf Program.tar.gz Program
-	
 	echo ${SW_VER} > client_version.txt
+
 	echo "check md5 sum..."
 	md5sum Program.tar.gz|cut -d ' ' -f1 >>  client_version.txt
-	
+
 	echo "remove Program/ and Private/"
 	rm -rf Program Private
-	
-	echo "release is for normal network mount update!" 
 fi

@@ -13,6 +13,9 @@
 #include "BaseApp.h"
 #include "Song.h"
 #include "GlobalUIClass.h"
+#include <stdio.h>
+#include "md5.h"
+#include <iostream>
 
 void UnregisterSigHandler()
 {
@@ -167,6 +170,256 @@ public:
 CGetClientOpenUrlThread gGetClientOpenUrlThread;
 
 
+class CGetUpdateThread : public IThreadFuncInterface, public INetFileCopyProgressListener
+{
+public:
+	CGetUpdateThread()
+	{
+		mUpdateLocation[0] = '\0';
+		mServerIP[0] = '\0';
+		mServerPort = 0;
+		SetUpdateLocation(UPDATE_FOLDER);
+	}
+
+	~CGetUpdateThread(){}
+
+	// interface
+public:
+	virtual BOOL ThreadLoop(
+		UINT64 uThreadData)
+	{
+		int retryCnt = 0;
+		CSimpleStringA sURL;
+		sURL.Format("http://%s:%d/client_version.txt", mServerIP, mServerPort);
+		//sURL.Format("http://giant-screen.oss-cn-shanghai.aliyuncs.com/test/client_version.txt");
+		CSimpleStringA sURLPackage;
+		sURLPackage.Format("http://%s:%d/Program.tar.gz", mServerIP, mServerPort);
+		//sURLPackage.Format("http://giant-screen.oss-cn-shanghai.aliyuncs.com/test/Program.tar.gz");
+
+		char versionFilePath[MAX_PATH];
+		char latestVersionPath[MAX_PATH];
+		char packagePath[MAX_PATH];
+		char updateFlagPath[MAX_PATH];
+		sprintf(versionFilePath, "%s/client_version.txt", mUpdateLocation);
+		sprintf(latestVersionPath, "%s/client_version.txt", LATEST_FOLDER);
+		sprintf(packagePath, "%s/Program.tar.gz", mUpdateLocation);
+		sprintf(updateFlagPath, "%s/update.flag", mUpdateLocation);
+
+		while (!mExitThread && retryCnt < 10)
+		{
+			LOGMSG(DBG_LEVEL_I, "%s:%d check update begin\n", __PRETTY_FUNCTION__, __LINE__);
+			BOOL ret = HttpFileCopyFromServer(&mHttpFileClient,sURL.GetString(),versionFilePath,0,this,(UINT64)(sURL.GetString()));
+			if (ret!=TRUE)
+			{
+				LOGMSG(DBG_LEVEL_W, "%s download version failed, retry\n",sURL.GetString());
+				mExitEvent.Wait(10000);
+				retryCnt++;
+				continue;
+			}
+
+			char md5[VERSION_MAX_LINE_LENGTH];
+			md5[0] = '\0';
+			if (NeedUpdate(md5,versionFilePath,latestVersionPath)==TRUE)
+			{
+				LOGMSG(DBG_LEVEL_I, "%s:%d download update begin\n", __PRETTY_FUNCTION__, __LINE__);
+				BOOL ret = HttpFileCopyFromServer(&mHttpFileClient,sURLPackage.GetString(),packagePath,0,this,(UINT64)(sURLPackage.GetString()));
+
+				if (ret!=TRUE)
+				{
+					LOGMSG(DBG_LEVEL_I, "%s download update package failed,retry\n", sURLPackage.GetString());
+					retryCnt++;
+					continue;
+				}
+
+				BYTE pMD5Value[16];
+				char cPackageMd5[33];
+				cPackageMd5[32] = '\0';
+				GetFileMD5(packagePath,pMD5Value);
+			    for(int i = 0; i < 16; i++)
+			    {
+			        sprintf(cPackageMd5 + i * 2, "%02x", pMD5Value[i]);
+			    }
+
+			    LOGMSG(DBG_LEVEL_I, "package md5=%s, we require md5=%s\n",cPackageMd5,md5);
+
+			    if (strcmp(cPackageMd5,md5)==0)
+			    {
+					LOGMSG(DBG_LEVEL_I, "%s:%d update package md5 verify success\n", __PRETTY_FUNCTION__, __LINE__);
+					do_syscmd(NULL,"touch %s",updateFlagPath);
+					do_syscmd(NULL,"sync");
+					return FALSE;
+			    }
+			    else
+			    {
+					LOGMSG(DBG_LEVEL_W, "%s:%d update package md5 verify failed, retry\n", __PRETTY_FUNCTION__, __LINE__);
+					retryCnt++;
+					continue;
+			    }
+			}
+			else
+			{
+				LOGMSG(DBG_LEVEL_I, "same version, not update!!!\n");
+				return FALSE;
+			}
+		}
+		LOGMSG(DBG_LEVEL_W, "update all retry failed!!!\n");
+		return FALSE;
+	}
+
+	virtual void OnNetFileCopyProgress(
+		UINT64 uUserData,
+		UINT64 uHasCopySize,
+		UINT64 uNeedCopySize,
+		float fCurSpeedKBPS,
+		UINT64 *puLimitSpeedBPS)
+	{
+		//const char* url = (const char*)uUserData;
+		if (gKTVConfig.GetDownloadSpeedLimit() > 0) {
+			*puLimitSpeedBPS = gKTVConfig.GetDownloadSpeedLimit();
+		}
+	}
+
+public:
+	void Start(const char* cServerIP, int nServerPort)
+	{
+		SAFE_STRNCPY(mServerIP, cServerIP, 16);
+		mServerPort = nServerPort;
+		mExitThread = FALSE;
+		mExitEvent.Reset();
+		RemoveFile(mUpdateLocation,".tmp",TRUE,TRUE);
+		mUpdateDownloadThread.StartThread("UpdateThread", this, 0, STACKSIZE_MIN);
+	}
+
+private:
+	void SetUpdateLocation(const char* location)
+	{
+		if(location && strlen(location)>0)
+		{
+			strcpy(mUpdateLocation,location);
+			if(mUpdateLocation[strlen(mUpdateLocation)-1] == '/')
+			{
+				mUpdateLocation[strlen(mUpdateLocation)-1] = '\0';
+			}
+		}
+		else
+		{
+			LOGMSG(DBG_LEVEL_W, "invalid location. use default path\n");
+		}
+
+		if(IsFileExist(mUpdateLocation) == TRUE)
+		{
+			if (IsDir(mUpdateLocation) != TRUE)
+			{
+				RemoveFile(mUpdateLocation, NULL, TRUE, TRUE);
+				do_mkdir(location, 0777);
+			}
+		}
+		else
+		{
+			do_mkdir(mUpdateLocation, 0777);
+		}
+	}
+
+	BOOL GetVersionInfo(char *version, char *md5,const char* path)
+	{
+		if (version==NULL || md5==NULL)
+		{
+			return FALSE;
+		}
+
+		version[0] = '\0';
+		md5[0] = '\0';
+
+		FILE* fp = fopen(path, "rb");
+		if (fp)
+		{
+			size_t len;
+			char *line=NULL;
+			int read;
+
+			while((read = getline(&line,&len,fp))!=-1) {
+				int strLen = strlen(line);
+				if (strLen>0)
+				{
+					while (line[strLen-1] == EOF
+							|| line[strLen-1] == '\n'
+									|| line[strLen-1] == '\r'
+											|| line[strLen-1] == '\t'
+													|| line[strLen-1] == ' ')
+					{
+						line[strLen-1] = '\0';
+						strLen = strlen(line);
+						if (strLen==0)
+						{
+							break;
+						}
+					}
+
+					if (strLen>0 && strLen<VERSION_MAX_LINE_LENGTH)
+					{
+						if (strlen(version)==0)
+						{
+							strcpy(version, line);
+						}
+						else if (strlen(md5)==0)
+						{
+							strcpy(md5, line);
+							free(line);
+							fclose(fp);
+							return TRUE;
+						}
+					}
+				}
+			}
+			free(line);
+			fclose(fp);
+		}
+		return FALSE;
+	}
+
+	BOOL NeedUpdate(char* md5,const char* downloadVersionPath,const char* boardVersionPath)
+	{
+		char cDownloadMd5[VERSION_MAX_LINE_LENGTH];
+		char cDownloadVer[VERSION_MAX_LINE_LENGTH];
+		char cBoardMd5[VERSION_MAX_LINE_LENGTH];
+		char cBoardVer[VERSION_MAX_LINE_LENGTH];
+		cDownloadMd5[0] = '\0';
+		cDownloadVer[0] = '\0';
+		cBoardMd5[0] = '\0';
+		cBoardVer[0] = '\0';
+
+		if (GetVersionInfo(cDownloadVer,cDownloadMd5,downloadVersionPath)==FALSE)
+		{
+			LOGMSG(DBG_LEVEL_W, "%s parse error\n",downloadVersionPath);
+			return FALSE;
+		}
+
+		LOGMSG(DBG_LEVEL_I, "cDownloadVer=%s,cDownloadMd5=%s\n",cDownloadVer,cDownloadMd5);
+
+		GetVersionInfo(cBoardVer,cBoardMd5,boardVersionPath);
+		LOGMSG(DBG_LEVEL_I, "cBoardVer=%s\n",cBoardVer);
+
+		if (strcmp(cBoardVer,cDownloadVer)!=0)
+		{
+			SAFE_STRNCPY(md5, cDownloadMd5, VERSION_MAX_LINE_LENGTH);
+			LOGMSG(DBG_LEVEL_I, "need download update\n");
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+private:
+	char mUpdateLocation[MAX_PATH];
+	char mServerIP[16];
+	int mServerPort;
+	int mExitThread;
+	CBaseEvent mExitEvent;
+	CBaseThread mUpdateDownloadThread;
+	CHttpFileClient mHttpFileClient;
+};
+CGetUpdateThread gGetUpdateThread;
+
 BOOL gMainLoopExit = FALSE;
 BOOL gInitUIComplete = FALSE;
 
@@ -241,10 +494,12 @@ void InitUI()
 		gPageManager->SetCurrentPage(Page_Blank);
 
 		gGetClientOpenUrlThread.StartThread(
-			"GetClientOpenUrlThread",
-			&gGetClientOpenUrlThread,
-			0,
-			STACKSIZE_MIN);
+				"GetClientOpenUrlThread",
+				&gGetClientOpenUrlThread,
+				0,
+				STACKSIZE_MIN);
+
+		gGetUpdateThread.Start(gKTVConfig.GetServerIP(), gKTVConfig.GetServerPort());
 	}
 }
 

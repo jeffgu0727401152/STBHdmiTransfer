@@ -29,7 +29,7 @@ int FindUrlByPath(const void *pItem, const void *pData)
 DownloadManager::DownloadManager()
 {
 	mDownloadTask = NULL;
-	memset(mDownloadLocation,0,sizeof(mDownloadLocation));
+	mDownloadLocation[0] = '\0';
 	SetDownloadLocation(DOWNLOAD_FOLDER);
 	RemoveTmpFile();
 }

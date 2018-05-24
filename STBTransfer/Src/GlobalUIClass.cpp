@@ -47,6 +47,7 @@ void InitGlobalClass()
 
 void DeInitGlobalClass()
 {
+	SAFE_DELETE(gDownloadManager);
 	SAFE_DELETE(gHttpCmdClient);
 	SAFE_DELETE(gHttpCmdServer);
 	SAFE_DELETE(gPlayerManager);
