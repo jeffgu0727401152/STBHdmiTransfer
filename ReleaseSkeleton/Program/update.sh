@@ -1,9 +1,10 @@
 #! /bin/sh
-echo "########## copy remote program to local ##########"
-# app.sh在调用此脚本前,已经将远程的Program目录,挂载在/program下了
-cp -arf /program/* /stb/config/app/Latest/
 
-echo "/program folder has" $(ls /program)
+echo "########## move update program to local present working directory; ##########"
+# app.sh在调用此脚本前,已经将远程的Program文件下载并解压到了/stb/config/app/Update/下
+mv  /stb/config/app/Update/Program/* /stb/config/app/Latest/
+
+echo "/stb/config/app/Update/ folder has" $(ls /stb/config/app/Update/)
 
 if [ -e /stb/config/app/Latest/ktv.sh ]; then
 	echo "########## copy remote program file success !!! ##########"

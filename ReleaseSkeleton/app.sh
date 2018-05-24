@@ -7,15 +7,13 @@
 #将会会检查这两个位置(优先从u盘下执行该脚本)
 #
 #	此脚本首先会设置主板自己的IP,设置为/stb/config/app/deviceip.dat文件所指定的IP
-#然后会尝试挂载/stb/config/app/serverip.dat中的IP所指定的服务器的/root/STBVerify/Program目录
-#(serverip.dat,deviceip.dat等文件由程序认证页点击"认证"写入)
+#	
+#	如果上次运行留有上次程序的log，那么log将会加上_last描述名进行保存
+#   
+#	检查上次程序运行是否保留了需要升级的安装包和相关的tag文件，并根据此情况将升级包内的update.sh拷贝至根目录并执行
+#   
+#	如果版权盒上除了出厂预装的版本外,未存在从服务器下载的版，那么直接运行/stb/config/app/Program下的出厂程序
 #
-#	挂载成功后拷贝服务器/root/STBVerify/Program目录到本地的/app目录,建/networkflag.txt作标志
-#将本地/stb/config/app/Log/目录拷贝到服务器的/root/STBVerify/Private/{mac addr}目录
-#然后从/app目录执行程序,所有的运行log保存在本地的/stb/config/app/Log/目录(覆盖前次)
-#
-#	如果serverip.dat不存在 或 该文件指定的服务器无法成功挂载访问, 则改为从本地启动,
-#首先link {脚本所在的目录}/Program到/app目录,然后从/app目录执行程序
 ########################################################################
 
 #directory=$(cd `dirname $0`; pwd)
@@ -44,8 +42,6 @@ ifconfig lo up
 hostname STBVod
 
 ifconfig
-# 等待5秒,等待网络稳定
-sleep 5
 
 # 不存在则建立本地日志目录
 if [ ! -d "${directory}/Log" ]; then
@@ -55,48 +51,33 @@ fi
 if [ ! -d "${directory}/Latest" ]; then
 	mkdir ${directory}/Latest
 fi
+# 不存在则建立更新最新程序的目录
+if [ ! -d "${directory}/Update" ]; then
+	mkdir ${directory}/Update
+fi
 
 # 判断 /app 目录下是否存在数据
 FILENUM=$(ls /app -lR | grep "^-" | wc -l)
 if [ $FILENUM -gt 0 ]; then
 	echo "app folder has data, run directly"
 else
-	# 挂载远程可执行文件目录
-	echo "try mount remote server Program to /program folder..."
-	mkdir /program
-	mount -t nfs -o nolock -o ro $SERVERIP:/root/STBVerify/Program /program
-	if [ $? -eq 0 ]; then
-		# 从网络获取过最新的信息启动
-		echo "run from network..."
-		touch /networkflag.txt
-
-		#获取网络program的版本与本地的版本,使用echo是为了去除字串中多余的空格,为后续的字符串比较做准备
-		if [ -f "/program/version.dat" ]; then
-			SERVER_VER=$(echo $(cat /program/version.dat))
-		else
-			SERVER_VER="unknown"
-		fi
-		echo "server program version is ${SERVER_VER}"
-
-		if [ -f "${directory}/Latest/version.dat" ]; then
-			LOCAL_VER=$(echo $(cat /stb/config/app/Latest/version.dat))
-		else
-			LOCAL_VER="unknown"
-		fi
-		echo "local program version is ${LOCAL_VER}"
-
-		# 如果服务器上没有version.dat则无法更新
-		if [ "$SERVER_VER" != "unknown" ] && [ "$SERVER_VER" != "$LOCAL_VER" ];then
-			echo "SERVER_VER != LOCAL_VER, copy update.sh and exec it"
-			cp /program/update.sh /update.sh
-			chmod 777 /update.sh
-			/update.sh
-		fi
-
-		umount /program
-		echo "check remote server Program done!"
+	# 识别本次启动是否需要更新程序
+	if [ -f "${directory}/Update/update.flag" ]; then
+		echo "update.flag is found, copy update.sh to root directory now"
+		cd ${directory}/Update/
+		tar -zxf Program.tar.gz
+		cp Program/update.sh /
+		
+		# 开始执行 update.sh
+		echo "exec update.sh..."
+		chmod 777 /update.sh
+		/update.sh
+		cp -arf ${directory}/Update/client_version.txt ${directory}/Latest/
+		echo "########## remove /stb/config/app/Update/* ... ##########"
+		rm -rf ${directory}/Update/*
+		
 	else
-		# 没有挂载成功远程目录,所以算是从本地执行
+		# 没有识别到本次启动需要更新,所以从本地执行
 		echo "run from local..."
 	fi
 fi
@@ -104,45 +85,17 @@ fi
 # 准备日志文件
 # 程序执行过程中的log都保存在不带last结尾的日志文件中
 # 所以在程序实际执行之前,将上次的log重命名为last结尾的文件
-echo "try mount remote server Private to /private folder..."
-mkdir /private
-mount -t nfs -o nolock -o rw $SERVERIP:/root/STBVerify/Private /private
-if [ $? -eq 0 ] && [ -f "/private/uploadlog.dat" ]; then
-	echo "server need log, upload log to server"
-	# 获取本设备在服务器上保存日志的目录
-	MAC=`LANG=C ifconfig eth0 | awk '/HWaddr/{ print $5 }' | sed ''s/://g''`
-	REMOTE_PRIVATE_PATH=/private/$MAC
-	echo "REMOTE_PRIVATE_PATH=${REMOTE_PRIVATE_PATH}"
 
-	mkdir $REMOTE_PRIVATE_PATH
-	chmod 777 $REMOTE_PRIVATE_PATH
-	mkdir $REMOTE_PRIVATE_PATH/Log
-	chmod 777 $REMOTE_PRIVATE_PATH/Log
-
-	# 复制上次的 Log
-	mv $REMOTE_PRIVATE_PATH/Log/lighttpd.log $REMOTE_PRIVATE_PATH/Log/lighttpd_last.log
-	cp ${directory}/Log/lighttpd.log $REMOTE_PRIVATE_PATH/Log/lighttpd.log
-	mv ${directory}/Log/lighttpd.log ${directory}/Log/lighttpd_last.log
-
-	mv $REMOTE_PRIVATE_PATH/Log/STBVerify.log $REMOTE_PRIVATE_PATH/Log/STBVerify_Last.log
-	cp ${directory}/Log/STBVerify.log $REMOTE_PRIVATE_PATH/Log/STBVerify.log
-	mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last.log
-
-	mv $REMOTE_PRIVATE_PATH/Log/STBCGI.log $REMOTE_PRIVATE_PATH/Log/STBCGI_Last.log
-	cp ${directory}/Log/STBCGI.log $REMOTE_PRIVATE_PATH/Log/STBCGI.log
-	mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last.log
-	echo "copy local log to remote server Private folder done!"
-	umount /private
-else
-	mv ${directory}/Log/lighttpd.log /${directory}/Log/lighttpd_last.log
-	mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last.log
-	mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last.log
-fi
+mv ${directory}/Log/lighttpd.log /${directory}/Log/lighttpd_last.log
+mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last.log
+mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last.log
 
 # 判断版权盒上除了出厂预装的版本外,是否存在从服务器下载的新版
 if [ -f "${directory}/Latest/ktv.sh" ]; then
+	echo "found update version. exec the latest version now..."
 	ln -s ${directory}/Latest /app
 else
+	echo "no update version is download before . exec the factory version now..."
 	ln -s ${directory}/Program /app
 fi
 
