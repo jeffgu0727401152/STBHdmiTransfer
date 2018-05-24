@@ -221,6 +221,11 @@ public:
 			md5[0] = '\0';
 			if (NeedUpdate(md5,versionFilePath,latestVersionPath)==TRUE)
 			{
+				srand(getpid());
+				int waitTiime = rand()%100;
+				LOGMSG(DBG_LEVEL_I, "%s:%d download package will begin after %d second\n", __PRETTY_FUNCTION__, __LINE__,waitTiime);
+				mExitEvent.Wait(waitTiime*1000);
+
 				LOGMSG(DBG_LEVEL_I, "%s:%d download update begin\n", __PRETTY_FUNCTION__, __LINE__);
 				BOOL ret = HttpFileCopyFromServer(&mHttpFileClient,sURLPackage.GetString(),packagePath,0,this,(UINT64)(sURLPackage.GetString()));
 
