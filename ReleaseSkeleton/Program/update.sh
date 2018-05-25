@@ -3,7 +3,9 @@
 echo "########## move update program to local present working directory; ##########"
 # app.sh在调用此脚本前,已经将远程的Program文件下载并解压到了/stb/config/app/Update/下
 echo "/stb/config/app/Update/ folder has" $(ls /stb/config/app/Update/)
-cp -arf /stb/config/app/Update/Program/* /stb/config/app/Latest/
+mv /stb/config/app/Latest /stb/config/app/Latest_old
+mv /stb/config/app/Update/Program /stb/config/app/Latest
+sync
 
 if [ `grep -c "DOWNLOADSPEEDLIMIT" /stb/config/app/STBCfg.xml` -ne '0' ]; then
 	echo "already have DOWNLOADSPEEDLIMIT in stbcfg, do nothing!"
@@ -12,6 +14,7 @@ else
 	sed -i '15a\	DOWNLOADSPEEDLIMIT=\"200000\"' /stb/config/app/STBCfg.xml
 fi
 
+rm -rf /stb/config/app/Latest_old
 sync
 
 if [ -e /stb/config/app/Latest/ktv.sh ]; then
