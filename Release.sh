@@ -60,15 +60,16 @@ elif [ "$1" == "factory" ]; then
 	tar -czf Release.tar.gz *
 	echo "release is for factory preburn!" 
 elif [ "$1" == "deliver" ]; then
-	mkdir ${workspace}/Release/app
+	
 	rm -r ${workspace}/Release/Private
 	cd ${workspace}/Release
 	echo "tar the file..." 
 	tar -czf Release.tar.gz *
 	echo "release is for factory preburn!" 
+	mkdir ${workspace}/Release/app
 	mv Release.tar.gz ./app
 	cp ${workspace}/UdiskSh/nvram_copy/* ./app
-	
+
 	mkdir ${workspace}/Release/server
 	echo "release is for server update!" 
 	rm ${workspace}/Release/STBCfg.xml
@@ -92,6 +93,7 @@ elif [ "$1" == "deliver" ]; then
 	
 	mv Program.tar.gz ./server
 	mv client_version.txt ./server
+
 else
 	echo "release is for server update!" 
 	rm ${workspace}/Release/STBCfg.xml
