@@ -93,6 +93,8 @@ mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last.log
 # 判断版权盒上除了出厂预装的版本外,是否存在从服务器下载的新版
 if [ -f "${directory}/Latest/ktv.sh" ]; then
 	echo "found latest version,exec the latest version now..."
+	# 现在这个flag用于指示程序是否是从最新的目录启动的,用于区别出厂的
+	touch /networkflag.txt
 	ln -s ${directory}/Latest /app
 else
 	echo "no latest version,exec the factory version now..."
