@@ -44,6 +44,9 @@ fi
 
 mkdir ${COPYFILE_BASE_PATH}
 cd ${COPYFILE_BASE_PATH}
+# before tar -zxf ,we should remove all the local file before.
+echo "remove local current program."
+rm * -rf
 cp ${directory_local}/Release.tar.gz Release.tar.gz
 tar -zxf Release.tar.gz
 rm Release.tar.gz
