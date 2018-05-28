@@ -27,11 +27,14 @@ DownloadTask::DownloadTask(const char* urls)
 		const char* cUrl = (const char*)sUrlList.GetAt(i);
 		if (cUrl && cUrl[0] && strncmp("http", cUrl, 4) == 0)
 		{
-			char* cVideoUrl = new char[strlen(cUrl)+1];
-			if (cVideoUrl)
+			if (mDownloadUrlList.FindFirst(cUrl)<0)
 			{
-				strcpy(cVideoUrl, cUrl);
-				mDownloadUrlList.AddData(cVideoUrl);
+				char* cVideoUrl = new char[strlen(cUrl)+1];
+				if (cVideoUrl)
+				{
+					strcpy(cVideoUrl, cUrl);
+					mDownloadUrlList.AddData(cVideoUrl);
+				}
 			}
 		}
 	}
@@ -72,6 +75,9 @@ BOOL DownloadTask::ThreadLoop(UINT64 uThreadData)
 {
 	int downloadIndex = 0;
 	mDownloadThreadExit = FALSE;
+	do_syscmd(NULL,"rm %s/done.flag",gDownloadManager->GetDownloadLocation());
+	do_syscmd(NULL,"sync");
+
 	while (mDownloadThreadExit!=TRUE && downloadIndex < mDownloadUrlList.GetCount())
 	{
 		const char* cVideoUrl = NULL;
@@ -95,7 +101,7 @@ BOOL DownloadTask::ThreadLoop(UINT64 uThreadData)
 			}
 
 			char storagePath[MAX_PATH];
-			gDownloadManager->GetStoragePathByUrl(storagePath,cVideoUrl);
+			gDownloadManager->GetDownloadPathByUrl(storagePath,cVideoUrl);
 
 			LOGMSG(DBG_LEVEL_I, "%s download begin to %s\n",cVideoUrl,storagePath);
 			BOOL ret = HttpFileCopyFromServer(&mHttpFileClient,cVideoUrl,storagePath,0,gDownloadManager,(UINT64)cVideoUrl);
@@ -118,5 +124,8 @@ BOOL DownloadTask::ThreadLoop(UINT64 uThreadData)
 			LOGMSG(DBG_LEVEL_I, "%s download success\n",cVideoUrl);
 		}
 	}
+	do_syscmd(NULL,"touch %s/done.flag",gDownloadManager->GetDownloadLocation());
+	do_syscmd(NULL,"sync");
+
 	return FALSE;
 }

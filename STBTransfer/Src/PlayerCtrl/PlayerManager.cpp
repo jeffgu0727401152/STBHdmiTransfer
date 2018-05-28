@@ -206,19 +206,10 @@ void CPlayerManager::SwitchMain()
 	else
 	{
 		gMultiMediaCtrl->EnableAudioLineInToLineOut(FALSE);
-
 		LOGMSG(DBG_LEVEL_I, "%s:%d, main Play video: %s!\n", __PRETTY_FUNCTION__, __LINE__, cVideoUrl);
-		BOOL cacheFound = FALSE;
-		char cStoragePath[PATH_MAX];
-		if (strncmp("http", cVideoUrl, 4)==0 && gDownloadManager->IsLocalCacheAvailable(cVideoUrl)==TRUE) {
-			gDownloadManager->GetStoragePathByUrl(cStoragePath,cVideoUrl);
-			LOGMSG(DBG_LEVEL_I, "%s:%d, main Play video found cache: %s\n", __PRETTY_FUNCTION__, __LINE__, cStoragePath);
-			cacheFound = TRUE;
-		}
-
 		gPlayerCtrl->PlayMain(
 			"90000000", //SONGID_USER_START
-			cacheFound==TRUE?cStoragePath:cVideoUrl, //filepath
+			cVideoUrl, //filepath
 			FALSE, //loopplay
 			FALSE, //passthrough
 			0);

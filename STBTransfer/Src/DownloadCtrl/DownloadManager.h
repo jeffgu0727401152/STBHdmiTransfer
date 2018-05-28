@@ -29,14 +29,22 @@ public:
 
 public: 
 	void StartDownload(const char* urls);
-	BOOL GetStoragePathByUrl(char* path,const char* url);
+	BOOL GetDownloadPathByUrl(char* path,const char* url);
 	BOOL IsLocalCacheAvailable(const char* url);
+	const char* GetLocalVideoList();
+	const char* GetDownloadLocation();
 
 private:
 	void SetDownloadLocation(const char* location);
+	void SetVideoLocation(const char* location);
 	void RemoveTmpFile();
+	BOOL NeedReplaceVideo();
+	BOOL CheckFileSize(const char* filePath);
+	void ParseVideoList();
 
 private:
 	char mDownloadLocation[MAX_PATH];
+	char mVideoLocation[MAX_PATH];
 	DownloadTask* mDownloadTask;
+	CSimpleStringA mLocalVideoList;
 };

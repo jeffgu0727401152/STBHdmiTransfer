@@ -29,9 +29,23 @@ int FindUrlByPath(const void *pItem, const void *pData)
 DownloadManager::DownloadManager()
 {
 	mDownloadTask = NULL;
+	mLocalVideoList.Format("");
 	mDownloadLocation[0] = '\0';
+	mVideoLocation[0] = '\0';
 	SetDownloadLocation(DOWNLOAD_FOLDER);
+	SetVideoLocation(VIDEO_FOLDER);
+
 	RemoveTmpFile();
+
+	if (NeedReplaceVideo()==TRUE)
+	{
+		do_syscmd(NULL, "mv %s %s_old", mVideoLocation,mVideoLocation);
+		do_syscmd(NULL, "mv %s %s", mDownloadLocation,mVideoLocation);
+		do_mkdir(mDownloadLocation, 0777);
+		do_syscmd(NULL, "sync");
+	}
+
+	ParseVideoList();
 }
 
 DownloadManager::~DownloadManager()
@@ -66,6 +80,8 @@ void DownloadManager::StartDownload(const char* urls)
 
 	mDownloadTask = new DownloadTask(urls);
 
+	// 检查下载目录是否存在不需要下载的文件,如果有文件不在下载列表中,则删除
+	// 主要用于上次开机没有下载完成,所以下载目录还没有重命名成播放目录,但是此时视频已经变了
 	CPtrListCtrl sArcList;
 	GetLocalFolderFileList(
 		mDownloadLocation,
@@ -74,32 +90,76 @@ void DownloadManager::StartDownload(const char* urls)
 		NULL,
 		FALSE);
 
-	const char* cVideoFileName = NULL;
+	const char* cDownloadedFileName = NULL;
 	for (int i=0; i < sArcList.GetCount(); i++)
 	{
-		cVideoFileName = (const char*)sArcList.GetAt(i);
-		std::string fileNameStr = cVideoFileName;
+		cDownloadedFileName = (const char*)sArcList.GetAt(i);
+		std::string fileNameStr = cDownloadedFileName;
 		std::string suffixStr = fileNameStr.substr(fileNameStr.find_last_of('.') + 1);
 
-		if (suffixStr.compare("tmp")==0 || suffixStr.compare("size")==0)
+		if (suffixStr.compare("tmp")==0 || suffixStr.compare("size")==0 || suffixStr.compare("flag")==0)
 		{
 			continue;
 		}
 
-		int ret = mDownloadTask->GetDownloadList().FindFirst(cVideoFileName,FindUrlByPath);
+		int ret = mDownloadTask->GetDownloadList().FindFirst(cDownloadedFileName,FindUrlByPath);
 		if (ret<0)
 		{
 			char cDeletePath[MAX_PATH];
 			char cDeleteSizePath[MAX_PATH];
-			sprintf(cDeletePath, "%s/%s", mDownloadLocation, cVideoFileName);
-			sprintf(cDeleteSizePath, "%s/%s.size", mDownloadLocation, cVideoFileName);
+			sprintf(cDeletePath, "%s/%s", mDownloadLocation, cDownloadedFileName);
+			sprintf(cDeleteSizePath, "%s/%s.size", mDownloadLocation, cDownloadedFileName);
 			LOGMSG(DBG_LEVEL_I, "%s not found in new download list, remove it\n",cDeletePath);
 			remove(cDeletePath);
 			remove(cDeleteSizePath);
 		}
 	}
 
-	mDownloadTask->Start();
+	// 检查播放目录是否存在需要下载的文件,如果有文件都在下载列表中,则不需要再次下载
+	int findVideoCount = 0;
+	int videoFileCount = 0;
+	CPtrListCtrl sPlayList;
+	GetLocalFolderFileList(
+		mVideoLocation,
+		NULL,
+		&sPlayList,
+		NULL,
+		FALSE);
+
+	const char* cVideoFileName = NULL;
+	for (int i=0; i < sPlayList.GetCount(); i++)
+	{
+		cVideoFileName = (const char*)sPlayList.GetAt(i);
+		std::string fileNameStr = cVideoFileName;
+		std::string suffixStr = fileNameStr.substr(fileNameStr.find_last_of('.') + 1);
+
+		if (suffixStr.compare("tmp")==0 || suffixStr.compare("size")==0 || suffixStr.compare("flag")==0)
+		{
+			continue;
+		}
+
+		videoFileCount++;
+
+		int ret = mDownloadTask->GetDownloadList().FindFirst(cVideoFileName,FindUrlByPath);
+		if (ret>=0)
+		{
+			findVideoCount++;
+			LOGMSG(DBG_LEVEL_I, "%s found in download list\n",cVideoFileName);
+		}
+		else
+		{
+			LOGMSG(DBG_LEVEL_I, "%s not found in download list\n",cVideoFileName);
+		}
+	}
+
+	LOGMSG(DBG_LEVEL_I, "video file count=%d,download list size=%d, find %d in download list\n",
+			videoFileCount,mDownloadTask->GetDownloadList().GetCount(),findVideoCount);
+
+	if (videoFileCount==0 || videoFileCount < mDownloadTask->GetDownloadList().GetCount() || findVideoCount!=videoFileCount)
+	{
+		LOGMSG(DBG_LEVEL_I, "file in %s folder is not same as download list, will download\n",mVideoLocation);
+		mDownloadTask->Start();
+	}
 }
 
 void DownloadManager::SetDownloadLocation(const char* location)
@@ -131,13 +191,46 @@ void DownloadManager::SetDownloadLocation(const char* location)
 	}
 }
 
-BOOL DownloadManager::GetStoragePathByUrl(char* path,const char* url)
+const char* DownloadManager::GetDownloadLocation()
+{
+	return mDownloadLocation;
+}
+
+
+void DownloadManager::SetVideoLocation(const char* location)
+{
+	if(location && strlen(location)>0)
+	{
+		strcpy(mVideoLocation,location);
+		if(mVideoLocation[strlen(mVideoLocation)-1] == '/')
+		{
+			mVideoLocation[strlen(mVideoLocation)-1] = '\0';
+		}
+	}
+	else
+	{
+		LOGMSG(DBG_LEVEL_W, "invalid location. use default path\n");
+	}
+
+	if(IsFileExist(mVideoLocation) == TRUE)
+	{
+		if (IsDir(mVideoLocation) != TRUE)
+		{
+			RemoveFile(mVideoLocation, NULL, TRUE, TRUE);
+			do_mkdir(location, 0777);
+		}
+	}
+	else
+	{
+		do_mkdir(mVideoLocation, 0777);
+	}
+}
+
+BOOL DownloadManager::GetDownloadPathByUrl(char* path,const char* url)
 {
 	char name[PATH_MAX];
 	GetFileShortName(name,url);
-	sprintf(path, "%s/%s",
-			mDownloadLocation,
-			name);
+	sprintf(path, "%s/%s", mDownloadLocation, name);
 	return TRUE;
 }
 
@@ -145,24 +238,77 @@ BOOL DownloadManager::IsLocalCacheAvailable(const char* url)
 {
 	char fileName[PATH_MAX];
 	char storagePath[PATH_MAX];
-	char sizeFilePath[PATH_MAX];
 	GetFileShortName(fileName,url);
-	sprintf(storagePath, "%s/%s",
-			mDownloadLocation,
-			fileName);
-	sprintf(sizeFilePath, "%s/%s.size",
-			mDownloadLocation,
-			fileName);
+	sprintf(storagePath, "%s/%s", mDownloadLocation, fileName);
 
-	if (IsFileExist(storagePath)==FALSE || IsDir(storagePath)==TRUE )
+	return CheckFileSize(storagePath);
+}
+
+const char* DownloadManager::GetLocalVideoList()
+{
+	return mLocalVideoList.GetString();
+}
+
+BOOL DownloadManager::NeedReplaceVideo()
+{
+	char doneFlagPath[MAX_PATH];
+	sprintf(doneFlagPath, "%s/%s", mDownloadLocation, "done.flag");
+
+	if (IsFileExist(doneFlagPath))
 	{
-		return FALSE;
+		return TRUE;
 	}
 
-	if (IsFileExist(sizeFilePath)==FALSE || IsDir(sizeFilePath)==TRUE )
+	return FALSE;
+}
+
+void DownloadManager::ParseVideoList()
+{
+	CPtrListCtrl sArcList;
+	GetLocalFolderFileList(
+		mVideoLocation,
+		NULL,
+		&sArcList,
+		NULL,
+		FALSE);
+
+	const char* cVideoFileName = NULL;
+	for (int i=0; i < sArcList.GetCount(); i++)
 	{
-		return FALSE;
+		cVideoFileName = (const char*)sArcList.GetAt(i);
+		std::string fileNameStr = cVideoFileName;
+		std::string suffixStr = fileNameStr.substr(fileNameStr.find_last_of('.') + 1);
+
+		if (suffixStr.compare("tmp")==0 || suffixStr.compare("size")==0 || suffixStr.compare("flag")==0)
+		{
+			continue;
+		}
+
+		char storagePath[MAX_PATH];
+		sprintf(storagePath, "%s/%s", mVideoLocation, cVideoFileName);
+
+		if (CheckFileSize(storagePath) == TRUE)
+		{
+			if (mLocalVideoList.GetLength()!=0)
+			{
+				mLocalVideoList.Append(',');
+			}
+			mLocalVideoList.Append(storagePath);
+		}
 	}
+	LOGMSG(DBG_LEVEL_I, "parse result:%s\n",mLocalVideoList.GetString());
+}
+
+BOOL DownloadManager::CheckFileSize(const char* filePath)
+{
+	char fileName[PATH_MAX];
+	char parentDir[PATH_MAX];
+	GetFileParentDir(parentDir,filePath);
+	GetFileShortName(fileName,filePath);
+	char storagePath[MAX_PATH];
+	char sizeFilePath[MAX_PATH];
+	sprintf(storagePath, "%s/%s", parentDir, fileName);
+	sprintf(sizeFilePath, "%s/%s.size", parentDir, fileName);
 
 	FILE* fp = fopen(storagePath, "rb");
 	if (fp)
@@ -185,7 +331,6 @@ BOOL DownloadManager::IsLocalCacheAvailable(const char* url)
 			}
 		}
 	}
-
 	return FALSE;
 }
 
@@ -195,8 +340,13 @@ void DownloadManager::RemoveTmpFile()
 	{
 		RemoveFile(mDownloadLocation,".tmp",TRUE,TRUE);
 	}
-	else
+
+	if (strlen(mVideoLocation)>0)
 	{
-		LOGMSG(DBG_LEVEL_W, "unknown mDownloadlocation, do nothing\n");
+		RemoveFile(mVideoLocation,".tmp",TRUE,TRUE);
+		char videoPathOld[MAX_PATH];
+		sprintf(videoPathOld,"%s%s",mVideoLocation,"_old");
+		do_syscmd(NULL,"rm -rf %s",videoPathOld);
+		do_syscmd(NULL,"sync");
 	}
 }

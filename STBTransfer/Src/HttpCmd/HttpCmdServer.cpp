@@ -380,10 +380,11 @@ void CHttpCmdServer::OnRequestOpenRoomCmd(
 				pReqOpenRoomCmd->cQRCodeString,
 				pReqOpenRoomCmd->rcQRCodePosition);
 
-			gPlayerManager->SetMainPlayerSource(cVideoUrlBuffer, TRUE);
-			gPageManager->SetCurrentPage(Page_Picture);
-
+			const char* localList = gDownloadManager->GetLocalVideoList();
 			gDownloadManager->StartDownload(cVideoUrlBuffer);
+
+			gPlayerManager->SetMainPlayerSource(localList, TRUE);
+			gPageManager->SetCurrentPage(Page_Picture);
 		}
 	}
 	else
