@@ -73,6 +73,7 @@ CPtrListCtrl DownloadTask::GetDownloadList()
 
 BOOL DownloadTask::ThreadLoop(UINT64 uThreadData)
 {
+	int downloadDone = 0;
 	int downloadIndex = 0;
 	mDownloadThreadExit = FALSE;
 	do_syscmd(NULL,"rm %s/done.flag",gDownloadManager->GetDownloadLocation());
@@ -87,16 +88,13 @@ BOOL DownloadTask::ThreadLoop(UINT64 uThreadData)
 			cVideoUrl = (const char*)mDownloadUrlList.GetAt(downloadIndex);
 			downloadIndex ++;
 		}
-		else
-		{
-			return FALSE;
-		}
 
 		if (cVideoUrl && cVideoUrl[0])
 		{
 			if (gDownloadManager->IsLocalCacheAvailable(cVideoUrl)==TRUE)
 			{
 				LOGMSG(DBG_LEVEL_W, "%s cache is exist, will not download again!\n",cVideoUrl);
+				downloadDone ++;
 				continue;
 			}
 
@@ -110,6 +108,7 @@ BOOL DownloadTask::ThreadLoop(UINT64 uThreadData)
 				LOGMSG(DBG_LEVEL_W, "%s download failed\n",cVideoUrl);
 				continue;
 			}
+
 			do_syscmd(NULL, "sync");
 
 			FILE* fp = fopen(storagePath, "rb");
@@ -121,11 +120,16 @@ BOOL DownloadTask::ThreadLoop(UINT64 uThreadData)
 			    fclose(fp);
 			}
 
+			downloadDone ++;
 			LOGMSG(DBG_LEVEL_I, "%s download success\n",cVideoUrl);
 		}
 	}
-	do_syscmd(NULL,"touch %s/done.flag",gDownloadManager->GetDownloadLocation());
-	do_syscmd(NULL,"sync");
+
+	// 只有全部下载完成,才会设置done.flag
+	if (downloadDone > 0) {
+		do_syscmd(NULL,"touch %s/done.flag",gDownloadManager->GetDownloadLocation());
+		do_syscmd(NULL,"sync");
+	}
 
 	return FALSE;
 }
