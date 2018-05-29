@@ -63,12 +63,26 @@ elif [ "$1" == "deliver" ]; then
 	
 	rm -r ${workspace}/Release/Private
 	cd ${workspace}/Release
-	if [ -f "${workspace}/UdiskSh/open_room_video/open_room_video.mp4" ]; then
+
+	videopath="${workspace}/UdiskSh/open_room_video"
+	if [ -d ${videopath} ]; then
 		mkdir Video
-		ls -l ${workspace}/UdiskSh/open_room_video/open_room_video.mp4 | awk '{print $5}' > ./Video/open_room_video.mp4.size
-		cp ${workspace}/UdiskSh/open_room_video/open_room_video.mp4 ./Video/
+		if [ "`ls -A ${videopath}`" = "" ]; then
+			echo "no default open room video, please place a media file to ${videopath}"
+		else
+			for file in ${videopath}/*
+			do
+				if [ -f "$file" ];then
+			  		ls -l $file | awk '{print $5}' > $file.size
+			  		mv $file.size ./Video/
+					cp $file ./Video/
+				fi
+			done
+		fi
+		
+		
 	else
-		echo "no default open room video, please make sure UdiskSh/open_room_video/open_room_video.mp4 is existed."
+		echo "no directory ${workspace}/UdiskSh/open_room_video/ ."
 	fi
 	echo "tar the file..." 
 	tar -czf Release.tar.gz *
@@ -97,6 +111,9 @@ elif [ "$1" == "deliver" ]; then
 
 	echo "remove Program/ and Private/"
 	rm -rf Program Private
+	if [ -d ${videopath} ]; then
+		rm -rf Video
+	fi
 	
 	mv Program.tar.gz ./server
 	mv client_version.txt ./server
