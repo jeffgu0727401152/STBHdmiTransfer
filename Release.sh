@@ -79,8 +79,6 @@ elif [ "$1" == "deliver" ]; then
 				fi
 			done
 		fi
-		
-		
 	else
 		echo "no directory ${workspace}/UdiskSh/open_room_video/ ."
 	fi
