@@ -3,3 +3,7 @@
 Release
 RemoteSystemsTempFiles
 STBTool/Sql2Data-resource.log
+*.sublime-project
+*.sublime-workspace
+/UdiskSh/open_room_video/open_room_video.mp4
+

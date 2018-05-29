@@ -63,6 +63,13 @@ elif [ "$1" == "deliver" ]; then
 	
 	rm -r ${workspace}/Release/Private
 	cd ${workspace}/Release
+	if [ -f "${workspace}/UdiskSh/open_room_video/open_room_video.mp4" ]; then
+		mkdir Video
+		ls -l ${workspace}/UdiskSh/open_room_video/open_room_video.mp4 | awk '{print $5}' > ./Video/open_room_video.mp4.size
+		cp ${workspace}/UdiskSh/open_room_video/open_room_video.mp4 ./Video/
+	else
+		echo "no default open room video, please make sure UdiskSh/open_room_video/open_room_video.mp4 is existed."
+	fi
 	echo "tar the file..." 
 	tar -czf Release.tar.gz *
 	echo "release is for factory preburn!" 
