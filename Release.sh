@@ -67,7 +67,7 @@ elif [ "$1" == "deliver" ]; then
 	videopath="${workspace}/UdiskSh/open_room_video"
 	if [ -d ${videopath} ]; then
 		mkdir Video
-		if [ "`ls -A ${videopath}`" = "" ]; then
+		if [ "`ls -A ${videopath} --ignore=.gitignore`" = "" ]; then
 			echo "no default open room video, please place a media file to ${videopath}"
 		else
 			for file in ${videopath}/*
