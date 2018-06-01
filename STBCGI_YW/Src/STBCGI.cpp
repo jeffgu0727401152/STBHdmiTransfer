@@ -242,19 +242,19 @@ void ProcessCommand(
 			{
 				cQRCodeString = cArg + 7;
 			}
-			else if (strncasecmp(cArg, "image_url=", 10) == 0)
+			else if (strncasecmp(cArg, "img_url=", 8) == 0)
 			{
-				cImageUrlBuffer = cArg + 10;
+				cImageUrlBuffer = cArg + 8;
 			}
-			else if (strncasecmp(cArg, "image_position=", 15) == 0)
+			else if (strncasecmp(cArg, "img_position=", 13) == 0)
 			{
-				if( '\0' == *(cArg + 15))
+				if( '\0' == *(cArg + 13))
 				{
 					LOGMSG(DBG_LEVEL_I, "Position string is empty , use {743,140,186,186} as default temporarily\n");
 				}
 				else
 				{
-					ParserRectFromString(cArg + 15, &rcImagePosition);
+					ParserRectFromString(cArg + 13, &rcImagePosition);
 				}
 			}
 			else if (strncasecmp(cArg, "timeout=", 8) == 0)
