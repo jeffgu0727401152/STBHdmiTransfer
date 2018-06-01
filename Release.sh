@@ -43,7 +43,7 @@ cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libssl.*					${workspace}/R
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libts*						${workspace}/Release/Program/Lib/common/
 cp -arf ${workspace}/ToolChain/BCM7251S/head_lib/lib/libz.*						${workspace}/Release/Program/Lib/common/
 
-#Uç›˜æ— æ³•æ¥å—ç¬¦å·è¿æ¥
+#UÅÌÎŞ·¨½ÓÊÜ·ûºÅÁ¬½Ó
 if [ "$1" == "udisk" ]; then
 	echo "release is for usb disk copy!" 
 	cd ${workspace}/Release/Program/Lib/nexus/
@@ -115,6 +115,10 @@ elif [ "$1" == "deliver" ]; then
 	
 	mv Program.tar.gz ./server
 	mv client_version.txt ./server
+	cur_folderename="Release.`date +%Y-%m-%d`"
+	mkdir $cur_folderename
+	mv ./server $cur_folderename
+	mv ./app $cur_folderename
 
 else
 	echo "release is for server update!" 
