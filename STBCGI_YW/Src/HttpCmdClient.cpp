@@ -246,6 +246,7 @@ BOOL CHttpCmdClient::SendPauseCmd(
 	RECT rcImagePosition,
 	int nImageUrlBufLength,
 	const char *cImageUrlBuffer,
+	BOOL bImageNeedLoop,
 	CSimpleStringA *pResultString)
 {
 	if (!IsConnect())
@@ -266,6 +267,7 @@ BOOL CHttpCmdClient::SendPauseCmd(
 	request.nSecondsPerImage = nSecondsPerImage;
 	request.rcImagePosition = rcImagePosition;
 	request.nImageUrlBufLength = nImageUrlBufLength;
+	request.bImageNeedLoop = bImageNeedLoop;
 
 	UINT32 uSendBufSize = sizeof(HTTPCMDREQPAUSECMD) + nImageUrlBufLength;
 	BYTE *pSendBuffer = new BYTE[uSendBufSize];
@@ -387,6 +389,11 @@ BOOL CHttpCmdClient::SendOpenRoomCmd(
 	RECT rcQRCodePosition,
 	int nVideoUrlBufLength,
 	const char *cVideoUrlBuffer,
+	int nImageUrlBufLength,
+	const char *cImageUrlBuffer,
+	RECT rcImagePosition,
+	int nSecondsPerImage,
+	BOOL bImageNeedLoop,
 	CSimpleStringA *pResultString)
 {
 	if (!IsConnect())
@@ -408,7 +415,12 @@ BOOL CHttpCmdClient::SendOpenRoomCmd(
 	request.rcQRCodePosition = rcQRCodePosition;
 	request.nVideoUrlBufLength = nVideoUrlBufLength;
 
-	UINT32 uSendBufSize = sizeof(HTTPCMDREQOPENROOMCMD) + nVideoUrlBufLength;
+	request.nImageUrlBufLength = nImageUrlBufLength;
+	request.rcImagePosition = rcImagePosition;
+	request.nSecondsPerImage = nSecondsPerImage;
+	request.bImageNeedLoop = bImageNeedLoop;
+
+	UINT32 uSendBufSize = sizeof(HTTPCMDREQOPENROOMCMD) + nVideoUrlBufLength + nImageUrlBufLength;
 	BYTE *pSendBuffer = new BYTE[uSendBufSize];
 	if (!pSendBuffer)
 	{
@@ -419,6 +431,11 @@ BOOL CHttpCmdClient::SendOpenRoomCmd(
 	if (nVideoUrlBufLength > 0)
 	{
 		memcpy(pSendBuffer+sizeof(HTTPCMDREQOPENROOMCMD), cVideoUrlBuffer, nVideoUrlBufLength);
+	}
+
+	if (nImageUrlBufLength > 0)
+	{
+		memcpy(pSendBuffer+sizeof(HTTPCMDREQOPENROOMCMD)+nVideoUrlBufLength, cImageUrlBuffer, nImageUrlBufLength);
 	}
 
 	HTTPCMDREQWITHEVENT requestWithEvent;

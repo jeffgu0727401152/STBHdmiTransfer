@@ -40,6 +40,7 @@ typedef struct tagHTTPCMDREQPAUSECMD : public HTTPCMDHEADER
 	int nSecondsPerImage;
 	RECT rcImagePosition;
 	int nImageUrlBufLength;
+	BOOL bImageNeedLoop;
 } HTTPCMDREQPAUSECMD;
 typedef struct tagHTTPCMDRESPAUSECMD : public HTTPCMDHEADER
 {
@@ -74,6 +75,10 @@ typedef struct tagHTTPCMDREQOPENROOMCMD : public HTTPCMDHEADER
 	char cQRCodeString[1024];
 	RECT rcQRCodePosition;
 	int nVideoUrlBufLength;
+	int nImageUrlBufLength;
+	RECT rcImagePosition;
+	int nSecondsPerImage;
+	BOOL bImageNeedLoop;
 } HTTPCMDREQOPENROOMCMD;
 typedef struct tagHTTPCMDRESOPENROOMCMD : public HTTPCMDHEADER
 {

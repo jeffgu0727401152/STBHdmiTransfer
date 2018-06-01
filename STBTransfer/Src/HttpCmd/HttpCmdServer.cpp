@@ -188,7 +188,7 @@ void CHttpCmdServer::OnRequestPauseCmd(
 				cImageUrlBuffer,
 				pReqPauseCmd->rcImagePosition,
 				pReqPauseCmd->nSecondsPerImage,
-				FALSE);
+				pReqPauseCmd->bImageNeedLoop);
 			gPageManager->SetCurrentPage(Page_Picture);
 		}
 	}
@@ -376,9 +376,23 @@ void CHttpCmdServer::OnRequestOpenRoomCmd(
 				cVideoUrlBuffer = ((const char*)pReqOpenRoomCmd) + sizeof(HTTPCMDREQOPENROOMCMD);
 			}
 
+			const char* cImageUrlBuffer = NULL;
+			if (pReqOpenRoomCmd->nImageUrlBufLength)
+			{
+				cImageUrlBuffer = ((const char*)pReqOpenRoomCmd) + sizeof(HTTPCMDREQOPENROOMCMD) + pReqOpenRoomCmd->nVideoUrlBufLength;
+			}
+
 			gPicturePage->PerformHttpCmd_SetQRCode(
 				pReqOpenRoomCmd->cQRCodeString,
 				pReqOpenRoomCmd->rcQRCodePosition);
+
+			LOGMSG(DBG_LEVEL_I, "%s: get cImageUrlBuffer = %s\n", __PRETTY_FUNCTION__,cImageUrlBuffer);
+
+			gPicturePage->PerformHttpCmd_SetPicture(
+				cImageUrlBuffer,
+				pReqOpenRoomCmd->rcImagePosition,
+				pReqOpenRoomCmd->nSecondsPerImage,
+				pReqOpenRoomCmd->bImageNeedLoop);
 
 			const char* localList = gDownloadManager->GetLocalVideoList();
 			gDownloadManager->StartDownload(cVideoUrlBuffer);

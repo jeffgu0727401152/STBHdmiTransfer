@@ -39,6 +39,9 @@ void CPicturePage::Create(
 	mPictureWnd.Create(pE3DEngine, this);
 	mPictureWnd.SetGifWndFrameChangeListener(this, 0);
 
+	mQRcodeWnd.Create(pE3DEngine, this);
+	mQRcodeWnd.SetGifWndFrameChangeListener(this, 0);
+
 	LOGMSG(DBG_LEVEL_I, "%s ---\n", __PRETTY_FUNCTION__);
 }
 
@@ -93,6 +96,9 @@ void CPicturePage::OnWindowVisible(
 
 		mPictureWnd.SetBkgroundTexture(NULL);
 		mPictureWnd.Unload();
+
+		mQRcodeWnd.SetBkgroundTexture(NULL);
+		mQRcodeWnd.Unload();
 	}
 }
 
@@ -192,10 +198,10 @@ void CPicturePage::PerformHttpCmd_SetQRCode(
 		rcQRCodePosition.right,
 		rcQRCodePosition.bottom);
 
-	mPictureWnd.SetBkgroundTexture(NULL);
-	mPictureWnd.Unload();
-	mPictureWnd.MoveWindow(&rcQRCodePosition);
-	mPictureWnd.LoadFromImageBuffer(&sImageBuffer);
+	mQRcodeWnd.SetBkgroundTexture(NULL);
+	mQRcodeWnd.Unload();
+	mQRcodeWnd.MoveWindow(&rcQRCodePosition);
+	mQRcodeWnd.LoadFromImageBuffer(&sImageBuffer);
 }
 
 void CPicturePage::PerformHttpCmd_SetPicture(
@@ -211,9 +217,17 @@ void CPicturePage::PerformHttpCmd_SetPicture(
 	DelArrayList(&mPictureUrlList, char);
 	mCurShowIndex = 0;
 
+	LOGMSG(DBG_LEVEL_I, "rcPicturePosition=(%d,%d,%d,%d)\n",
+		rcPicturePosition.left,
+		rcPicturePosition.top,
+		rcPicturePosition.right,
+		rcPicturePosition.bottom);
+
 	mPictureWnd.SetBkgroundTexture(NULL);
 	mPictureWnd.Unload();
 	mPictureWnd.MoveWindow(&rcPicturePosition);
+
+	mPictureLoop = bLoop;
 
 	if (nSecondsPerImage < 1)
 	{

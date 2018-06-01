@@ -54,6 +54,7 @@ private:
 
 private:
 	CGifWnd mPictureWnd;
+	CGifWnd mQRcodeWnd;
 
 	int mShowTimeMS;
 

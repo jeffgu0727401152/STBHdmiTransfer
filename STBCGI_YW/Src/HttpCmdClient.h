@@ -55,6 +55,7 @@ public:
 		RECT rcImagePosition,
 		int nImageUrlBufLength,
 		const char *cImageUrlBuffer,
+		BOOL bImageNeedLoop,
 		CSimpleStringA *pResultString);
 	BOOL SendResumeCmd(
 		CSimpleStringA *pResultString);
@@ -64,6 +65,11 @@ public:
 		RECT rcQRCodePosition,
 		int nVideoUrlBufLength,
 		const char *cVideoUrlBuffer,
+		int nImageUrlBufLength,
+		const char *cImageUrlBuffer,
+		RECT rcImagePosition,
+		int nSecondsPerImage,
+		BOOL bImageNeedLoop,
 		CSimpleStringA *pResultString);
 	BOOL SendCloseRoomCmd(
 		int nVideoUrlBufLength,

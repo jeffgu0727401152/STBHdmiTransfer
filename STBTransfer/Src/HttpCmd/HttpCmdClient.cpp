@@ -29,6 +29,7 @@ void CHttpCmdClient::Start(
 
 	mExitThread = FALSE;
 	mExitEvent.Reset();
+
 	mCheckOnlineThread.StartThread("CheckOnlineThread", this, 0, STACKSIZE_MIN);
 }
 

@@ -162,6 +162,7 @@ void ProcessCommand(
 		const char* cImageUrlBuffer = NULL;
 		RECT rcImagePosition = {0, 0, 0, 0};
 		int nSecondsPerImage = 5;
+		BOOL bImageNeedLoop=FALSE;
 		for (int i = 1; i < pArgList->GetCount(); i++)
 		{
 			const char* cArg = (const char*)pArgList->GetAt(i);
@@ -182,6 +183,10 @@ void ProcessCommand(
 			{
 				nSecondsPerImage = atoi(cArg+8);
 			}
+			else if (strncasecmp(cArg, "loop=", 5) == 0)
+			{
+				bImageNeedLoop = atoi(cArg+5)>0 ? TRUE : FALSE;
+			}
 		}
 
 		if (!gHttpCmdClient.SendPauseCmd(
@@ -189,6 +194,7 @@ void ProcessCommand(
 			rcImagePosition,
 			cImageUrlBuffer?strlen(cImageUrlBuffer)+1:0,
 			cImageUrlBuffer,
+			bImageNeedLoop,
 			&sResultString))
 		{
 			GenerateErrorString(&sResultString);
@@ -201,11 +207,15 @@ void ProcessCommand(
 		// 开房
 		const char* cQRCodeString = NULL;
 		const char* cVideoUrlBuffer = NULL;
+		const char* cImageUrlBuffer = NULL;
 		int left = 943;
 		int top = 340;
 		int width = 186;
 		int height= 186;
 		RECT rcQRCodePosition = {left,top,left+width,top+height};
+		RECT rcImagePosition = {left-200,top-200,left+width-200,top+height-200};
+		int nSecondsPerImage = 5;
+		BOOL bImageNeedLoop = TRUE;
 		for (int i = 1; i < pArgList->GetCount(); i++)
 		{
 			const char* cArg = (const char*)pArgList->GetAt(i);
@@ -232,6 +242,29 @@ void ProcessCommand(
 			{
 				cQRCodeString = cArg + 7;
 			}
+			else if (strncasecmp(cArg, "image_url=", 10) == 0)
+			{
+				cImageUrlBuffer = cArg + 10;
+			}
+			else if (strncasecmp(cArg, "image_position=", 15) == 0)
+			{
+				if( '\0' == *(cArg + 15))
+				{
+					LOGMSG(DBG_LEVEL_I, "Position string is empty , use {743,140,186,186} as default temporarily\n");
+				}
+				else
+				{
+					ParserRectFromString(cArg + 15, &rcImagePosition);
+				}
+			}
+			else if (strncasecmp(cArg, "timeout=", 8) == 0)
+			{
+				nSecondsPerImage = atoi(cArg+8);
+			}
+			else if (strncasecmp(cArg, "loop=", 5) == 0)
+			{
+				bImageNeedLoop = atoi(cArg+5)>0 ? TRUE : FALSE;
+			}
 		}
 
 		if (!gHttpCmdClient.SendOpenRoomCmd(
@@ -239,6 +272,11 @@ void ProcessCommand(
 			rcQRCodePosition,
 			cVideoUrlBuffer?strlen(cVideoUrlBuffer)+1:0,
 			cVideoUrlBuffer,
+			cImageUrlBuffer?strlen(cImageUrlBuffer)+1:0,
+			cImageUrlBuffer,
+			rcImagePosition,
+			nSecondsPerImage,
+			bImageNeedLoop,
 			&sResultString))
 		{
 			GenerateErrorString(&sResultString);
