@@ -1097,7 +1097,7 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 	<div class="container">
 		<div style="padding: 80px 150px 0; height: 160px;">
 			<a class="logo" href="http://www.whiteskycn.com/"><img src="http://www.whiteskycn.com/uploadfile/2017/0725/20170725040952243.png"></a>
-			<h1 data-force="40" data-force-y="2.5">版权盒子测试 v1.2</h1>
+			<h1 data-force="40" data-force-y="2.5">版权盒子测试 v1.2.1</h1>
 		</div>
 	</div>
 	
@@ -1191,7 +1191,7 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 			</div>
 
 			<div style="margin:0 auto; margin-top: 10px" class="block__list block__list_words">
-				<div class="block__list-title"><button type="button"  id="button4">暂停</button><input type="text" id="pause_input" value="0,0,1280,720" style="width:100px; height:15px;"></div>
+				<div class="block__list-title"><button type="button"  id="button4">暂停</button><input type="text" id="pause_input" value="0,0,1280,720" style="width:100px; height:15px;"><input type="text" id="pause_custom_input" value="&loop=0&timeout=5" style="width:300px; height:15px;"></div>
 				<ul id="advanced-5">
 					<li style="">
 						<a href="http://192.168.50.253/yuwang_test/res/gif1.gif" onclick="">192.168.50.253gif图片1</a>
@@ -1208,7 +1208,7 @@ void 0===a?a:a+""}):he.documentElement.currentStyle&&(et=function(e){return e.cu
 				</ul>
 			</div>
 			<div style="margin:0 auto; margin-top: 10px" class="block__list block__list_words">
-				<div class="block__list-title"><button type="button"  id="button5">开房</button><input type="text" id="open_input" value="" style="width:100px; height:15px;"><input type="text" id="open_custom_input" value="" style="width:300px; height:15px;"></div>
+				<div class="block__list-title"><button type="button"  id="button5">开房</button><input type="text" id="open_input" value="" style="width:100px; height:15px;"><input type="text" id="open_custom_input" value="&image_url=url1&image_position=0,0,0,0&timeout=5&loop=0" style="width:300px; height:15px;"></div>
 				<ul id="advanced-6">
 					<li draggable="false" class="" style="">
 						<a href="/stb/usb/sda1/3.mkv" onclick="">本地视频3</a>
@@ -3522,7 +3522,7 @@ function action3()
 	$val = $("#input").val();
     $pause_input = $("#pause_input").val();
     var childArr = document.getElementById("advanced-5").getElementsByTagName("li");
-    var final =  "&position=" + $pause_input;
+    var final =  "&position=" + $pause_input + $pause_custom_input;
     if(window.isNeedAllDeviceWork)
 	{
         if(httpUsedResCount > 0)
