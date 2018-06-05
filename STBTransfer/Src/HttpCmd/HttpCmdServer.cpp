@@ -550,13 +550,15 @@ void CHttpCmdServer::OnRequestCheckStatusCmd(
 	if (gProgramBootMode!=Mode_Network)
 	{
 		resultJson["code"] = Json::Value("1");
-		resultJson["codemsg"] = Json::Value("程序不是从网络启动");
+		resultJson["codemsg"] = Json::Value("程序不是从网络最新启动");
 	}
 	else
 	{
 		resultJson["code"] = Json::Value("0");
 		resultJson["codemsg"] = Json::Value("在线");
 	}
+
+	resultJson["client_version"] = Json::Value(SW_VERSION);
 
 	Json::FastWriter fast_writer;
 	sResponseStateString.Set(fast_writer.write(resultJson).c_str());

@@ -246,7 +246,7 @@ BOOL CHttpCmdClient::ClientOpen(
 	CSimpleStringA *pResultUrlString)
 {
 	CSimpleStringA sURL;
-	sURL.Format("http://%s:%d/ads/api/open?room_ip=%s", mServerIP, mServerPort,cVodIP);
+	sURL.Format("http://%s:%d/ads/api/open?room_ip=%s&client_version=%s", mServerIP, mServerPort,cVodIP,SW_VERSION);
 
 	BYTE cResultBuffer[1024];
 	UINT32 uActualResultSize = 0;
