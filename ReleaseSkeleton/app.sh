@@ -48,6 +48,13 @@ ifconfig
 if [ ! -d "${directory}/Log" ]; then
 	mkdir ${directory}/Log
 fi
+
+# 不存在则创建新的lastLogIndex.flag
+if [ ! -f "${directory}/Log/lastLogIndex.flag" ]; then
+	touch ${directory}/Log/lastLogIndex.flag
+	echo 0 > ${directory}/Log/lastLogIndex.flag
+fi
+
 # 不存在则建立保存最新程序的目录
 if [ ! -d "${directory}/Latest" ]; then
 	mkdir ${directory}/Latest
@@ -84,11 +91,21 @@ else
 fi
 
 # 准备日志文件
-# 程序执行过程中的log都保存在不带last结尾的日志文件中
-# 所以在程序实际执行之前,将上次的log重命名为last结尾的文件
-mv ${directory}/Log/lighttpd.log /${directory}/Log/lighttpd_last.log
-mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last.log
-mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last.log
+# 程序执行过程中的log保存在不带last结尾的日志文件中
+# 根据需求，需要保留最近5份的开机log供查验，
+# 本次为XXX.log,历史log文件为XXX_last[num].log
+# 假设lastLogIndex.flag 文件内数字为n,从最近的上一次历史开机开始，到最近5次之前的log顺序为 n,n-1,...,0,4,4-1,...,n+1
+# 未满5次时依常规次序由前向后到不存在序号对应文件为止
+LOG_INDEX_LAST= $(cat ${directory}/Log/lastLogIndex.flag)
+LOG_INDEX_CURRENT_TMP=$((${LOG_INDEX_LAST}+1))
+LOG_INDEX_CURRENT=$((${LOG_INDEX_CURRENT_TMP}%5))
+echo ${LOG_INDEX_CURRENT} > ${directory}/Log/lastLogIndex.flag
+sync
+echo "current log index is" $LOG_INDEX_CURRENT
+
+mv ${directory}/Log/lighttpd.log ${directory}/Log/lighttpd_last$LOG_INDEX_CURRENT.log
+mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last$LOG_INDEX_CURRENT.log
+mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last$LOG_INDEX_CURRENT.log
 
 # 判断版权盒上除了出厂预装的版本外,是否存在从服务器下载的新版
 if [ -f "${directory}/Latest/ktv.sh" ]; then
