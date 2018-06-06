@@ -3,6 +3,6 @@
 
 #define OEM_VERSION	"YUWANG"
 
-#define SW_VERSION "V2.1.7"
+#define SW_VERSION "V2.1.8"
 
 extern const unsigned char* gBuildVersion;

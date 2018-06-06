@@ -128,6 +128,7 @@ void CPlayerManager::OnMsg(
 	case MSG_PLAYER_COMPLETE:
 		if ((PLAYERINDEX)wParam == PLAYERINDEX_MAIN)
 		{
+			LOGMSG(DBG_LEVEL_I, "PLAYERINDEX_MAIN receive MSG_PLAYER_COMPLETE,mMainPlayerIndex=%d\n",mMainPlayerIndex);
 			if ((PLAYCOMPLETE_REASONTYPE)lParam == PlayComplete_ReasonType_StartError)
 			{
 				mLock.Lock();
@@ -139,11 +140,13 @@ void CPlayerManager::OnMsg(
 				mMainPlayerUrlList.DeleteAt(mMainPlayerIndex);
 
 				mLock.Unlock();
+				LOGMSG(DBG_LEVEL_I, "PLAYERINDEX_MAIN MSG_PLAYER_COMPLETE PlayComplete_ReasonType_StartError\n");
 			}
 			SwitchMain();
 		}
 		else if ((PLAYERINDEX)wParam == PLAYERINDEX_PIP)
 		{
+			LOGMSG(DBG_LEVEL_I, "PLAYERINDEX_PIP receive MSG_PLAYER_COMPLETE,mPipPlayerIndex=%d\n",mPipPlayerIndex);
 			if ((PLAYCOMPLETE_REASONTYPE)lParam == PlayComplete_ReasonType_StartError)
 			{
 				mLock.Lock();
@@ -154,6 +157,7 @@ void CPlayerManager::OnMsg(
 				}
 				mPiplayerUrlList.DeleteAt(mPipPlayerIndex);
 				mLock.Unlock();
+				LOGMSG(DBG_LEVEL_I, "PLAYERINDEX_PIP MSG_PLAYER_COMPLETE PlayComplete_ReasonType_StartError\n");
 			}
 			SwitchPip();
 		}
@@ -167,6 +171,7 @@ void CPlayerManager::OnMsg(
 
 void CPlayerManager::SwitchMain()
 {
+	LOGMSG(DBG_LEVEL_I, "%s:%d, ===in===, mMainPlayerUrlList size=%d\n", __PRETTY_FUNCTION__, __LINE__,mMainPlayerUrlList.GetCount());
 	mLock.Lock();
 
 	const char* cVideoUrl = NULL;
@@ -202,6 +207,10 @@ void CPlayerManager::SwitchMain()
 			gMultiMediaCtrl->EnableAudioLineInToLineOut(TRUE);
 			mIsHdmiPlaying = TRUE;
 		}
+		else
+		{
+			LOGMSG(DBG_LEVEL_I, "%s:%d, already bypass hdmi!\n", __PRETTY_FUNCTION__, __LINE__);
+		}
 	}
 	else
 	{
@@ -217,6 +226,7 @@ void CPlayerManager::SwitchMain()
 	}
 
 	mLock.Unlock();
+	LOGMSG(DBG_LEVEL_I, "%s:%d, ===out===,mMainPlayerUrlList size=%d\n", __PRETTY_FUNCTION__, __LINE__,mMainPlayerUrlList.GetCount());
 }
 
 void CPlayerManager::SwitchPip()

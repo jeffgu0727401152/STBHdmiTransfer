@@ -397,6 +397,7 @@ void CHttpCmdServer::OnRequestOpenRoomCmd(
 			const char* localList = gDownloadManager->GetLocalVideoList();
 			gDownloadManager->StartDownload(cVideoUrlBuffer);
 
+			LOGMSG(DBG_LEVEL_I, "%s: get localList = %s\n", __PRETTY_FUNCTION__,localList);
 			gPlayerManager->SetMainPlayerSource(localList, TRUE);
 			gPageManager->SetCurrentPage(Page_Picture);
 		}
@@ -460,7 +461,7 @@ void CHttpCmdServer::OnRequestCloseRoomCmd(
 			{
 				cVideoUrlBuffer = ((const char*)pReqCloseRoomCmd) + sizeof(HTTPCMDREQCLOSEROOMCMD);
 			}
-
+			LOGMSG(DBG_LEVEL_I, "%s: get cVideoUrlBuffer = %s\n", __PRETTY_FUNCTION__,cVideoUrlBuffer);
 			gPlayerManager->SetMainPlayerSource(cVideoUrlBuffer, TRUE);
 			gPageManager->SetCurrentPage(Page_Blank);
 		}
@@ -525,6 +526,7 @@ void CHttpCmdServer::OnRequestPayCallbackCmd(
 				cVideoUrlBuffer = ((const char*)pReqPayCallbackCmd) + sizeof(HTTPCMDREQPAYCALLBACKCMD);
 			}
 
+			LOGMSG(DBG_LEVEL_I, "%s: get cVideoUrlBuffer = %s\n", __PRETTY_FUNCTION__,cVideoUrlBuffer);
 			gPlayerManager->SetMainPlayerSource(cVideoUrlBuffer, FALSE);
 			gPageManager->SetCurrentPage(Page_Blank);
 		}
