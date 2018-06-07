@@ -96,16 +96,20 @@ fi
 # 本次为XXX.log,历史log文件为XXX_last[num].log
 # 假设lastLogIndex.flag 文件内数字为n,从最近的上一次历史开机开始，到最近5次之前的log顺序为 n,n-1,...,0,4,4-1,...,n+1
 # 未满5次时依常规次序由前向后到不存在序号对应文件为止
-LOG_INDEX_LAST= $(cat ${directory}/Log/lastLogIndex.flag)
-LOG_INDEX_CURRENT_TMP=$((${LOG_INDEX_LAST}+1))
-LOG_INDEX_CURRENT=$((${LOG_INDEX_CURRENT_TMP}%5))
-echo ${LOG_INDEX_CURRENT} > ${directory}/Log/lastLogIndex.flag
-sync
-echo "current log index is" $LOG_INDEX_CURRENT
 
-mv ${directory}/Log/lighttpd.log ${directory}/Log/lighttpd_last$LOG_INDEX_CURRENT.log
-mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last$LOG_INDEX_CURRENT.log
-mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last$LOG_INDEX_CURRENT.log
+# u盘烧录头次运行时上次的log是不存在的
+if [ -f "${directory}/Log/STBVerify.log" ]; then
+	LOG_INDEX_LAST=$(cat ${directory}/Log/lastLogIndex.flag)
+	LOG_INDEX_CURRENT_TMP=$((${LOG_INDEX_LAST}+1))
+	LOG_INDEX_CURRENT=$((${LOG_INDEX_CURRENT_TMP}%5))
+	echo ${LOG_INDEX_CURRENT} > ${directory}/Log/lastLogIndex.flag
+	sync
+	echo "current log index is" $LOG_INDEX_CURRENT
+
+	mv ${directory}/Log/lighttpd.log ${directory}/Log/lighttpd_last$LOG_INDEX_CURRENT.log
+	mv ${directory}/Log/STBVerify.log ${directory}/Log/STBVerify_last$LOG_INDEX_CURRENT.log
+	mv ${directory}/Log/STBCGI.log ${directory}/Log/STBCGI_last$LOG_INDEX_CURRENT.log
+fi
 
 # 判断版权盒上除了出厂预装的版本外,是否存在从服务器下载的新版
 if [ -f "${directory}/Latest/ktv.sh" ]; then
