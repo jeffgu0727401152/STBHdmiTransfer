@@ -155,10 +155,18 @@ void DownloadManager::StartDownload(const char* urls)
 	LOGMSG(DBG_LEVEL_I, "video file count=%d,download list size=%d, find %d in download list\n",
 			videoFileCount,mDownloadTask->GetDownloadList().GetCount(),findVideoCount);
 
-	if (videoFileCount==0 || videoFileCount < mDownloadTask->GetDownloadList().GetCount() || findVideoCount!=videoFileCount)
+	if (findVideoCount != mDownloadTask->GetDownloadList().GetCount())
 	{
 		LOGMSG(DBG_LEVEL_I, "file in %s folder is not same as download list, will download\n",mVideoLocation);
 		mDownloadTask->Start();
+	}
+	else
+	{
+		// Video目录下的文件与要下载的完全一致,就不会start上面的Task,那么就需要我们这边删除以下done.flag以防Download目录只剩下done.flag
+		// 主要用于防止这种情况: Video目录下有视频A,服务器先要求我们下载 视频B,我们下载完成并设置done.flag,然后服务器又要求我们下载视频A
+		LOGMSG(DBG_LEVEL_I, "file in %s folder is same as download list, just delete done flag\n");
+		do_syscmd(NULL,"rm %s/done.flag",mDownloadLocation);
+		do_syscmd(NULL,"sync");
 	}
 }
 
