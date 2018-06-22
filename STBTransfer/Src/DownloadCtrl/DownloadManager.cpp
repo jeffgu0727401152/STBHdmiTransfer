@@ -155,7 +155,7 @@ void DownloadManager::StartDownload(const char* urls)
 	LOGMSG(DBG_LEVEL_I, "video file count=%d,download list size=%d, find %d in download list\n",
 			videoFileCount,mDownloadTask->GetDownloadList().GetCount(),findVideoCount);
 
-	if (findVideoCount != mDownloadTask->GetDownloadList().GetCount())
+	if (findVideoCount != mDownloadTask->GetDownloadList().GetCount() || videoFileCount != mDownloadTask->GetDownloadList().GetCount() )
 	{
 		LOGMSG(DBG_LEVEL_I, "file in %s folder is not same as download list, will download\n",mVideoLocation);
 		mDownloadTask->Start();
@@ -340,7 +340,7 @@ BOOL DownloadManager::CheckFileSize(const char* filePath)
 		}
 	}
 	return FALSE;
-}
+} 
 
 void DownloadManager::RemoveTmpFile()
 {
