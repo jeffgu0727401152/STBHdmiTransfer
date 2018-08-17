@@ -63,6 +63,24 @@ BOOL CHttpCmdClient::ThreadLoop(
 				LOGMSG(DBG_LEVEL_I, "check online fail count = %d\n",heartBeatLostCount);
 			}
 
+			// 检查掉线次数,决定是否透传
+			if (gProgramBootMode == Mode_Factory)
+			{
+				LOGMSG(DBG_LEVEL_W, "gProgramBootMode is Mode_Factory, so do not check pass through!\n");
+			}
+			else if (heartBeatLostCount > HEART_BEAT_LOST_THRESHOLD)
+			{
+				PAGE_TYPE currentPage  = gPageManager->GetCurPageType();
+				if (!(Page_SettingModify == currentPage || Page_SettingInfo == currentPage))
+				{
+					LOGMSG(DBG_LEVEL_W, "check online failed, SetCurrentPage to Blank\n");
+					gPlayerManager->SetMainPlayerSource(NULL,FALSE);
+					gPageManager->SetCurrentPage(Page_Blank);
+				}
+				heartBeatLostCount = 0;
+				break;
+			}
+
 			if (!PerformHttpGetCommand(
 				sURL.GetString(),
 				NULL,
@@ -70,28 +88,11 @@ BOOL CHttpCmdClient::ThreadLoop(
 				1024,
 				&uActualResultSize))
 			{
-				if (gProgramBootMode == Mode_Factory)
-				{
-					LOGMSG(DBG_LEVEL_W, "check online failed, but gProgramBootMode is Mode_Factory, so do nothing!\n");
-					break;
-				}
-
+				LOGMSG(DBG_LEVEL_W, "check online failed, network can not reachable!\n");
 				heartBeatLostCount++;
-				if (heartBeatLostCount > HEART_BEAT_LOST_THRESHOLD)
-				{
-					PAGE_TYPE currentPage  = gPageManager->GetCurPageType();
-					if (!(Page_SettingModify == currentPage || Page_SettingInfo == currentPage))
-					{
-						LOGMSG(DBG_LEVEL_W, "check online failed, SetCurrentPage to Blank\n");
-						gPlayerManager->SetMainPlayerSource(NULL,FALSE);
-						gPageManager->SetCurrentPage(Page_Blank);
-					}
-					heartBeatLostCount = 0;
-				}
+				bIsOnline = FALSE;
 				break;
 			}
-
-			heartBeatLostCount = 0;
 
 			if (uActualResultSize >= 1024)
 			{
@@ -137,7 +138,18 @@ BOOL CHttpCmdClient::ThreadLoop(
 			LOGMSG(DBG_LEVEL_I, "check online return: code=%d, msg=%s\n",
 				code, msg.c_str());
 
-			bIsOnline = code == 0 ? TRUE : FALSE;
+			if (code == 0)
+			{
+				heartBeatLostCount = 0;
+				bIsOnline = TRUE;
+			}
+			else
+			{
+				heartBeatLostCount++;
+				bIsOnline = FALSE;
+			}
+
+
 		} while (0);
 
 		mIsServerOnline = bIsOnline;
